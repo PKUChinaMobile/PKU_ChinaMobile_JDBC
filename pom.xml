@@ -1,0 +1,60 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.pku.cis</groupId>
+  <artifactId>PKU_ChinaMobile_JDBC</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>PKU_ChinaMobile_JDBC</name>
+  <url>http://maven.apache.org</url>
+
+ <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+     <org.springframework.security.version>3.2.3.RELEASE</org.springframework.security.version>
+    <org.springframework.version>4.0.4.RELEASE</org.springframework.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-core</artifactId>
+    <version>${org.springframework.security.version}</version>
+</dependency>
+    <dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-web</artifactId>
+    <version>${org.springframework.security.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-config</artifactId>
+    <version>${org.springframework.security.version}</version>
+    <scope>runtime</scope>
+</dependency>
+
+<dependency>
+    <groupId>com.oracle</groupId>
+    <artifactId>ojdbc</artifactId>
+    <version>14</version>
+    <scope>system</scope>
+    <systemPath>${basedir}/src/main/libs/ojdbc7.jar</systemPath> <!-- must match file name -->
+</dependency>
+<dependency>
+    <groupId>com.mysql</groupId>
+    <artifactId>mysql</artifactId>
+    <version>14</version>
+    <scope>system</scope>
+    <systemPath>${basedir}/src/main/libs/mysql-connector-java-5.1.31-bin.jar</systemPath> <!-- must match file name -->
+</dependency>
+
+  </dependencies>
+   
+</project>
