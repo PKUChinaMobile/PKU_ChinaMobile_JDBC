@@ -32,6 +32,7 @@ public class Test {
 		   System.out.println("Attempt to connect " + fullURL);
 		   PKUConnection con;
 		   try {
+			   
 			   //DriverManager会从已经注册的Driver列表中选择一个，调用其Connect方法
 			   con = (PKUConnection)DriverManager.getConnection(fullURL, userName, userPasswd);
 			   
