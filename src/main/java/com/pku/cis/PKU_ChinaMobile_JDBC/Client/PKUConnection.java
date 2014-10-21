@@ -89,11 +89,20 @@ public class PKUConnection implements Connection
 		}
 	}
 
-	//////////////Not Completed
+	/**
+     * A driver may convert the JDBC sql grammar into its system's
+     * native SQL grammar prior to sending it; nativeSQL returns the
+     * native form of the statement that the driver would have sent.
+     *
+     * @param sql a SQL statement that may contain one or more '?'
+     * parameter placeholders
+     *
+     * @return the native form of this statement
+     */
 	public String nativeSQL(String sql)
 	 	throws SQLException
 	{
-	 	throw(new SQLException("Not Supported"));
+		return sql; //本项目驱动发送给透明网关的sql语句在发送过程中没有改变
 	}
 
 	 public void setAutoCommit(boolean autoCommit)
