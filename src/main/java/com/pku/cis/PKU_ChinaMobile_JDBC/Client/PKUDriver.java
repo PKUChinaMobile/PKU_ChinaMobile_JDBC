@@ -198,7 +198,6 @@ public class PKUDriver implements java.sql.Driver
 		return false;
 	}
 	
-////////////////////Not Completed
 	/**
 	   * <p>The getPropertyInfo method is intended to allow a generic GUI tool to 
 	   * discover what properties it should prompt a human for in order to get 
@@ -217,11 +216,28 @@ public class PKUDriver implements java.sql.Driver
 	public java.sql.DriverPropertyInfo[] getPropertyInfo(String url,Properties loginProps)
 		throws SQLException
 	{
-		return new DriverPropertyInfo[0];
+		if(loginProps == null){
+			loginProps = new Properties();
+		}
+		DriverPropertyInfo hostProp = new DriverPropertyInfo("HOST", loginProps.getProperty("HOST"));
+		hostProp.required = true;
+		hostProp.description = "Hostname of Database Server";
+		
+		DriverPropertyInfo userProp = new DriverPropertyInfo("user", loginProps.getProperty("user"));
+		userProp.required = true;
+		userProp.description = "Username to authenticate as";
+		
+		DriverPropertyInfo passwordProp = new DriverPropertyInfo("password", loginProps.getProperty("password"));
+		passwordProp.required = true;
+		passwordProp.description = "Password to use for authentication";
+			
+		DriverPropertyInfo[] dpi = new DriverPropertyInfo[3];
+		return dpi;
 	}
+	
+	//----------------JDBC 4.0 -----------------------------------------------
 	@Override
 	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-		// TODO Auto-generated method stub
-		return null;
+		throw(new SQLFeatureNotSupportedException("Not Supported"));
 	}
 }

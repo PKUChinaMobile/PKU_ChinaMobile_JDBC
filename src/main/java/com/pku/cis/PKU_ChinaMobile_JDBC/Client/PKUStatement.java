@@ -72,9 +72,6 @@ public class PKUStatement implements java.sql.Statement
 	/**
 	 * Execute a SQL INSERT, UPDATE or DELETE statement. In addition SQL
 	 * statements that return nothing such as SQL DDL statements can be executed
-	 * Any IDs generated for AUTO_INCREMENT fields can be retrieved by casting
-	 * this Statement to org.gjt.mm.mysql.Statement and calling the
-	 * getLastInsertID() method.
 	 * 
 	 * This method executes the SQL data write/modify statement via Remote Statement 
 	 * 
