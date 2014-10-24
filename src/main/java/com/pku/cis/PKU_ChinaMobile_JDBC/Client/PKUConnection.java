@@ -104,11 +104,36 @@ public class PKUConnection implements Connection
 	{
 		return sql; //本项目驱动发送给透明网关的sql语句在发送过程中没有改变
 	}
-
+	 /**
+     * If a connection is in auto-commit mode, then all its SQL
+     * statements will be executed and committed as individual
+     * transactions.  Otherwise, its SQL statements are grouped into
+     * transactions that are terminated by either commit() or
+     * rollback().  By default, new connections are in auto-commit
+     * mode.
+     *
+     * The commit occurs when the statement completes or the next
+     * execute occurs, whichever comes first. In the case of
+     * statements returning a ResultSet, the statement completes when
+     * the last row of the ResultSet has been retrieved or the
+     * ResultSet has been closed. In advanced cases, a single
+     * statement may return multiple results as well as output
+     * parameter values. Here the commit occurs when all results and
+     * output param values have been retrieved.
+     *
+     * @param autoCommit true enables auto-commit; false disables
+     * auto-commit.  
+     */
 	 public void setAutoCommit(boolean autoCommit)
 	 	throws SQLException
 	{
-	 	throw(new SQLException("Not Supported"));
+		 throw(new SQLException("Not Supported"));
+		 /*
+		 try {
+		        remoteConnection.setAutoCommit(autoCommit);
+		      } catch(RemoteException e) {
+		        throw new java.sql.SQLException(e.getMessage());
+		      }*/
 	}
 
 	public boolean getAutoCommit()
@@ -144,10 +169,21 @@ public class PKUConnection implements Connection
 			throw(new SQLException("Not Supported"));
 	}
 
+	/**
+     * Tests to see if the connection is in read-only mode.
+     *
+     * @return true if connection is read-only
+     */
 	public boolean isReadOnly()
 	       throws SQLException
 	{
-			throw(new SQLException("Not Supported"));
+		throw(new SQLException("Not Supported"));
+		/*
+		try{
+			return remoteConnection.isReadOnly();
+		}catch(RemoteException e){
+			throw new java.sql.SQLException(e.getMessage());
+		}*/
 	}
 
 	public void setCatalog(String catalog)
@@ -229,6 +265,7 @@ public class PKUConnection implements Connection
 	}
 
 
+	//------------------------JDBC 4.0
 	@Override
 	public boolean isWrapperFor(Class<?> arg0) throws SQLException {
 		// TODO Auto-generated method stub
