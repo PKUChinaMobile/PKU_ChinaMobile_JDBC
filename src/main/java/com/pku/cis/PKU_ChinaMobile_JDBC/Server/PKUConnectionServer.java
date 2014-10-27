@@ -51,6 +51,56 @@ public class  PKUConnectionServer extends UnicastRemoteObject
 	public void closeConnection() throws RemoteException,SQLException
 	{
 		conm.close();
+	}
+
+	
+	public void setReadOnly(boolean readOnly) throws RemoteException,
+			SQLException {
+		Connection cons[] = conm.getAllConnection();
+		for(int i = 0; i < cons.length; i++)
+			cons[i].setReadOnly(readOnly);
+		if(!readOnly) //如果不是要开启只读模式，直接返回即可
+			return;
+		//如果是要开启只读模式，进一步判读是否所有的数据库都支持这种设置；
+		//如果不是，回滚这些操作；
+		int i;
+		for(i = 0; i < cons.length; i++)
+			if(!cons[i].isReadOnly())
+				break;
+		if(i != cons.length)
+		{
+			//有连接不能开启只读模式；
+			for(i = 0; i < cons.length; i++)
+				cons[i].setReadOnly(false);//撤销之前的开启操作
+		}
+		
+	}
+
+	/**
+	 * If one of the Connections is not read only, return false.
+	 */
+	public boolean isReadOnly() throws RemoteException, SQLException {
+		Connection cons[] = conm.getAllConnection();
+		for(int i = 0; i < cons.length; i++)
+		{
+			if(!cons[i].isReadOnly())
+				return false;
+		}
+		return true;
+	}
+
+	public void setCatalog(String catalog) throws RemoteException, SQLException {
+		Connection cons[] = conm.getAllConnection();
+		for(int i = 0; i < cons.length; i++)
+			cons[i].setCatalog(catalog);
+	}
+
+	public String getCatalog() throws RemoteException, SQLException {
+		String result = "";
+		Connection cons[] = conm.getAllConnection();
+		for(int i = 0; i < cons.length; i++)
+			result += conm.dbs.get(i) + ": " + cons[i].getCatalog() + "\n";
+		return result;
 	}	
 	
 }

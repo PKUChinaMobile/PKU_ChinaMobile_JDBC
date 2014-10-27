@@ -11,4 +11,8 @@ public interface PKUConnectionInterface extends Remote
 	PKUStatementInterface createStatement() throws RemoteException,SQLException;
 	void closeConnection() throws RemoteException,SQLException;
 	//void setAutoCommit(boolean autoCommit) throws java.rmi.RemoteException, SQLException;
+	public void setReadOnly(boolean readOnly) throws RemoteException,SQLException;
+	public boolean isReadOnly() throws RemoteException,SQLException;
+	public void setCatalog(String catalog) throws RemoteException,SQLException;
+	public String getCatalog() throws RemoteException,SQLException;
 }

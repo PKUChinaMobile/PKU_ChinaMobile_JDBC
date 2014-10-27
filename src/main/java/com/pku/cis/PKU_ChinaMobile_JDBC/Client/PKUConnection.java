@@ -163,39 +163,91 @@ public class PKUConnection implements Connection
 			throw(new SQLException("Not Supported"));
 	}
 
+	/**
+     * You can put a connection in read-only mode as a hint to enable 
+     * database optimizations.
+     *
+     * This method will call the responding method of all remote Connection
+     * objects, if user hasn't created the Connection object, it will 
+     * create all of Connection objects which user is granted.
+     * 
+     * Only when all connections can be set into read-only mode, we enable
+     * read-only mode. Otherwise, we disable read-only mode.
+     * 
+     * <P><B>Note:</B> setReadOnly cannot be called while in the
+     * middle of a transaction.
+     *
+     * @param readOnly true enables read-only mode; false disables
+     * read-only mode.  
+     */
+	
 	public void setReadOnly(boolean readOnly)
 	      throws SQLException
 	{
-			throw(new SQLException("Not Supported"));
+		try{
+			remoteConnection.setReadOnly(readOnly);
+		}catch(RemoteException e){
+			throw new java.sql.SQLException(e.getMessage());
+		}
 	}
 
 	/**
      * Tests to see if the connection is in read-only mode.
      *
+     * This method will call the responding method of all remote Connection
+     * objects, if user hasn't created the Connection object, it will 
+     * create all of Connection objects which user is granted.
+     *
+     * If one of the Connection objects is not read-only mode, we regard the 
+     * connection as not in read-only mode.
+     * 
      * @return true if connection is read-only
      */
 	public boolean isReadOnly()
 	       throws SQLException
 	{
-		throw(new SQLException("Not Supported"));
-		/*
 		try{
 			return remoteConnection.isReadOnly();
 		}catch(RemoteException e){
 			throw new java.sql.SQLException(e.getMessage());
-		}*/
+		}
 	}
-
+	/**
+     * A sub-space of this Connection's database may be selected by setting a
+     * catalog name. If the driver does not support catalogs it will
+     * silently ignore this request.
+     * 
+     * This method will call the responding method of all remote Connection
+     * objects, if user hasn't created the Connection object, it will 
+     * create all of Connection objects which user is granted.
+     */
 	public void setCatalog(String catalog)
            throws SQLException
 	{
-			throw(new SQLException("Not Supported"));
+		try{
+			remoteConnection.setCatalog(catalog);
+		}catch(RemoteException e){
+			throw new java.sql.SQLException(e.getMessage());
+		}
 	}
-
+	
+	 /**
+     * Return the Connection's current catalog name.
+     *
+     * This method will call the responding method of all remote Connection
+     * objects, if user hasn't created the Connection object, it will 
+     * create all of Connection objects which user is granted.
+     * 
+     * @return the current catalog name or null
+     */
 	public String getCatalog()
 	     throws SQLException
 	{
-			throw(new SQLException("Not Supported"));
+		try{
+			return remoteConnection.getCatalog();
+		}catch(RemoteException e){
+			throw new java.sql.SQLException(e.getMessage());
+		}
 	}
 	public void setTransactionIsolation(int level)
          throws SQLException
