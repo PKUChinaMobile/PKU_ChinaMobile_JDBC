@@ -101,6 +101,42 @@ public class  PKUConnectionServer extends UnicastRemoteObject
 		for(int i = 0; i < cons.length; i++)
 			result += conm.dbs.get(i) + ": " + cons[i].getCatalog() + "\n";
 		return result;
-	}	
+	}
+	
+	public SQLWarning getWarnings() throws RemoteException,SQLException
+	{
+		if(conm.cons == null || conm.cons.isEmpty())
+			return null;
+		else
+		{
+			for(int i = 0; i < conNum; i++)
+			{
+				SQLWarning temp = null;
+				if((temp = conm.cons.get(i).getWarnings()) != null)
+					return temp;
+			}
+			return null;
+		}
+	}
+	public void clearWarnings() throws RemoteException,SQLException
+	{
+		if(conm.cons == null || conm.cons.isEmpty())
+			return;
+		for(int i = 0; i < conNum; i++)
+			conm.cons.get(i).clearWarnings();
+	}
+	public boolean isClosed()throws RemoteException, SQLException
+	{
+		if(conm.cons == null || conm.cons.isEmpty())
+			return true;
+		for(int i = 0; i < conNum; i++)
+		{
+			if(!conm.cons.get(i).isClosed())
+				return false;
+		}
+		return true;
+		
+	}
+
 	
 }

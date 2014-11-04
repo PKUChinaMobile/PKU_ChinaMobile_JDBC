@@ -15,4 +15,7 @@ public interface PKUConnectionInterface extends Remote
 	public boolean isReadOnly() throws RemoteException,SQLException;
 	public void setCatalog(String catalog) throws RemoteException,SQLException;
 	public String getCatalog() throws RemoteException,SQLException;
+	public SQLWarning getWarnings() throws RemoteException,SQLException;
+	public void clearWarnings() throws RemoteException,SQLException;
+	public boolean isClosed()throws RemoteException, SQLException;
 }

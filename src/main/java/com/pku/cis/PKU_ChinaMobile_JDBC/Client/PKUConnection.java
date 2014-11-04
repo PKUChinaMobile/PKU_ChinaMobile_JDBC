@@ -104,57 +104,44 @@ public class PKUConnection implements Connection
 	{
 		return sql; //本项目驱动发送给透明网关的sql语句在发送过程中没有改变
 	}
-	 /**
-     * If a connection is in auto-commit mode, then all its SQL
-     * statements will be executed and committed as individual
-     * transactions.  Otherwise, its SQL statements are grouped into
-     * transactions that are terminated by either commit() or
-     * rollback().  By default, new connections are in auto-commit
-     * mode.
-     *
-     * The commit occurs when the statement completes or the next
-     * execute occurs, whichever comes first. In the case of
-     * statements returning a ResultSet, the statement completes when
-     * the last row of the ResultSet has been retrieved or the
-     * ResultSet has been closed. In advanced cases, a single
-     * statement may return multiple results as well as output
-     * parameter values. Here the commit occurs when all results and
-     * output param values have been retrieved.
-     *
-     * @param autoCommit true enables auto-commit; false disables
-     * auto-commit.  
-     */
+	 
 	 public void setAutoCommit(boolean autoCommit)
 	 	throws SQLException
 	{
-		 throw(new SQLException("Not Supported"));
-		 /*
-		 try {
-		        remoteConnection.setAutoCommit(autoCommit);
-		      } catch(RemoteException e) {
-		        throw new java.sql.SQLException(e.getMessage());
-		      }*/
+		 throw(new SQLException("Transaction Not Supported"));
 	}
 
 	public boolean getAutoCommit()
 	 	throws SQLException
 	{
-	 	throw(new SQLException("Not Supported"));
+	 	throw(new SQLException("Transaction Not Supported"));
 	}
 
 	public void commit() throws SQLException
 	{
-	 	throw(new SQLException("Not Supported"));
+	 	throw(new SQLException("Transaction Not Supported"));
 	}
 
 	public void rollback() throws SQLException
 	{
-	 	throw(new SQLException("Not Supported"));
+	 	throw(new SQLException("Transaction Not Supported"));
 	}
 
+	/**
+     * Tests to see if a Connection is closed.
+     *
+     * @return true if the connection is closed; false if it's still open
+     */
 	public boolean isClosed()throws SQLException
 	{
-			throw(new SQLException("Not Supported"));
+		try
+		{
+			return remoteConnection.isClosed();
+		}		
+		catch(Exception ex)
+		{
+			throw(new SQLException("RemoteException:" + ex.getMessage()));
+		}
 	}
 
 	public DatabaseMetaData getMetaData()
@@ -208,8 +195,8 @@ public class PKUConnection implements Connection
 	{
 		try{
 			return remoteConnection.isReadOnly();
-		}catch(RemoteException e){
-			throw new java.sql.SQLException(e.getMessage());
+		}catch(RemoteException ex){
+			throw(new SQLException("RemoteException:" + ex.getMessage()));
 		}
 	}
 	/**
@@ -226,8 +213,8 @@ public class PKUConnection implements Connection
 	{
 		try{
 			remoteConnection.setCatalog(catalog);
-		}catch(RemoteException e){
-			throw new java.sql.SQLException(e.getMessage());
+		}catch(RemoteException ex){
+			throw(new SQLException("RemoteException:" + ex.getMessage()));
 		}
 	}
 	
@@ -245,32 +232,81 @@ public class PKUConnection implements Connection
 	{
 		try{
 			return remoteConnection.getCatalog();
-		}catch(RemoteException e){
-			throw new java.sql.SQLException(e.getMessage());
+		}catch(RemoteException ex){
+			throw(new SQLException("RemoteException:" + ex.getMessage()));
 		}
 	}
+	
+	 /**
+     * Transactions are not supported. 
+     */
+    int TRANSACTION_NONE	     = 0;
+
+    /**
+     * Dirty reads, non-repeatable reads and phantom reads can occur.
+     */
+    int TRANSACTION_READ_UNCOMMITTED = 1;
+
+    /**
+     * Dirty reads are prevented; non-repeatable reads and phantom
+     * reads can occur.
+     */
+    int TRANSACTION_READ_COMMITTED   = 2;
+
+    /**
+     * Dirty reads and non-repeatable reads are prevented; phantom
+     * reads can occur.     
+     */
+    int TRANSACTION_REPEATABLE_READ  = 4;
+
+    /**
+     * Dirty reads, non-repeatable reads and phantom reads are prevented.
+     */
+    int TRANSACTION_SERIALIZABLE     = 8;
+    
+	
 	public void setTransactionIsolation(int level)
          throws SQLException
 	{
-			throw(new SQLException("Not Supported"));
+			throw(new SQLException("Transaction Not Supported "));
 	}
-
 	public int getTransactionIsolation()
 	      throws SQLException
 	{
-			throw(new SQLException("Not Supported"));
+			throw(new SQLException("Transaction Not Supported"));
 	}
 
+	/**
+     * The first warning reported by calls on remote Connection is
+     * returned.  
+     * 
+     * <P><B>Note:</B> Subsequent warnings will be chained to this
+     * SQLWarning.
+     *
+     * @return the first SQLWarning or null 
+     */
 	public SQLWarning getWarnings()
 	      throws SQLException
 	{
-			 throw(new SQLException("Not Supported"));
+		try{
+			return remoteConnection.getWarnings();
+		}catch(RemoteException ex){
+			throw(new SQLException("RemoteException:" + ex.getMessage()));
+		}
 	}
 
+	/**
+     * After this call, getWarnings returns null until a new warning is
+     * reported for this Connection.  
+     */
 	public void clearWarnings()
 	      throws SQLException
 	{
-			 throw(new SQLException("Not Supported"));
+		try{
+			remoteConnection.clearWarnings();
+		}catch(RemoteException ex){
+			throw(new SQLException("RemoteException:" + ex.getMessage()));
+		}
 	}
 
 	public PreparedStatement prepareStatement(String sql)
@@ -303,19 +339,35 @@ public class PKUConnection implements Connection
 		throw(new SQLException("Not Supported"));
 	}
 
-	/////////////////////////////////////////////////////////////
-	//These method would have to be implemented for JDK1.2 and higher
-	
-	public void setTypeMap(Map map) throws SQLException
-	{
-		throw(new SQLException("Not Supported"));
+	private Map typeMap;
+	/**
+	 * JDBC 2.0 Install a type-map object as the default type-map for this
+	 * connection
+	 * 
+	 * @param map
+	 *            the type mapping
+	 * @throws SQLException
+	 *             if a database error occurs.
+	 */
+	public synchronized void setTypeMap(java.util.Map map) throws SQLException {
+		this.typeMap = map;
 	}
-	
-	public Map getTypeMap() throws SQLException
-	{
-		throw(new SQLException("Not Supported"));
-	}
+	/**
+	 * JDBC 2.0 Get the type-map object associated with this connection. By
+	 * default, the map returned is empty.
+	 * 
+	 * @return the type map
+	 * @throws SQLException
+	 *             if a database error occurs
+	 */
+	public synchronized java.util.Map getTypeMap() throws SQLException {
+		if (this.typeMap == null) {
+			this.typeMap = new HashMap();
+		}
 
+		return this.typeMap;
+	}
+	
 
 	//------------------------JDBC 4.0
 	@Override
