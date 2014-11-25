@@ -3,26 +3,60 @@
  */
 package com.pku.cis.PKU_ChinaMobile_JDBC.Server;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
+import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.stat.TableStat;
+
 public class SQLParse {
+
 	String query;
-	SQLParse(String _query)
+    MySqlSchemaStatVisitor statVisitor;
+    StringBuilder AST = new StringBuilder();
+    SQLStatement statemen;
+
+	public SQLParse(String _query)
 	{
-		query = _query;
+		this.query = _query;
+        MySqlStatementParser parser = new MySqlStatementParser(query);
+        List<SQLStatement> statementList = parser.parseStatementList();
+        this.statemen = statementList.get(0);
+
+        this.statVisitor = new MySqlSchemaStatVisitor();
+        statemen.accept(statVisitor);
+
+        MySqlOutputVisitor outputVisitor = new MySqlOutputVisitor(this.AST);
+        statemen.accept(outputVisitor);
 	}
-	public String getTableName()
+
+	public Map<TableStat.Name, TableStat> getTableName()
 	{
-		return null;
+        return statVisitor.getTables();
 	}
-	public String getLocationHint()
-	{
-		return null;
-	}
-	public String getTimeHint()
-	{
-		return null;
-	}
-	public String getIPHint()
-	{
-		return null;
-	}
+
+    public Set<TableStat.Column> getFields() {
+        return statVisitor.getColumns();
+    }
+
+    public Set<TableStat.Relationship> getRelationships() {
+        return statVisitor.getRelationships();
+    }
+
+    public List<TableStat.Condition> getConditions() {
+        return statVisitor.getConditions();
+    }
+
+    public List<TableStat.Column> getOrderByColumns() {
+        return statVisitor.getOrderByColumns();
+    }
+
+    public String getAST(){
+        return AST.toString();
+    }
+
 }
