@@ -33,7 +33,7 @@ public class Test {
 		   PKUConnection con;
 		   try {
 			   
-			  			   con = (PKUConnection)DriverManager.getConnection(fullURL, userName, userPasswd);
+			   con = (PKUConnection)DriverManager.getConnection(fullURL, userName, userPasswd);
 			   
 			   String sql ="SELECT * FROM "+tableName;
 			   System.out.println("Creating new Statement");

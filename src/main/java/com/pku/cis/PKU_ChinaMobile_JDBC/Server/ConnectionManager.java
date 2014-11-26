@@ -42,16 +42,27 @@ public class ConnectionManager {
 		
 		
 		conNum = 3;
-		Connection temp =  (Connection)DriverManager.getConnection(usr.URLS[0], "root", "06948859");
-		Connection temp2 =  (Connection)DriverManager.getConnection(usr.URLS[1], "SYSTEM", "oracle1ORACLE");
-		Connection temp3 =  (Connection)DriverManager.getConnection(usr.URLS[2], "hadoop", "");
 
-		cons.add(temp);
-		cons.add(temp2);
-		cons.add(temp3);
-		dbs.add(usr.dbName[0]);
-		dbs.add(usr.dbName[1]);
-		dbs.add(usr.dbName[2]);
+		for(int i=0; i<usr.dbNum; ++i){
+			try{
+				Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
+				cons.add(conn);
+				dbs.add(usr.dbName[i]);
+			}catch(SQLException e){
+				System.out.println("Connection for "+usr.dbName[i]+"failed.");
+			}
+		}
+		
+//		Connection temp =  (Connection)DriverManager.getConnection(usr.URLS[0], "root", "06948859");
+//		Connection temp2 =  (Connection)DriverManager.getConnection(usr.URLS[1], "SYSTEM", "oracle1ORACLE");
+//		Connection temp3 =  (Connection)DriverManager.getConnection(usr.URLS[2], "hadoop", "");
+//
+//		cons.add(temp);
+//		cons.add(temp2);
+//		cons.add(temp3);
+//		dbs.add(usr.dbName[0]);
+//		dbs.add(usr.dbName[1]);
+//		dbs.add(usr.dbName[2]);
 
 		return (Connection[])cons.toArray(new Connection[conNum]);
 	}
@@ -70,16 +81,27 @@ public class ConnectionManager {
 			return (Connection[])cons.toArray(new Connection[conNum]);
 		
 		conNum = 3;
-		Connection temp =  (Connection)DriverManager.getConnection(usr.URLS[0], "root", "06948859");
-		Connection temp2 =  (Connection)DriverManager.getConnection(usr.URLS[1], "SYSTEM", "oracle1ORACLE");
-		Connection temp3 =  (Connection)DriverManager.getConnection(usr.URLS[2], "hadoop", "");
-
-		cons.add(temp);
-		cons.add(temp2);
-		cons.add(temp3);
-		dbs.add(usr.dbName[0]);
-		dbs.add(usr.dbName[1]);
-		dbs.add(usr.dbName[2]);
+		
+		for(int i=0; i<usr.dbNum; ++i){
+			try{
+				Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
+				cons.add(conn);
+				dbs.add(usr.dbName[i]);
+			}catch(SQLException e){
+				System.out.println("Connection for "+usr.dbName[i]+"failed.");
+			}
+		}
+		
+//		Connection temp =  (Connection)DriverManager.getConnection(usr.URLS[0], "root", "06948859");
+//		Connection temp2 =  (Connection)DriverManager.getConnection(usr.URLS[1], "SYSTEM", "oracle1ORACLE");
+//		Connection temp3 =  (Connection)DriverManager.getConnection(usr.URLS[2], "hadoop", "");
+//
+//		cons.add(temp);
+//		cons.add(temp2);
+//		cons.add(temp3);
+//		dbs.add(usr.dbName[0]);
+//		dbs.add(usr.dbName[1]);
+//		dbs.add(usr.dbName[2]);
 
 
 		return (Connection[])cons.toArray(new Connection[conNum]);

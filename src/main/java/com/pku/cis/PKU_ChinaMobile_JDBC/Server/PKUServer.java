@@ -30,7 +30,7 @@ public class PKUServer {
 		//System.setSecurityManager(new RMISecurityManager());
 		
 		//Set host name.
-		System.setProperty("java.rmi.server.hostname","162.105.71.145");
+		System.setProperty("java.rmi.server.hostname","localhost");
 		
 		//Load JDBC Drivers of all kind.
 		try {
@@ -44,7 +44,7 @@ public class PKUServer {
 		} 
 		
 		PKUServer theServer = new PKUServer();
-		String rmiRef = "rmi://162.105.71.145:1099/RemoteDriver";
+		String rmiRef = "rmi://localhost:1099/RemoteDriver";
 		PKUDriverServer theDriver;
 		try {
 			//Build the driver server object. 

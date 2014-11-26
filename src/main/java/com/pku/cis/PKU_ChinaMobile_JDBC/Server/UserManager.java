@@ -33,20 +33,38 @@ class User
 	String URLS[];//用户所拥有的数据库列表对应的URL列表
 	String dbName[];//用户拥有的数据库名
 	int dbNum;//用户拥有的数据库总数
+	String username[];//用户所拥有的数据库对应用户名
+	String password[];//用户所拥有的数据库对应密码
 	String name;
 	String pwd;
 	User(String _name, String _pwd)
 	{
 		name = _name;
 		pwd = _pwd;
-		dbNum = 3;
-		URLS = new String[3];
-		dbName = new String[3];
-		URLS[0] = "jdbc:mysql://localhost:3306/test";
-		URLS[1] = "jdbc:oracle:thin:@localhost:1521:mytest";
-		URLS[2] = "jdbc:hive2://162.105.71.61:10000/test";
-		dbName[0] = "mysql/test";
-		dbName[1] = "oracle/mytest";
-		dbName[2] = "hive/test";
+		dbNum = 4;
+		URLS = new String[dbNum];
+		dbName = new String[dbNum];
+		username = new String[dbNum];
+		password = new String[dbNum];
+		
+		URLS[0] = "jdbc:mysql://162.105.71.145:3306/test";
+		URLS[1] = "jdbc:oracle:thin:@162.105.71.145:1521:mytest";
+		URLS[2] = "jdbc:teradata://162.105.71.205/vmtest";
+		URLS[3] = "jdbc:hive2://162.105.71.61:10000/test";
+		
+		dbName[0] = "mysql";
+		dbName[1] = "oracle";
+		dbName[2] = "teradata";
+		dbName[3] = "hive/test";
+		
+		username[0] = "root";
+		username[1] = "SYSTEM";
+		username[2] = "vmtest";
+		username[3] = "hadoop";
+		
+		password[0] = "06948859";
+		password[1] = "oracle1ORACLE";
+		password[2] = "vmtest";
+		password[3] = "";
 	};
 }
