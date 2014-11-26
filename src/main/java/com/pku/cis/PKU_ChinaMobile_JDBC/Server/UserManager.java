@@ -37,6 +37,7 @@ class User
 	String password[];//用户所拥有的数据库对应密码
 	String name;
 	String pwd;
+	
 	User(String _name, String _pwd)
 	{
 		name = _name;

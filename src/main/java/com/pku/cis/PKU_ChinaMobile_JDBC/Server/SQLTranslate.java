@@ -17,6 +17,16 @@ public class SQLTranslate {
 	 */
 	public static String translate(String query, SQLParse sp)
 	{
-		return query;
+		return SQLTranslate.translate(query, sp, DatabaseType.Oracle);
+	}
+	
+	public static String translate(String query, SQLParse sp, DatabaseType db)
+	{
+		System.out.println("Begin translate query "+query);
+		
+		String output = query;
+		
+		System.out.println("Finish translate, execute "+output);
+		return output;
 	}
 }

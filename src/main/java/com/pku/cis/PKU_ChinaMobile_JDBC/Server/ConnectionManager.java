@@ -24,7 +24,7 @@ public class ConnectionManager {
 	 */
 	public void close() throws SQLException
 	{
-		for(int i = 0; i < conNum; i++ )
+		for(int i = 0; i < conNum; i++)
 			cons.get(i).close();
 		cons = null;
 		dbs = null;
@@ -41,15 +41,18 @@ public class ConnectionManager {
 		dbs = new ArrayList<String>();
 		
 		
-		conNum = 3;
+		conNum = 0;
 
 		for(int i=0; i<usr.dbNum; ++i){
 			try{
 				Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
 				cons.add(conn);
 				dbs.add(usr.dbName[i]);
+				conNum++;
 			}catch(SQLException e){
-				System.out.println("Connection for "+usr.dbName[i]+"failed.");
+				System.out.println("Connection for "+usr.dbName[i]+"  "
+						+ ""
+						+ " failed.");
 			}
 		}
 		
@@ -80,15 +83,16 @@ public class ConnectionManager {
 		if(cons != null && !cons.isEmpty())
 			return (Connection[])cons.toArray(new Connection[conNum]);
 		
-		conNum = 3;
+		conNum = 0;
 		
 		for(int i=0; i<usr.dbNum; ++i){
 			try{
 				Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
 				cons.add(conn);
 				dbs.add(usr.dbName[i]);
+				conNum++;
 			}catch(SQLException e){
-				System.out.println("Connection for "+usr.dbName[i]+"failed.");
+				System.out.println("Connection for "+usr.dbName[i]+" failed.");
 			}
 		}
 		
