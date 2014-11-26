@@ -39,12 +39,14 @@ class User
 	{
 		name = _name;
 		pwd = _pwd;
-		dbNum = 2;
-		URLS = new String[2];
-		dbName = new String[2];
+		dbNum = 3;
+		URLS = new String[3];
+		dbName = new String[3];
 		URLS[0] = "jdbc:mysql://localhost:3306/test";
 		URLS[1] = "jdbc:oracle:thin:@localhost:1521:mytest";
-		dbName[0] = "mysql";
-		dbName[1] = "oracle";
+		URLS[2] = "jdbc:hive2://162.105.71.61:10000/test";
+		dbName[0] = "mysql/test";
+		dbName[1] = "oracle/mytest";
+		dbName[2] = "hive/test";
 	};
 }

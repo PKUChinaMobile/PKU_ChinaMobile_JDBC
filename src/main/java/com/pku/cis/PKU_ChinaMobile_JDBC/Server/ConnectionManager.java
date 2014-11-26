@@ -40,19 +40,18 @@ public class ConnectionManager {
 		cons = new ArrayList<Connection>();
 		dbs = new ArrayList<String>();
 		
-		sp.getTableName();
-		sp.getTimeHint();
-		sp.getLocationHint();
-		sp.getIPHint();
-		conNum = 2;
 		
+		conNum = 3;
 		Connection temp =  (Connection)DriverManager.getConnection(usr.URLS[0], "root", "06948859");
 		Connection temp2 =  (Connection)DriverManager.getConnection(usr.URLS[1], "SYSTEM", "oracle1ORACLE");
+		Connection temp3 =  (Connection)DriverManager.getConnection(usr.URLS[2], "hadoop", "");
 
 		cons.add(temp);
 		cons.add(temp2);
+		cons.add(temp3);
 		dbs.add(usr.dbName[0]);
 		dbs.add(usr.dbName[1]);
+		dbs.add(usr.dbName[2]);
 
 		return (Connection[])cons.toArray(new Connection[conNum]);
 	}
@@ -70,13 +69,18 @@ public class ConnectionManager {
 		if(cons != null && !cons.isEmpty())
 			return (Connection[])cons.toArray(new Connection[conNum]);
 		
-		conNum = 2;
+		conNum = 3;
 		Connection temp =  (Connection)DriverManager.getConnection(usr.URLS[0], "root", "06948859");
 		Connection temp2 =  (Connection)DriverManager.getConnection(usr.URLS[1], "SYSTEM", "oracle1ORACLE");
+		Connection temp3 =  (Connection)DriverManager.getConnection(usr.URLS[2], "hadoop", "");
+
 		cons.add(temp);
 		cons.add(temp2);
+		cons.add(temp3);
 		dbs.add(usr.dbName[0]);
 		dbs.add(usr.dbName[1]);
+		dbs.add(usr.dbName[2]);
+
 
 		return (Connection[])cons.toArray(new Connection[conNum]);
 	}

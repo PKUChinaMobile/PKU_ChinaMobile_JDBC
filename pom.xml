@@ -6,7 +6,7 @@
   <artifactId>PKU_ChinaMobile_JDBC</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
-
+  
   <name>PKU_ChinaMobile_JDBC</name>
   <url>http://maven.apache.org</url>
 
@@ -78,6 +78,20 @@
     <scope>system</scope>
     <systemPath>${basedir}/src/main/libs/tdgssconfig.jar</systemPath> <!-- must match file name -->
 </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-jdbc</artifactId>
+            <version>0.12.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-core</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+
 
   </dependencies>
    

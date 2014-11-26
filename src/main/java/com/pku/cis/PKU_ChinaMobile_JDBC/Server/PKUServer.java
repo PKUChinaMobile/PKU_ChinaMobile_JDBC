@@ -30,20 +30,21 @@ public class PKUServer {
 		//System.setSecurityManager(new RMISecurityManager());
 		
 		//Set host name.
-		System.setProperty("java.rmi.server.hostname","162.105.71.191");
+		System.setProperty("java.rmi.server.hostname","162.105.71.145");
 		
 		//Load JDBC Drivers of all kind.
 		try {
 			System.out.println("Loading JDBC Driver...");
 			Class.forName("oracle.jdbc.OracleDriver").newInstance();
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			Class.forName("org.apache.hive.jdbc.HiveDriver").newInstance();
 		} catch (Exception e) {
 			System.err.println("Could not found JDBC Driver!");
 			System.err.println("Error Message is " + e.getMessage());
 		} 
 		
 		PKUServer theServer = new PKUServer();
-		String rmiRef = "rmi://162.105.71.191:1099/RemoteDriver";
+		String rmiRef = "rmi://162.105.71.145:1099/RemoteDriver";
 		PKUDriverServer theDriver;
 		try {
 			//Build the driver server object. 

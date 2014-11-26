@@ -1,4 +1,4 @@
-﻿package com.pku.cis.PKU_ChinaMobile_JDBC.examples;
+package com.pku.cis.PKU_ChinaMobile_JDBC.examples;
 
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
@@ -22,7 +22,7 @@ public class Test {
 		   String tableName ="person";
 		  
 		   String urlPrefix = "jdbc:PKUDriver:";
-		   String IP = "127.0.0.1"; //中间件IP
+		   String IP = "127.0.0.1"; 
 		   
 		   
 		   PKUDriver d = new PKUDriver();
@@ -33,8 +33,7 @@ public class Test {
 		   PKUConnection con;
 		   try {
 			   
-			   //DriverManager会从已经注册的Driver列表中选择一个，调用其Connect方法
-			   con = (PKUConnection)DriverManager.getConnection(fullURL, userName, userPasswd);
+			  			   con = (PKUConnection)DriverManager.getConnection(fullURL, userName, userPasswd);
 			   
 			   String sql ="SELECT * FROM "+tableName;
 			   System.out.println("Creating new Statement");
