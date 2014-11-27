@@ -96,6 +96,20 @@ public class PKUStatement implements java.sql.Statement
 			throw(new SQLException(ex.getMessage()));
 		}
 	}
+	
+	public boolean execute(String sqlQuery)
+			  throws SQLException
+	{
+		try
+		{
+			boolean result = remoteStmt.execute(sqlQuery);
+			return result;
+		}
+		catch(RemoteException ex)
+		{
+			throw(new SQLException(ex.getMessage()));
+		}
+	}
 
 	/**
 	 * In many cases, it is desirable to immediately release a Statement's
@@ -187,11 +201,6 @@ public class PKUStatement implements java.sql.Statement
 		throw(new SQLException("Not Supported"));
 	}
 
-	public boolean execute(String sql)
-		  throws SQLException
-	{
-		throw(new SQLException("Not Supported"));
-	}
 
 	public ResultSet getResultSet()
 	  			   throws SQLException

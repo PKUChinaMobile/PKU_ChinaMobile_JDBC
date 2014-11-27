@@ -10,5 +10,6 @@ public interface PKUStatementInterface extends Remote
 {
 	PKUResultSetInterface executeQuery(String Query) throws RemoteException,SQLException;
 	int  executeUpdate(String Query) throws RemoteException,SQLException;
+	boolean execute(String sqlQuery) throws RemoteException, SQLException;
 	void close() throws RemoteException,SQLException;
 }

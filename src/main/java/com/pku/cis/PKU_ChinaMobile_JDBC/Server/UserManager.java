@@ -56,7 +56,7 @@ class User
 		dbName[0] = "mysql";
 		dbName[1] = "oracle";
 		dbName[2] = "teradata";
-		dbName[3] = "hive/test";
+		dbName[3] = "hive";
 		
 		username[0] = "root";
 		username[1] = "SYSTEM";

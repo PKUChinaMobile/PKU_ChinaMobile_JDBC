@@ -101,11 +101,12 @@ public class PKUStatementServer extends UnicastRemoteObject
 		
 		//Get real connections of client.
 		Connection cons[] = conm.getConnections(sp);
-		ResultSet[] rs = new ResultSet[conm.conNum];
-	
+		stmt= new Statement[conm.conNum];
 		for(int i = 0; i < conm.conNum; i++)
 		{
 			//Create the Statement object of corresponding Connection object.
+			if(conm.dbs.get(i).equals("hive"))
+				continue;
 			stmt[i] = cons[i].createStatement();
 			//Translate the SQL query into the corresponding type.
 			String dialect = SQLTranslate.translate(Query, sp);
@@ -115,6 +116,29 @@ public class PKUStatementServer extends UnicastRemoteObject
 		return result;
 	}
 
+	public boolean execute(String Query) throws RemoteException,SQLException
+	{
+		boolean result = true;
+		
+		//Parse the query and get SQLParse object which save the parsing result.
+		SQLParse sp = new SQLParse(Query);
+		
+		//Get real connections of client.
+		Connection cons[] = conm.getConnections(sp);
+		stmt= new Statement[conm.conNum];
+		for(int i = 0; i < conm.conNum; i++)
+		{
+			//Create the Statement object of corresponding Connection object.
+			stmt[i] = cons[i].createStatement();
+			//Translate the SQL query into the corresponding type.
+			String dialect = SQLTranslate.translate(Query, sp);
+			//Execute the query.
+			if(!stmt[i].execute(dialect))
+				result = false;
+		}
+		return result;
+	}
+	
 	/**
 	 * This method closes all the Statement objects.
 	 */
