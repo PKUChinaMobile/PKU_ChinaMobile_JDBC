@@ -3416,6 +3416,8 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
+    	System.out.println("In visit(SQLMethodInvokeExpr)");
+    	
         if ("trim".equalsIgnoreCase(x.getMethodName())) {
             SQLExpr trim_character = (SQLExpr) x.getAttribute("trim_character");
             if (trim_character != null) {
@@ -3436,6 +3438,20 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
             }
         }
 
-        return super.visit(x);
+        if (x.getOwner() != null) {
+            x.getOwner().accept(this);
+            print(".");
+        }
+        
+        print(x.getMethodName());
+        print("(");
+        printAndAccept(x.getParameters(), ", ");
+        print(")");
+        
+        System.out.println("Leave visit(SQLMethodInvokeExpr)");
+        
+        return false;
+        
+//        return super.visit(x);
     }
 }

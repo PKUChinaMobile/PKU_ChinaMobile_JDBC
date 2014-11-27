@@ -1,11 +1,14 @@
 package com.pku.cis.PKU_ChinaMobile_JDBC.Server;
 
 import com.alibaba.druid.sql.ast.SQLObject;
+import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.HiveOutputVisitor;
 import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.MySqlOutputVisitor;
 import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.OracleOutputVisitor;
 import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.TeradataOutputVisitor;
 
-
+/*
+ * 封装了通过访问AST树实现SQL翻译的工具类
+ */
 public class SQLDialect {
 	public static String toOracleString(SQLObject sqlObject){
 		StringBuilder out = new StringBuilder();
@@ -26,6 +29,14 @@ public class SQLDialect {
 	public static String toMySqlString(SQLObject sqlObject){
 		StringBuilder out = new StringBuilder();
 		sqlObject.accept(new MySqlOutputVisitor(out, false));
+		
+		String sql = out.toString();
+		return sql;
+	}
+	
+	public static String toHiveString(SQLObject sqlObject){
+		StringBuilder out = new StringBuilder();
+		sqlObject.accept(new HiveOutputVisitor(out, false));
 		
 		String sql = out.toString();
 		return sql;
