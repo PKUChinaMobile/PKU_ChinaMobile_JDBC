@@ -8,29 +8,29 @@ import java.util.Map;
 import java.util.Set;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.alibaba.druid.sql.dialect.mysql.parser.MySqlStatementParser;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlOutputVisitor;
-import com.alibaba.druid.sql.dialect.mysql.visitor.MySqlSchemaStatVisitor;
+import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
+import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
 
 public class SQLParse {
 
 	String query;
-    MySqlSchemaStatVisitor statVisitor;
+    OracleSchemaStatVisitor statVisitor;
     StringBuilder AST = new StringBuilder();
     SQLStatement statemen;
 
 	public SQLParse(String _query)
 	{
 		this.query = _query;
-        MySqlStatementParser parser = new MySqlStatementParser(query);
+        OracleStatementParser parser = new OracleStatementParser(query);
         List<SQLStatement> statementList = parser.parseStatementList();
         this.statemen = statementList.get(0);
 
-        this.statVisitor = new MySqlSchemaStatVisitor();
+        this.statVisitor = new OracleSchemaStatVisitor();
         statemen.accept(statVisitor);
 
-        MySqlOutputVisitor outputVisitor = new MySqlOutputVisitor(this.AST);
+        OracleOutputVisitor outputVisitor = new OracleOutputVisitor(this.AST);
         statemen.accept(outputVisitor);
 	}
 
@@ -55,8 +55,8 @@ public class SQLParse {
         return statVisitor.getOrderByColumns();
     }
 
-    public String getAST(){
-        return AST.toString();
+    public SQLStatement getAST(){
+        return statemen;
     }
 
 }
