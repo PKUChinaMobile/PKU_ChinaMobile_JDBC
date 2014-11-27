@@ -50,9 +50,7 @@ public class ConnectionManager {
 				dbs.add(usr.dbName[i]);
 				conNum++;
 			}catch(SQLException e){
-				System.out.println("Connection for "+usr.dbName[i]+"  "
-						+ ""
-						+ " failed.");
+				System.out.println("Connection for "+usr.dbName[i]+" failed.");
 			}
 		}
 		
