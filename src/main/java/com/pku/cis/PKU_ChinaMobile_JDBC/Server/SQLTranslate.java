@@ -59,6 +59,6 @@ public class SQLTranslate {
 	 */	
 	private static DatabaseType getDatabaseType(SQLParse sp)
 	{
-		return DatabaseType.Oracle;
+		return DatabaseType.Teradata;
 	}
 }

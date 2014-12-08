@@ -3416,6 +3416,8 @@ public class TeradataOutputVisitor extends SQLASTOutputVisitor implements Oracle
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
+    	System.out.println("In TeradataOutputVisitor.visit(SQLMethodInvokeExpr)");
+    	
         if ("trim".equalsIgnoreCase(x.getMethodName())) {
             SQLExpr trim_character = (SQLExpr) x.getAttribute("trim_character");
             if (trim_character != null) {
@@ -3435,7 +3437,37 @@ public class TeradataOutputVisitor extends SQLASTOutputVisitor implements Oracle
                 return false;
             }
         }
+        
+        String methodKey = x.getMethodName().toUpperCase();
+        
+        System.out.println(methodKey);
+        
+        MethodNameMapping mapping = MethodNameMapping.getSingleton();
+        
+        MethodInformation miInformation = mapping.ToTeradataFunction(methodKey); 
+        if(miInformation != null){
+            if (x.getOwner() != null) {
+                x.getOwner().accept(this);
+                print(".");
+            }           
+        	if(miInformation.getType().equals("Function".toUpperCase())){
+        		print(miInformation.getName());
+        		print("(");
+        		printAndAccept(x.getParameters(), ", ");
+        		print(")");
+        	}else if(miInformation.getType().equals("2-Operation".toUpperCase())){
+        		System.out.println("Here");
+        		printAndAccept(x.getParameters(), miInformation.getName());
+        	}else{			// 其他情况
+        		print(x.getMethodName());
+        		print("(");
+        		printAndAccept(x.getParameters(), ", ");
+        		print(")");
+        	}
+        	return false;
 
-        return super.visit(x);
+        }else{
+        	return super.visit(x);
+        }
     }
 }

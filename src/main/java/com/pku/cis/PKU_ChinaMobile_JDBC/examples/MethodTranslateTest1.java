@@ -35,7 +35,7 @@ public class MethodTranslateTest1 {
 			   
 			   con = (PKUConnection)DriverManager.getConnection(fullURL, userName, userPasswd);
 			   
-			   String sql ="SELECT concat('Hello',' World!') FROM "+tableName;
+			   String sql ="SELECT MOD(11,4) FROM "+tableName;
 			   System.out.println("Creating new Statement");
 			   PKUStatement stmt = null;
 			   stmt = (PKUStatement)con.createStatement();
