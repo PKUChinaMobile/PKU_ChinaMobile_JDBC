@@ -8,13 +8,6 @@ import com.alibaba.druid.sql.ast.SQLStatement;
 
 public class SQLTranslate {
 	
-	/*
-	 * 初始化SQLTranslate类，包括载入数据库函数，语法映射关系文件等。
-	 */
-	static{
-		
-	}
-	
 	SQLTranslate()
 	{
 		

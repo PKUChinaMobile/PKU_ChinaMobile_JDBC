@@ -3416,7 +3416,7 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
 
     @Override
     public boolean visit(SQLMethodInvokeExpr x) {
-    	System.out.println("In visit(SQLMethodInvokeExpr)");
+    	System.out.println("In OracleOutputVisitor.visit(SQLMethodInvokeExpr)");
     	
         if ("trim".equalsIgnoreCase(x.getMethodName())) {
             SQLExpr trim_character = (SQLExpr) x.getAttribute("trim_character");
@@ -3437,20 +3437,38 @@ public class OracleOutputVisitor extends SQLASTOutputVisitor implements OracleAS
                 return false;
             }
         }
+        
+        String methodKey = x.getMethodName().toUpperCase();
+        
+        System.out.println(methodKey);
+        
+        MethodNameMapping mapping = MethodNameMapping.getSingleton();
+        
+        MethodInformation miInformation = mapping.ToOracleFunction(methodKey); 
+        if(miInformation != null){
+            if (x.getOwner() != null) {
+                x.getOwner().accept(this);
+                print(".");
+            }           
+        	if(miInformation.getType().equals("Function".toUpperCase())){
+        		print(miInformation.getName());
+        		print("(");
+        		printAndAccept(x.getParameters(), ", ");
+        		print(")");
+        	}else if(miInformation.getType().equals("2-Operation".toUpperCase())){
+        		System.out.println("Here");
+        		printAndAccept(x.getParameters(), miInformation.getName());
+        	}else{			// 其他情况
+        		print(x.getMethodName());
+        		print("(");
+        		printAndAccept(x.getParameters(), ", ");
+        		print(")");
+        	}
+        	return false;
 
-        if (x.getOwner() != null) {
-            x.getOwner().accept(this);
-            print(".");
+        }else{
+        	return super.visit(x);
         }
-        
-        print(x.getMethodName());
-        print("(");
-        printAndAccept(x.getParameters(), ", ");
-        print(")");
-        
-        System.out.println("Leave visit(SQLMethodInvokeExpr)");
-        
-        return false;
         
 //        return super.visit(x);
     }

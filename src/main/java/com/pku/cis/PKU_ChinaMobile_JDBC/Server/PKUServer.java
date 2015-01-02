@@ -11,6 +11,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 
+import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.MethodNameMapping;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PKUClientSocketFactory;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PKUServerSocketFactory;
 
@@ -46,6 +47,9 @@ public class PKUServer {
 		PKUServer theServer = new PKUServer();
 		String rmiRef = "rmi://localhost:1099/RemoteDriver";
 		PKUDriverServer theDriver;
+		
+		MethodNameMapping.getSingleton();
+		
 		try {
 			//Build the driver server object. 
 			theDriver = new PKUDriverServer();
