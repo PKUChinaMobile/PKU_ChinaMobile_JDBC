@@ -19,7 +19,6 @@
 *.rar
 *.tar
 *.zip
-*.iml
  
 # Logs and databases #
 ######################
@@ -35,6 +34,11 @@
 ._*
 .Spotlight-V100
 .Trashes
+
+# project file
+#####################
+.project
+*.iml
 
 ehthumbs.db
 Thumbs.db
