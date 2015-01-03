@@ -1,3 +1,10 @@
+/**
+ * 此测试样例提供若干可选的SQL语句，在窗口显示执行的结果和错误信息；
+ * 此测试样例相对于用户界面的一个简化，所有的语句根据路由规则在对应数据库执行（此处的话是在所有数据库执行）
+ * 
+ * 如果要对数据库的数据进行修改的话可通过此样例进行，只要修改sqls[]内的语句就行，修改的类型必须相同，delete修改在delete语句上
+ * 其中hive不支持insert，这里的操作是默认不执行hive的插入操作
+ * */
 package com.pku.cis.PKU_ChinaMobile_JDBC.examples;
 
 import java.awt.Color;
@@ -11,6 +18,10 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+
+
+
 
 
 import javax.swing.JButton;
@@ -31,9 +42,9 @@ public class Test  {
 	
 	static String sqls[] = {"SELECT * FROM PERSON",
 			   "DROP TABLE PERSON2",
-			   "CREATE TABLE PERSON2 (ID int, AGE int)",
+			   "CREATE TABLE PERSON2 (ID int, AGE int);",
 			   "INSERT INTO PERSON2 VALUES(1, 18)",
-			   "DELETE FROM PERSON2 WHERE ID = 1",
+			   "DELETE FROM PERSON2 WHERE ID = 1",//"DELETE FROM CallRecords"
 			   "UPDATE PERSON2 SET AGE = 19 WHERE ID = 1",
 			   "SELECT * FROM PERSON2"
 			   };
@@ -66,7 +77,7 @@ public class Test  {
 		   btn.setLocation(570, 30);
 		   btn.setFont(new Font("", Font.PLAIN, 19));
 		   btn.addActionListener(new BtnActionAdapter());
-		   t = new TextArea("",20,20, TextArea.SCROLLBARS_VERTICAL_ONLY);
+		   t = new TextArea("",20,20, TextArea.SCROLLBARS_BOTH);
 		   t.setSize(700, 350);
 		   t.setLocation(50, 150);
 		   t.setEditable(false);
@@ -104,23 +115,23 @@ class BtnActionAdapter implements ActionListener
 					String temp = "";
 					for( int i = 1;i<= numColumns;i++ ) {
 				           if( i < numColumns )
-				               temp += rmeta.getColumnName(i)+"->";
+				               temp += String.format("%-10s", rmeta.getColumnName(i))+" | ";
 				           else
-				               temp += rmeta.getColumnName(i)+"\r\n";
+				               temp += String.format("%-10s", rmeta.getColumnName(i))+" | " + "\r\n";
 				       }
 					   
 				       while( rs.next() ){
 				           for( int i = 1;i <= numColumns;i++ ){
 				               if( i < numColumns ) 
-				                   temp += new String((rs.getString(i).trim()).getBytes("ISO-8859-1")) + "->";
+				            	   temp += String.format("%-10s",new String((rs.getString(i).trim()))) + " | ";
 				               else
-				                   temp += new String((rs.getString(i).trim()).getBytes("ISO-8859-1")) + "\r\n";
+							       temp += String.format("%-10s",new String((rs.getString(i).trim()))) + " | " + "\r\n";
 				           }
 				       }
 				       Test.t.setText(temp);
 				       rs.close();
 				       con.close();
-				} catch (SQLException | UnsupportedEncodingException e1) {
+				} catch (SQLException e1) {
 					Writer result = new StringWriter();
 			        PrintWriter printWriter = new PrintWriter(result);
 			        e1.printStackTrace(printWriter);
