@@ -30,7 +30,20 @@ public class  PKUConnectionServer extends UnicastRemoteObject
 			     PKUServer.rmiClientSocketFactory, PKUServer.rmiServerSocketFactory);
 		conm = _conm;
 	}
-	
+	/**
+	 * Set special type of database to connect
+	 * 0-all
+	 * 1-oracle
+	 * 2-mysql
+	 * 3-teradata
+	 * 4-hive
+	 * @param index
+	 * @throws SQLException
+	 */
+	public void setDst(int index) throws RemoteException
+	{
+		conm.dst = index;
+	}
 	/**
 	 * This method creates a remote statement and object then returns reference to 
 	 * the interface of PKUStatementServer object holding a ConnectionManager.

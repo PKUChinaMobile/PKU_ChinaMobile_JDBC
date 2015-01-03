@@ -14,6 +14,9 @@ public class ConnectionManager {
 	public ArrayList<String> dbs; //保存对应数据库名
 	public User usr;//用户对象
 	int conNum;//连接总数
+	
+	public static int dst;//测试用，在TestForSelect样例内设置 ：0-全数据库；1-Oracle；2-Mysql；3-Teradata；4-hive
+	public static String dbName[] = {"","mysql","oracle","teradata","hive"};
 	ConnectionManager(User _usr)
 	{
 		usr = _usr;
@@ -45,6 +48,10 @@ public class ConnectionManager {
 
 		for(int i=0; i<usr.dbNum; ++i){
 			try{
+				
+				if(dst != 0 && !dbName[dst].equals(usr.dbName[i]))//测试用，用于TestForSelect样例
+					continue;
+				
 				Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
 				cons.add(conn);
 				dbs.add(usr.dbName[i]);
@@ -53,17 +60,6 @@ public class ConnectionManager {
 				System.out.println("Connection for "+usr.dbName[i]+" failed.");
 			}
 		}
-		
-//		Connection temp =  (Connection)DriverManager.getConnection(usr.URLS[0], "root", "06948859");
-//		Connection temp2 =  (Connection)DriverManager.getConnection(usr.URLS[1], "SYSTEM", "oracle1ORACLE");
-//		Connection temp3 =  (Connection)DriverManager.getConnection(usr.URLS[2], "hadoop", "");
-//
-//		cons.add(temp);
-//		cons.add(temp2);
-//		cons.add(temp3);
-//		dbs.add(usr.dbName[0]);
-//		dbs.add(usr.dbName[1]);
-//		dbs.add(usr.dbName[2]);
 
 		return (Connection[])cons.toArray(new Connection[conNum]);
 	}
@@ -85,6 +81,8 @@ public class ConnectionManager {
 		
 		for(int i=0; i<usr.dbNum; ++i){
 			try{
+				if(dst != 0 && !dbName[dst].equals(usr.dbName[i]))//测试用，用于TestForSelect样例
+					continue;
 				Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
 				cons.add(conn);
 				dbs.add(usr.dbName[i]);

@@ -18,4 +18,5 @@ public interface PKUConnectionInterface extends Remote
 	public SQLWarning getWarnings() throws RemoteException,SQLException;
 	public void clearWarnings() throws RemoteException,SQLException;
 	public boolean isClosed()throws RemoteException, SQLException;
+	public void setDst(int index) throws RemoteException, SQLException;
 }

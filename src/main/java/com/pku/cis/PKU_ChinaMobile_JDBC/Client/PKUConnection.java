@@ -38,7 +38,27 @@ public class PKUConnection implements Connection
 		remoteConnection = remCon;
 	}
 
-
+	/**
+	 * Set special type of database to connect
+	 * 0-all
+	 * 1-oracle
+	 * 2-mysql
+	 * 3-teradata
+	 * 4-hive
+	 * @param index
+	 * @throws SQLException
+	 */
+	public void setDst(int index) throws SQLException 
+	{
+		try
+		{
+		 	remoteConnection.setDst(index);
+		}
+		catch(RemoteException ex)
+		{
+			throw ((new SQLException("RemoteException:" + ex.getMessage())));
+		}
+	}
 	/**
 	 * SQL statements without parameters are normally executed using Statement
 	 * objects. If the same SQL statement is executed many times, it is more
