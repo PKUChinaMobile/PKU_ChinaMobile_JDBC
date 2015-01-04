@@ -5,9 +5,6 @@ package com.pku.cis.PKU_ChinaMobile.DataSource;
 
 import java.io.File; 
 import java.io.IOException;
-import java.util.Date; 
-
-import com.pku.cis.PKU_ChinaMobile.DataSource.FunctionMapping.FunctionEquivalent;
 
 import jxl.*; 
 import jxl.read.biff.BiffException;
@@ -75,7 +72,7 @@ class FunctionMappingAdapter {
 				{
 					oracle=new Function();
 					oracle.dataSrsType=DataSourceType.Oracle;
-					oracle.name=arg;
+					oracle.name=arg.toUpperCase();
 					arg=cell[5].getContents().trim();
 					oracle.funcType=FunctionType.valueOf(arg);
 					arg=cell[6].getContents().trim();
@@ -90,7 +87,7 @@ class FunctionMappingAdapter {
 				{
 					td=new Function();
 					td.dataSrsType=DataSourceType.TD;
-					td.name=arg;
+					td.name=arg.toUpperCase();
 					arg=cell[10].getContents().trim();
 					td.funcType=FunctionType.valueOf(arg);
 					arg=cell[11].getContents().trim();
@@ -105,7 +102,7 @@ class FunctionMappingAdapter {
 				{
 					hive=new Function();
 					hive.dataSrsType=DataSourceType.Hive;
-					hive.name=arg;
+					hive.name=arg.toUpperCase();
 					arg=cell[15].getContents().trim();
 					hive.funcType=FunctionType.valueOf(arg);
 					arg=cell[16].getContents().trim();

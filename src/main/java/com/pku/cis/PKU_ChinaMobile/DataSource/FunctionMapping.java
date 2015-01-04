@@ -84,67 +84,32 @@ public class FunctionMapping {
 	 */
 	public static Function getFuncByOracleFuncName(String oracleFuncName, DataSourceType dataSourceType)
 	{
-		switch (dataSourceType)
-		{
-		case Hive:
-			return getHiveFuncByOracleFuncName(oracleFuncName);
-		case Oracle:
-			return getOracleFuncByOracleFuncName(oracleFuncName);
-		case TD:
-			return getTDFuncByOracleFuncName(oracleFuncName);
-		default:
-			return null;
-		}
-	}
-	
-	static Function getOracleFuncByOracleFuncName(String oracleFuncName)
-	{
 		if(!GetFunctionMapping())
 		{
 			return null;
 		}
-		if (instance.lastLookupRes!=null && instance.lastLookupRes.oracleFunction.name.compareTo(oracleFuncName)==0)
+		// 上次查询不存在或者不匹配，重新进行查询
+		if (instance.lastLookupRes==null || instance.lastLookupRes.oracleFunction.name.compareTo(oracleFuncName)!=0)
 		{
-			return instance.lastLookupRes.oracleFunction;
+			instance.lastLookupRes=instance.functionTable.get(oracleFuncName.toUpperCase());
 		}
-		else
-		{
-			instance.lastLookupRes=instance.functionTable.get(oracleFuncName);
-			return(instance.lastLookupRes==null?null:instance.lastLookupRes.oracleFunction);
-		}
-	}
-	
-	static Function getTDFuncByOracleFuncName(String oracleFuncName)
-	{
-		if(!GetFunctionMapping())
+		if (instance==null)
 		{
 			return null;
 		}
-		if (instance.lastLookupRes!=null && instance.lastLookupRes.tdFunction.name.compareTo(oracleFuncName)==0)
-		{
-			return instance.lastLookupRes.tdFunction;
-		}
 		else
 		{
-			instance.lastLookupRes=instance.functionTable.get(oracleFuncName);
-			return(instance.lastLookupRes==null?null:instance.lastLookupRes.tdFunction);
-		}
-	}
-	
-	static Function getHiveFuncByOracleFuncName(String oracleFuncName)
-	{
-		if(!GetFunctionMapping())
-		{
-			return null;
-		}
-		if (instance.lastLookupRes!=null && instance.lastLookupRes.hiveFunction.name.compareTo(oracleFuncName)==0)
-		{
-			return instance.lastLookupRes.hiveFunction;
-		}
-		else
-		{
-			instance.lastLookupRes=instance.functionTable.get(oracleFuncName);
-			return(instance.lastLookupRes==null?null:instance.lastLookupRes.hiveFunction);
+			switch (dataSourceType)
+			{
+				case Hive:
+					return instance.lastLookupRes.hiveFunction;
+				case Oracle:
+					return instance.lastLookupRes.oracleFunction;
+				case TD:
+					return instance.lastLookupRes.tdFunction;
+				default:
+					return null;
+			}
 		}
 	}
 }
