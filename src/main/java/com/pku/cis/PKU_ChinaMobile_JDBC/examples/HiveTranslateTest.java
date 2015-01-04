@@ -64,7 +64,7 @@ public class HiveTranslateTest {
                 "        COUNT_3CALL / COUNT_4CALL"));
         System.out.println(translate(" SELECT biSessID FROM callRecords where intLocation = 1 OR intLocation = 2 INTERSECT SELECT biSessID\n" +
                 "        FROM callRecords WHERE intLocation = 1"));
-        System.out.println(translate(" SELECT biSessID FROM (select * from callRecords) where rownum < 10"));
+        //System.out.println(translate(" SELECT biSessID FROM (select biSessID) where rownum < 10"));
         System.out.println(translate(" SELECT CONCAT(biSessID, biSessID) FROM callRecords "));
         System.out.println(translate(" SELECT MAX(biSessID) FROM callRecords "));
     }

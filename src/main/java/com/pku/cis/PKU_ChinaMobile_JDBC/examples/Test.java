@@ -42,7 +42,7 @@ public class Test  {
 	
 	static String sqls[] = {"SELECT * FROM PERSON",
 			   "DROP TABLE PERSON2",
-			   "CREATE TABLE PERSON2 (ID int, AGE int);",
+			   "CREATE TABLE PERSON2 (ID int, AGE int)",
 			   "INSERT INTO PERSON2 VALUES(1, 18)",
 			   "DELETE FROM PERSON2 WHERE ID = 1",//"DELETE FROM CallRecords"
 			   "UPDATE PERSON2 SET AGE = 19 WHERE ID = 1",
@@ -105,6 +105,7 @@ class BtnActionAdapter implements ActionListener
 				PKUConnection con;
 				try {
 					con = (PKUConnection)DriverManager.getConnection(fullURL, Test.userName, Test.userPasswd);
+					con.setDst(0);
 					System.out.println("Creating new Statement");
 					PKUStatement stmt = null;
 					stmt = (PKUStatement)con.createStatement();
@@ -115,17 +116,17 @@ class BtnActionAdapter implements ActionListener
 					String temp = "";
 					for( int i = 1;i<= numColumns;i++ ) {
 				           if( i < numColumns )
-				               temp += String.format("%-10s", rmeta.getColumnName(i))+" | ";
+				               temp += String.format("%-15s", rmeta.getColumnName(i))+" | ";
 				           else
-				               temp += String.format("%-10s", rmeta.getColumnName(i))+" | " + "\r\n";
+				               temp += String.format("%-15s", rmeta.getColumnName(i))+" | " + "\r\n";
 				       }
 					   
 				       while( rs.next() ){
 				           for( int i = 1;i <= numColumns;i++ ){
 				               if( i < numColumns ) 
-				            	   temp += String.format("%-10s",new String((rs.getString(i).trim()))) + " | ";
+				            	   temp += String.format("%-15s",new String((rs.getString(i).trim()))) + " | ";
 				               else
-							       temp += String.format("%-10s",new String((rs.getString(i).trim()))) + " | " + "\r\n";
+							       temp += String.format("%-15s",new String((rs.getString(i).trim()))) + " | " + "\r\n";
 				           }
 				       }
 				       Test.t.setText(temp);

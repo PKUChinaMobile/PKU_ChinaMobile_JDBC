@@ -37,7 +37,7 @@ public class TestForSelect  {
 	static TextField in;
 	public static int index;
 	
-	static String databases[] = {"ALL","ORACLE","MYSQL","TERADATA","HIVE"};
+	static String databases[] = {"ALL","MYSQL","ORACLE","TERADATA","HIVE"};
 	
 	static String userName ="C##MYTEST";
 	static String userPasswd ="123456";
@@ -111,17 +111,17 @@ class Adapter_TestForSelect implements ActionListener
 				String temp = "";
 				for( int i = 1;i<= numColumns;i++ ) {
 				      if( i < numColumns )
-				         temp += String.format("%-10s", rmeta.getColumnName(i))+" | ";
+				         temp += String.format("%-15s", rmeta.getColumnName(i))+" | ";
 				      else
-				         temp += String.format("%-10s", rmeta.getColumnName(i))+" | " + "\r\n";
+				         temp += String.format("%-15s", rmeta.getColumnName(i))+" | " + "\r\n";
 				}
 					   
 				while( rs.next() ){
 				    for( int i = 1;i <= numColumns;i++ ){
 				       if( i < numColumns ) 
-				          temp += String.format("%-10s",new String((rs.getString(i).trim()))) + " | ";
+				          temp += String.format("%-15s",new String((rs.getString(i).trim()))) + " | ";
 				       else
-				          temp += String.format("%-10s",new String((rs.getString(i).trim()))) + " | " + "\r\n";
+				          temp += String.format("%-15s",new String((rs.getString(i).trim()))) + " | " + "\r\n";
 				    }
 				 }
 				TestForSelect.t.setText(temp);

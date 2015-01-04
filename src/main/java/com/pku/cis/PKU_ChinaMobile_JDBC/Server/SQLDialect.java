@@ -19,7 +19,8 @@ public class SQLDialect {
 		//sqlObject.accept(new OracleOutputVisitor(out, false));
 		((SQLStatement)sqlObject).accept(new ToOracleOutputVisitor(out));
 
-		String sql = out.toString();
+		String sql = out.toString().replace("\n", " ").replace(";", "");
+		System.out.println("[" + sql + "]");
 		return sql;
 	}
 	
@@ -28,7 +29,7 @@ public class SQLDialect {
 		//sqlObject.accept(new TeradataOutputVisitor(out, false));
 		((SQLStatement)sqlObject).accept(new ToTeradataOutputVisitor(out));
 		//System.out.println("Teradata+++++++++++++++" + out.toString());
-		String sql = out.toString();
+		String sql = out.toString().replace("\n", " ").replace(";", "");
 		return sql;
 	}
 	
@@ -46,7 +47,9 @@ public class SQLDialect {
 		//sqlObject.accept(new HiveOutputVisitor(out, false));
 		((SQLStatement)sqlObject).accept(new ToHiveOutputVisitor(out));
 
-		String sql = out.toString();
+		String sql = out.toString().replace("\n", " ").replace(";", "");
+
+		//System.out.println("[" + sql + "]");
 		return sql;
 	}
 }

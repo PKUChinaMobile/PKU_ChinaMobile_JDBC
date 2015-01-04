@@ -57,8 +57,8 @@ public class DataGenerate {
 	static JLabel l_location;
 	static int userNo = 100000;
 	static int days[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-	static String databases[] = {"ORACLE",
-		   "MYSQL",
+	static String databases[] = {"MYSQL",
+		   "ORACLE",
 		   "TERADATA",
 		   "HIVE"
 		   };
@@ -292,18 +292,18 @@ class Adapter_DataGenerate implements ActionListener
 				String IMSI2 = (int)(Math.random() * 100000) + lct * 10000000 + "";
 				String sql = "INSERT INTO " + tbName + "(biSessID, dualTime, intYear, intMonth, intDay, intHour, intMinute, "
 						+ "vcCallingIMSI, vcCalledIMSI, intLocation) VALUES('" + sessID+"','"+dualTime+"','"+y+"','"+m+"','"+
-						day+"','"+hour+"','"+minute+"','"+IMSI1+"','"+IMSI2+"','"+location+"');";
+						day+"','"+hour+"','"+minute+"','"+IMSI1+"','"+IMSI2+"','"+location+"')";
 				insertIntoDb(sql);
 				
 			}
 			
 		}
-		DataGenerate.board.setText("done!");
+		//DataGenerate.board.setText("done!");
 	}
 	
 	public void insertIntoDb(String sql)
 	{
-		//System.out.println(sql);
+		System.out.println(sql);
 			try {
 				Statement stmt = conn.createStatement();
 				stmt.executeUpdate(sql);
