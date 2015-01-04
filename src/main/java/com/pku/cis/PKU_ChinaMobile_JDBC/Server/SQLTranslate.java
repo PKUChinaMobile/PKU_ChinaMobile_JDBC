@@ -19,14 +19,14 @@ public class SQLTranslate {
 	 * @param sp 语句对应的SQLParse对象
 	 * @return query 特定SQL语句
 	 */	
-	public static String translate(String query, SQLParse sp)
+	public static String translate(SQLParse sp, String dbType)
 	{
-		System.out.println("Begin translate query "+query);
+		System.out.println("Begin translate query.");
 		
         StringBuilder out = new StringBuilder();
 		SQLStatement stmt = sp.getAST();
 		
-		switch(getDatabaseType(sp)){
+		switch(getDatabaseType(dbType)){
 		case Oracle:
 			out.append(SQLDialect.toOracleString(stmt));
 			break;
@@ -50,8 +50,14 @@ public class SQLTranslate {
 	 * @param sp 语句对应的SQLParse对象
 	 * @return 数据库类型
 	 */	
-	private static DatabaseType getDatabaseType(SQLParse sp)
+	private static DatabaseType getDatabaseType(String dbType)
 	{
-		return DatabaseType.Teradata;
+		if(dbType.toUpperCase().equals("MYSQL"))
+			return DatabaseType.MySql;
+		if(dbType.toUpperCase().equals("TERADATA"))
+			return DatabaseType.Teradata;
+		if(dbType.toUpperCase().equals("HIVE"))
+			return DatabaseType.Hive;
+		return DatabaseType.Oracle;
 	}
 }

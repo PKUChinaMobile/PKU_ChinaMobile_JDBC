@@ -65,8 +65,9 @@ public class PKUStatementServer extends UnicastRemoteObject
 		{
 			//Create the Statement object of corresponding Connection object.
 			stmt[i] = cons[i].createStatement();
+			String dbType = cons[i].getMetaData().getDatabaseProductName();
 			//Translate the SQL query into the corresponding type.
-			String dialect = SQLTranslate.translate(Query, sp);
+			String dialect = SQLTranslate.translate(sp, dbType);
 			//Execute the query.
 			rs[i] = stmt[i].executeQuery(dialect);
 		}
@@ -108,8 +109,9 @@ public class PKUStatementServer extends UnicastRemoteObject
 			if(conm.dbs.get(i).equals("hive"))
 				continue;
 			stmt[i] = cons[i].createStatement();
+			String dbType = cons[i].getMetaData().getDatabaseProductName();
 			//Translate the SQL query into the corresponding type.
-			String dialect = SQLTranslate.translate(Query, sp);
+			String dialect = SQLTranslate.translate(sp, dbType);
 			//Execute the query.
 			result += stmt[i].executeUpdate(dialect);
 		}
@@ -130,8 +132,9 @@ public class PKUStatementServer extends UnicastRemoteObject
 		{
 			//Create the Statement object of corresponding Connection object.
 			stmt[i] = cons[i].createStatement();
+			String dbType = cons[i].getMetaData().getDatabaseProductName();
 			//Translate the SQL query into the corresponding type.
-			String dialect = SQLTranslate.translate(Query, sp);
+			String dialect = SQLTranslate.translate(sp, dbType);
 			//Execute the query.
 			if(!stmt[i].execute(dialect))
 				result = false;

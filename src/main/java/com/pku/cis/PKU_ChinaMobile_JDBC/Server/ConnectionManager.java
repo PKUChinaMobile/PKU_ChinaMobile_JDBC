@@ -5,6 +5,7 @@
 package com.pku.cis.PKU_ChinaMobile_JDBC.Server;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -54,6 +55,9 @@ public class ConnectionManager {
 				
 				Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
 				cons.add(conn);
+				DatabaseMetaData dmd = conn.getMetaData();
+				//System.out.println("aaaaaaaaaaaaaaaa"+dmd.getDatabaseProductName());
+
 				dbs.add(usr.dbName[i]);
 				conNum++;
 			}catch(SQLException e){
