@@ -1,7 +1,7 @@
 package com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor;
 
 /*
- * 获得函数信息的类
+ * 获得函数信息的类 （不用）
  */
 public class MethodInformation {
 	private String Alias;	//函数表示
