@@ -5,14 +5,14 @@
  */
 package com.pku.cis.PKU_ChinaMobile_JDBC.Server;
 
+import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PKUResultSetInterface;
+import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PKUStatementInterface;
+
 import java.rmi.*;
 import java.rmi.server.*;
 import java.util.*;
 import java.sql.*;
 import java.io.*;
-
-import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PKUResultSetInterface;
-import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PKUStatementInterface;
 
 public class PKUStatementServer extends UnicastRemoteObject
 	implements PKUStatementInterface
