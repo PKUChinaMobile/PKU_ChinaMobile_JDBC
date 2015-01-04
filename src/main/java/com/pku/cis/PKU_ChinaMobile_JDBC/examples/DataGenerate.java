@@ -19,9 +19,7 @@ import java.awt.Font;
 import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -188,6 +186,11 @@ class Adapter_DataGenerate implements ActionListener
 	static String username[];
 	static String password[];
 	static Connection conn;
+
+	File file;
+	FileWriter fw = null;
+	BufferedWriter writer = null;
+
 	public void init()
 	{
 		dbNum = 4;
@@ -230,6 +233,17 @@ class Adapter_DataGenerate implements ActionListener
 				+ "intLocation int);";
 		
 		*/
+
+		if(index == 3)
+		{
+			file = new File("data.txt");
+			try {
+				fw = new FileWriter(file);
+				writer = new BufferedWriter(fw);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		System.out.println("init done!");
 	}
 	public void actionPerformed(ActionEvent e)
@@ -293,14 +307,40 @@ class Adapter_DataGenerate implements ActionListener
 				String sql = "INSERT INTO " + tbName + "(biSessID, dualTime, intYear, intMonth, intDay, intHour, intMinute, "
 						+ "vcCallingIMSI, vcCalledIMSI, intLocation) VALUES('" + sessID+"','"+dualTime+"','"+y+"','"+m+"','"+
 						day+"','"+hour+"','"+minute+"','"+IMSI1+"','"+IMSI2+"','"+location+"')";
-				insertIntoDb(sql);
+				if(index == 3)
+					insertIntoFile(sessID + "\001" + dualTime +"\001" +y + "\001" + m + "\001"
+							+ day + "\001" + hour + "\001" + minute + "\001" + IMSI1 + "\001" +
+							IMSI2 + "\001" + location);
+				else
+					insertIntoDb(sql);
 				
 			}
 			
 		}
-		//DataGenerate.board.setText("done!");
+		DataGenerate.board.setText("done!");
+		if(index == 3)
+		{
+			try {
+				writer.close();
+				fw.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
+		}
 	}
-	
+	public void insertIntoFile(String str)
+	{
+
+
+		try {
+			writer.write(str);
+			writer.newLine();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
 	public void insertIntoDb(String sql)
 	{
 		System.out.println(sql);
