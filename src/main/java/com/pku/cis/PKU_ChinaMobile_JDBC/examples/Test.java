@@ -44,7 +44,7 @@ public class Test  {
 			   "DROP TABLE PERSON2",
 			   "CREATE TABLE PERSON2 (ID int, AGE int)",
 			   "INSERT INTO PERSON2 VALUES(1, 18)",
-			   "DELETE FROM PERSON2 WHERE ID = 1",//"DELETE FROM CallRecords"
+			   "DELETE FROM PERSON2 WHERE ID = 1",//"DELETE FROM callRecords WHERE intLocation = 23"
 			   "UPDATE PERSON2 SET AGE = 19 WHERE ID = 1",
 			   "SELECT * FROM PERSON2"
 			   };
@@ -147,6 +147,7 @@ class BtnActionAdapter implements ActionListener
 				PKUConnection con;
 				try {
 					con = (PKUConnection)DriverManager.getConnection(fullURL, Test.userName, Test.userPasswd);
+					con.setDst(0);
 					System.out.println("Creating new Statement");
 					PKUStatement stmt = null;
 					stmt = (PKUStatement)con.createStatement();
@@ -169,6 +170,7 @@ class BtnActionAdapter implements ActionListener
 				try {
 					con = (PKUConnection)DriverManager.getConnection(fullURL, Test.userName, Test.userPasswd);
 					System.out.println("Creating new Statement");
+					con.setDst(0);
 					PKUStatement stmt = null;
 					stmt = (PKUStatement)con.createStatement();
 					System.out.println("Executing " + sql);

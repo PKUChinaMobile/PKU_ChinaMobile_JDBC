@@ -13,6 +13,13 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.examples;
  * intLocation int 			-通话地点	（0~32）
  * 
  * 输入起始年月和终止年月，目标数据库，地点，总记录数即可生成数据
+ *
+ * 另数据库各自已经创建USERS表，模拟用户信息
+ * IMSI varchar(32)  -用户ID
+ * LOCATION int		 -用户地点
+ * GENDER int		 -用户性别
+ * AGE int			-用户年龄
+
  * */
 import java.awt.Color;
 import java.awt.Font;
@@ -24,7 +31,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.JButton;
@@ -258,7 +264,7 @@ class Adapter_DataGenerate implements ActionListener
 		index = DataGenerate.dst.getSelectedIndex();
 		
 		init();
-		
+
 		Date dt= new Date(); 
 		Long headID= dt.getTime();
 		int tailID = 0; 
@@ -302,8 +308,8 @@ class Adapter_DataGenerate implements ActionListener
 				String minute = (int)(Math.random() * 60)+"";
 				String dualTime = (int)(Math.random() * 1000000)+"";
 				String location = lct + "";
-				String IMSI1 = (int)(Math.random() * 100000) + lct * 10000000 + "";
-				String IMSI2 = (int)(Math.random() * 100000) + lct * 10000000 + "";
+				String IMSI1 = (int)(Math.random() * 1000) + lct * 10000000 + "";
+				String IMSI2 = (int)(Math.random() * 1000) + lct * 10000000 + "";
 				String sql = "INSERT INTO " + tbName + "(biSessID, dualTime, intYear, intMonth, intDay, intHour, intMinute, "
 						+ "vcCallingIMSI, vcCalledIMSI, intLocation) VALUES('" + sessID+"','"+dualTime+"','"+y+"','"+m+"','"+
 						day+"','"+hour+"','"+minute+"','"+IMSI1+"','"+IMSI2+"','"+location+"')";
@@ -317,7 +323,19 @@ class Adapter_DataGenerate implements ActionListener
 			}
 			
 		}
-		DataGenerate.board.setText("done!");
+/*
+		for(int i = 0; i < 1000; i++) {
+			String IMSI1 = lct * 10000000 + i + "";
+			String gender = (int) (Math.random() * 2) + "";
+			String age = 18 + (int) (Math.random() * 60) + "";
+			String sql = "INSERT INTO USERS(IMSI,LOCATION,GENDER,AGE) VALUES('" + IMSI1 + "','" + lct + "','" + gender + "','" + age + "')";
+			if(index == 3)
+				insertIntoFile(IMSI1 + "\001" + lct + "\001" + gender + "\001" + age);
+			else
+				insertIntoDb(sql);
+		}
+*/
+			DataGenerate.board.setText("done!");
 		if(index == 3)
 		{
 			try {

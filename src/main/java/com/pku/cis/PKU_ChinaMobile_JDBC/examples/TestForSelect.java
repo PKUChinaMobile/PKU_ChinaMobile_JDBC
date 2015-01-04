@@ -93,7 +93,7 @@ class Adapter_TestForSelect implements ActionListener
 	{
 			String sql = TestForSelect.in.getText().toString();
 			int index = TestForSelect.dst.getSelectedIndex();
-			TestForSelect.in.setText("");
+
 			TestForSelect.t.setText("Execute: " + sql + "\n");
 			System.out.println(TestForSelect.index);
 			String fullURL = Test.urlPrefix + Test.IP;
