@@ -3,6 +3,9 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.examples;
  * 本测试样例用于往数据库插入删除或修改数据
  * 本测试样例提供输入窗口，让用户输入insert语句、delete语句和update语句进行查询，并返回结果或者错误信息；
  * 用户可选择在所有数据库上进行，也可以在某一单一数据库进行
+ *
+ * /home/cloudera/Desktop/data
+load data local inpath '/home/cloudera/Desktop/data/data.txt' overwrite into table PERSON
  * */
 import java.awt.Color;
 import java.awt.Font;
@@ -92,7 +95,7 @@ class Adapter_TestForInsertDeleteUpdate implements ActionListener
         String sql = TestForInsertDeleteUpdate.in.getText().toString();
         int index = TestForInsertDeleteUpdate.dst.getSelectedIndex();
 
-        TestForDropAndCreate.t.setText("Execute: " + sql + "\n");
+        TestForInsertDeleteUpdate.t.setText("Execute: " + sql + "\n");
         String fullURL = Test.urlPrefix + Test.IP;
         System.out.println("Attempt to connect " + fullURL);
         PKUConnection con;
@@ -103,13 +106,13 @@ class Adapter_TestForInsertDeleteUpdate implements ActionListener
             stmt = (PKUStatement)con.createStatement();
             System.out.println("Executing " + sql);
             stmt.executeUpdate(sql);
-            TestForDropAndCreate.t.append("\ndone!");
+            TestForInsertDeleteUpdate.t.append("\ndone!");
             con.close();
         } catch (SQLException e1) {
             Writer result = new StringWriter();
             PrintWriter printWriter = new PrintWriter(result);
             e1.printStackTrace(printWriter);
-            TestForDropAndCreate.t.setText(result.toString());
+            TestForInsertDeleteUpdate.t.setText(result.toString());
         }
     }
 }

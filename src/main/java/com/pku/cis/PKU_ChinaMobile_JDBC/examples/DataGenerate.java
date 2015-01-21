@@ -19,7 +19,10 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.examples;
  * LOCATION int		 -用户地点
  * GENDER int		 -用户性别
  * AGE int			-用户年龄
-
+ *
+ * row format delimited fields terminated by '\t';
+ CREATE TABLE USERS (IMSI varchar(32), LOCATION int, GENDER int, AGE int)
+ CREATE TABLE CallRecords (biSessID varchar(32), dualTime int, intYear int, intMonth int，intDay int, intHour int, intMinute int, vcCallingIMSI varchar(32), vcCalledIMSI varchar(32),intLocation int)
  * */
 import java.awt.Color;
 import java.awt.Font;
@@ -208,7 +211,7 @@ class Adapter_DataGenerate implements ActionListener
 		URLS[0] = "jdbc:mysql://162.105.71.102:3306/test";
 		URLS[1] = "jdbc:oracle:thin:@162.105.71.102:1521:mytest";
 		URLS[2] = "jdbc:teradata://162.105.71.205/vmtest";
-		URLS[3] = "jdbc:hive2://162.105.71.61:10000/test";
+		URLS[3] = "jdbc:hive2://162.105.71.243:10000/test";
 		
 		dbName[0] = "mysql";
 		dbName[1] = "oracle";
@@ -271,7 +274,7 @@ class Adapter_DataGenerate implements ActionListener
 		int spanMon = (eyear - syear) * 12 + emon - smon + 1;
 		int RecordPerMon = n / spanMon;
 		int cnt = 0, total = 0;
-		if(index != 3) {
+/*
 			for (int y = syear, m = smon, i = 0; i < spanMon; i++, m++) {
 				if (m > 12) {
 					m = 1;
@@ -318,8 +321,9 @@ class Adapter_DataGenerate implements ActionListener
 				}
 
 			}
-		}
-		else {
+
+
+	*/
 			for (int i = 0; i < 1000; i++) {
 				String IMSI1 = lct * 10000000 + i + "";
 				String gender = (int) (Math.random() * 2) + "";
@@ -330,7 +334,7 @@ class Adapter_DataGenerate implements ActionListener
 				else
 					insertIntoDb(sql);
 			}
-		}
+
 
 			DataGenerate.board.setText("done!");
 		if(index == 3)

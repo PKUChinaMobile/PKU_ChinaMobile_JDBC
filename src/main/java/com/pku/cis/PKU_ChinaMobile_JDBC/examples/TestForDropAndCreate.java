@@ -3,6 +3,10 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.examples;
  * 本测试样例用于往数据库创建或删除表哥
  * 本测试样例提供输入窗口，让用户输入drop table语句和create table语句进行查询，并返回结果或者错误信息；
  * 用户可选择在所有数据库上进行，也可以在某一单一数据库进行
+ *
+ *
+ CREATE TABLE USERS (IMSI varchar(32), LOCATION int, GENDER int, AGE int)
+ CREATE TABLE CallRecords (biSessID varchar(32), dualTime int, intYear int, intMonth int，intDay int, intHour int, intMinute int, vcCallingIMSI varchar(32), vcCalledIMSI varchar(32),intLocation int)
  * */
 import java.awt.Color;
 import java.awt.Font;

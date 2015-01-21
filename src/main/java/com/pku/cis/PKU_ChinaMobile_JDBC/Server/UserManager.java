@@ -51,7 +51,7 @@ class User
 		URLS[0] = "jdbc:mysql://162.105.71.165:3306/test";
 		URLS[1] = "jdbc:oracle:thin:@162.105.71.165:1521:mytest";
 		URLS[2] = "jdbc:teradata://162.105.71.127/vmtest";
-		URLS[3] = "jdbc:hive2://162.105.71.76:10000/test";
+		URLS[3] = "jdbc:hive2://162.105.71.243:10000/test";
 		
 		dbName[0] = "mysql";
 		dbName[1] = "oracle";
