@@ -20,7 +20,7 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.examples;
  * GENDER int		 -用户性别
  * AGE int			-用户年龄
  *
- * row format delimited fields terminated by '\t';
+ *
  CREATE TABLE USERS (IMSI varchar(32), LOCATION int, GENDER int, AGE int)
  CREATE TABLE CallRecords (biSessID varchar(32), dualTime int, intYear int, intMonth int，intDay int, intHour int, intMinute int, vcCallingIMSI varchar(32), vcCalledIMSI varchar(32),intLocation int)
  * */
