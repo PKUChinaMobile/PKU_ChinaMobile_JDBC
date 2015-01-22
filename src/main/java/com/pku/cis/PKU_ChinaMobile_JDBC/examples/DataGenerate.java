@@ -19,7 +19,10 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.examples;
  * LOCATION int		 -用户地点
  * GENDER int		 -用户性别
  * AGE int			-用户年龄
-
+ *
+ *
+ CREATE TABLE USERS (IMSI varchar(32), LOCATION int, GENDER int, AGE int)
+ CREATE TABLE CallRecords (biSessID varchar(32), dualTime int, intYear int, intMonth int，intDay int, intHour int, intMinute int, vcCallingIMSI varchar(32), vcCalledIMSI varchar(32),intLocation int)
  * */
 import java.awt.Color;
 import java.awt.Font;
@@ -208,7 +211,7 @@ class Adapter_DataGenerate implements ActionListener
 		URLS[0] = "jdbc:mysql://162.105.71.102:3306/test";
 		URLS[1] = "jdbc:oracle:thin:@162.105.71.102:1521:mytest";
 		URLS[2] = "jdbc:teradata://162.105.71.205/vmtest";
-		URLS[3] = "jdbc:hive2://162.105.71.61:10000/test";
+		URLS[3] = "jdbc:hive2://162.105.71.243:10000/test";
 		
 		dbName[0] = "mysql";
 		dbName[1] = "oracle";
@@ -240,7 +243,7 @@ class Adapter_DataGenerate implements ActionListener
 		
 		*/
 
-		if(index == 3)
+		if(index == 3) //Teradata区分处理，将插入语句输出到文件
 		{
 			file = new File("data.txt");
 			try {
@@ -271,70 +274,68 @@ class Adapter_DataGenerate implements ActionListener
 		int spanMon = (eyear - syear) * 12 + emon - smon + 1;
 		int RecordPerMon = n / spanMon;
 		int cnt = 0, total = 0;
-		for(int y = syear, m = smon, i = 0; i < spanMon; i++, m++)
-		{
-			if(m > 12)
-			{
-				m = 1;
-				y += 1;
+/*
+			for (int y = syear, m = smon, i = 0; i < spanMon; i++, m++) {
+				if (m > 12) {
+					m = 1;
+					y += 1;
+				}
+				int upBound;
+				if (i != spanMon - 1)
+					upBound = RecordPerMon;
+				else
+					upBound = RecordPerMon + n % spanMon;
+				int RecordPerDay = upBound / DataGenerate.days[m - 1] + 1, k = 0, day = 1;
+				for (int j = 0; j < upBound; j++, cnt++, k++) {
+					String sessID = headID.toString() + (tailID + "");
+					tailID++;
+					if (tailID == 10000) {
+						tailID = 0;
+						headID += 1;
+					}
+					if (k == RecordPerDay) {
+						k = 0;
+						day++;
+					}
+					if (cnt == 100) {
+						total += 100;
+						cnt = 0;
+						DataGenerate.board.setText(total + " / " + n);
+					}
+					String hour = (int) (Math.random() * 24) + "";
+					String minute = (int) (Math.random() * 60) + "";
+					String dualTime = (int) (Math.random() * 1000000) + "";
+					String location = lct + "";
+					String IMSI1 = (int) (Math.random() * 1000) + lct * 10000000 + "";
+					String IMSI2 = (int) (Math.random() * 1000) + lct * 10000000 + "";
+					String sql = "INSERT INTO " + tbName + "(biSessID, dualTime, intYear, intMonth, intDay, intHour, intMinute, "
+							+ "vcCallingIMSI, vcCalledIMSI, intLocation) VALUES('" + sessID + "','" + dualTime + "','" + y + "','" + m + "','" +
+							day + "','" + hour + "','" + minute + "','" + IMSI1 + "','" + IMSI2 + "','" + location + "')";
+					if (index == 3)
+						insertIntoFile(sessID + "\001" + dualTime + "\001" + y + "\001" + m + "\001"
+								+ day + "\001" + hour + "\001" + minute + "\001" + IMSI1 + "\001" +
+								IMSI2 + "\001" + location);
+					else
+						insertIntoDb(sql);
+
+				}
+
 			}
-			int upBound;
-			if(i != spanMon - 1)
-				upBound = RecordPerMon;
-			else
-				upBound = RecordPerMon + n % spanMon;
-			int RecordPerDay = upBound / DataGenerate.days[m - 1] + 1, k = 0, day = 1;
-			for(int j = 0; j < upBound; j++,cnt++,k++)
-			{
-				String sessID = headID.toString() + (tailID+"");
-				tailID++;
-				if(tailID == 10000)
-				{
-					tailID = 0;
-					headID += 1;
-				}
-				if(k == RecordPerDay)
-				{
-					k = 0;
-					day++;
-				}
-				if(cnt == 100)
-				{
-					total += 100;
-					cnt = 0;
-					DataGenerate.board.setText(total + " / " + n);
-				}
-				String hour = (int)(Math.random() * 24)+"";
-				String minute = (int)(Math.random() * 60)+"";
-				String dualTime = (int)(Math.random() * 1000000)+"";
-				String location = lct + "";
-				String IMSI1 = (int)(Math.random() * 1000) + lct * 10000000 + "";
-				String IMSI2 = (int)(Math.random() * 1000) + lct * 10000000 + "";
-				String sql = "INSERT INTO " + tbName + "(biSessID, dualTime, intYear, intMonth, intDay, intHour, intMinute, "
-						+ "vcCallingIMSI, vcCalledIMSI, intLocation) VALUES('" + sessID+"','"+dualTime+"','"+y+"','"+m+"','"+
-						day+"','"+hour+"','"+minute+"','"+IMSI1+"','"+IMSI2+"','"+location+"')";
-				if(index == 3)
-					insertIntoFile(sessID + "\001" + dualTime +"\001" +y + "\001" + m + "\001"
-							+ day + "\001" + hour + "\001" + minute + "\001" + IMSI1 + "\001" +
-							IMSI2 + "\001" + location);
+
+
+	*/
+			for (int i = 0; i < 1000; i++) {
+				String IMSI1 = lct * 10000000 + i + "";
+				String gender = (int) (Math.random() * 2) + "";
+				String age = 18 + (int) (Math.random() * 60) + "";
+				String sql = "INSERT INTO USERS(IMSI,LOCATION,GENDER,AGE) VALUES('" + IMSI1 + "','" + lct + "','" + gender + "','" + age + "')";
+				if (index == 3)
+					insertIntoFile(IMSI1 + "\001" + lct + "\001" + gender + "\001" + age);
 				else
 					insertIntoDb(sql);
-				
 			}
-			
-		}
-/*
-		for(int i = 0; i < 1000; i++) {
-			String IMSI1 = lct * 10000000 + i + "";
-			String gender = (int) (Math.random() * 2) + "";
-			String age = 18 + (int) (Math.random() * 60) + "";
-			String sql = "INSERT INTO USERS(IMSI,LOCATION,GENDER,AGE) VALUES('" + IMSI1 + "','" + lct + "','" + gender + "','" + age + "')";
-			if(index == 3)
-				insertIntoFile(IMSI1 + "\001" + lct + "\001" + gender + "\001" + age);
-			else
-				insertIntoDb(sql);
-		}
-*/
+
+
 			DataGenerate.board.setText("done!");
 		if(index == 3)
 		{

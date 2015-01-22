@@ -95,14 +95,13 @@ class Adapter_TestForSelect implements ActionListener
 			int index = TestForSelect.dst.getSelectedIndex();
 
 			TestForSelect.t.setText("Execute: " + sql + "\n");
-			System.out.println(TestForSelect.index);
 			String fullURL = Test.urlPrefix + Test.IP;
 			System.out.println("Attempt to connect " + fullURL);
 			PKUConnection con;
 			try {
 				con = (PKUConnection)DriverManager.getConnection(fullURL, Test.userName, Test.userPasswd);
 				con.setDst(index);
-				PKUStatement stmt = null;
+				PKUStatement stmt;
 				stmt = (PKUStatement)con.createStatement();
 				System.out.println("Executing " + sql);
 				PKUResultSet rs = (PKUResultSet)stmt.executeQuery(sql);
@@ -124,7 +123,7 @@ class Adapter_TestForSelect implements ActionListener
 				          temp += String.format("%-15s",new String((rs.getString(i).trim()))) + " | " + "\r\n";
 				    }
 				 }
-				TestForSelect.t.setText(temp);
+				TestForSelect.t.append(temp);
 				rs.close();
 				con.close();
 				} catch (SQLException e1) {
