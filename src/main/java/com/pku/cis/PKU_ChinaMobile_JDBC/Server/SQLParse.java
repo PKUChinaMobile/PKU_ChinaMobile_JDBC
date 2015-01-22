@@ -12,11 +12,13 @@ import com.alibaba.druid.sql.dialect.oracle.parser.OracleStatementParser;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleSchemaStatVisitor;
 import com.alibaba.druid.stat.TableStat;
+import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.OracleModifyVisitor;
 
 public class SQLParse {
 
 	String query;
     OracleSchemaStatVisitor statVisitor;
+    OracleModifyVisitor anotherVisitor;
     StringBuilder AST = new StringBuilder();
     SQLStatement statemen;
 
@@ -32,6 +34,8 @@ public class SQLParse {
 
         OracleOutputVisitor outputVisitor = new OracleOutputVisitor(this.AST);
         statemen.accept(outputVisitor);
+
+        this.anotherVisitor = new OracleModifyVisitor();
 	}
 
 	public Map<TableStat.Name, TableStat> getTableName()
@@ -59,4 +63,12 @@ public class SQLParse {
         return statemen;
     }
 
+    public boolean modifyTableName(String oldName, String newName){
+        anotherVisitor.modifyTableName(statemen, oldName.toUpperCase(), newName);
+
+        this.statVisitor = new OracleSchemaStatVisitor();
+        statemen.accept(statVisitor);
+
+        return true;
+    }
 }
