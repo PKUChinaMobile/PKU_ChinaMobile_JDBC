@@ -33,7 +33,7 @@ public class PKUServer {
 		//Set host name.
 		System.setProperty("java.rmi.server.hostname","localhost");
 		
-		//Load JDBC Drivers of all kind.
+		//Load JDBC Drivers of all kind.ss
 		try {
 			System.out.println("Loading JDBC Driver...");
 			Class.forName("oracle.jdbc.OracleDriver").newInstance();
