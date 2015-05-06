@@ -42,6 +42,7 @@ class User
 	{
 		name = _name;
 		pwd = _pwd;
+		/*
 		dbNum = 4;
 		URLS = new String[dbNum];
 		dbName = new String[dbNum];
@@ -66,6 +67,27 @@ class User
 		password[0] = "06948859";
 		password[1] = "oracle1ORACLE";
 		password[2] = "vmtest";
-		password[3] = "";
+		password[3] = "";*/
+		dbNum = 2;
+		URLS = new String[dbNum];
+		dbName = new String[dbNum];
+		username = new String[dbNum];
+		password = new String[dbNum];
+
+		URLS[0] = "jdbc:mysql://127.0.0.1:3306/test";
+		URLS[1] = "jdbc:oracle:thin:@127.0.0.1:1521:mytest";
+
+
+		dbName[0] = "mysql";
+		dbName[1] = "oracle";
+
+
+		username[0] = "root";
+		username[1] = "SYSTEM";
+
+
+		password[0] = "06948859";
+		password[1] = "oracle1ORACLE";
+
 	};
 }

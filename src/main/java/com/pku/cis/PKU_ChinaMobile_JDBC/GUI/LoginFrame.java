@@ -54,9 +54,24 @@ public class LoginFrame extends JFrame {
         btn.setSize(100, 30);
         btn.setLocation(200, 180);
         btn.setFont(new Font("黑体", Font.PLAIN, 19));
-        btn.addActionListener(new Adapter_LoginBtn());
+        btn.addActionListener(new ActionListener() {
+                                  public void actionPerformed(ActionEvent e) {
+                                      if(accessCheck())
+                                      {
+                                          MainFrame mf = new MainFrame();
+                                          mf.show();
+                                          setVisible(false);
 
-        imagePanel.add(l);
+                                      }
+                                      else
+                                      {
+                                          JOptionPane.showMessageDialog(null,"错误的用户名密码!","登录失败", JOptionPane.ERROR_MESSAGE);
+                                      }
+                                  }
+                              });
+
+
+                imagePanel.add(l);
         imagePanel.add(l2);
         imagePanel.add(in);
         imagePanel.add(in2);
@@ -67,24 +82,15 @@ public class LoginFrame extends JFrame {
         this.setVisible(true);
 
     }
-    class Adapter_LoginBtn implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            if(accessCheck())
-            {
 
-            }
-            else
-            {
-                JOptionPane.showMessageDialog(null,"错误的用户名密码!","登录失败", JOptionPane.ERROR_MESSAGE);
-            }
-        }
-    }
     boolean accessCheck() //查询访问权限
     {
         String usr = in.getText();
         String pwd = new String(in2.getPassword());
         System.out.println("usr: " + usr + "  pwd: " + pwd);
-        return false;
+        if(pwd.equals("123"))
+            return false;
+        return true;
     }
     public static void main(String[] args)
     {

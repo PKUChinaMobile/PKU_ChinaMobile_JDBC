@@ -82,6 +82,7 @@ public class MainFrame extends JFrame {
 
         JButton btnNewButton_3 = new JButton("数据查询");
         panel.add(btnNewButton_3);
+        btnNewButton_3.addActionListener(new Adapter_btn3());
 
         JPanel panel_2 = new JPanel();
         GridBagConstraints gbc_panel_2 = new GridBagConstraints();
@@ -115,6 +116,11 @@ public class MainFrame extends JFrame {
         panel_1.add(lblNewLabel);
 
 
+    }
+    class Adapter_btn3 implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            Console c = new Console();
+        }
     }
 }
 

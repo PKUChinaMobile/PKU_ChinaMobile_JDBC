@@ -29,6 +29,7 @@ public class Console extends JFrame {
 
     private JPanel contentPane;
     static boolean flag = false; //标志文本末尾有无下滑线
+    static boolean flag2 = true;
     static JTextArea textArea;
     static int startPos;
     Lock lock = new ReentrantLock();
@@ -52,7 +53,7 @@ public class Console extends JFrame {
     {
         textArea.append("\nExecute: " + sql + "\n");
         String fullURL = urlPrefix + IP;
-        textArea.append("Attempt to connect " + fullURL);
+        textArea.append("Attempt to connect " + fullURL+"\n");
         PKUConnection con;
         try {
             con = (PKUConnection) DriverManager.getConnection(fullURL, userName, userPasswd);
@@ -79,8 +80,7 @@ public class Console extends JFrame {
                         temp += String.format("%-15s",new String((rs.getString(i).trim()))) + " | " + "\r\n";
                 }
             }
-            textArea.append("\n");
-            textArea.append(temp);
+            textArea.append("\n" + temp + "\n>");
             rs.close();
             con.close();
         } catch (SQLException e1) {
@@ -122,6 +122,27 @@ public class Console extends JFrame {
             e.printStackTrace();
         }
 
+        textArea.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+
+                flag2 = false;
+
+            }
+            public void mouseDragged(MouseEvent e) {
+
+                flag2 = false;
+
+            }
+            public void mouseReleased(MouseEvent e){
+
+                flag2 =false;
+
+            }
+            public void mouseWheelMoved(MouseWheelEvent e){
+
+                flag2 = false;
+            }
+        });
         textArea.addKeyListener(new KeyAdapter() {
                                     public void keyPressed(KeyEvent e)
                                     {
@@ -138,7 +159,9 @@ public class Console extends JFrame {
                                                 int endPos = textArea.getLineEndOffset(textArea.getLineCount()-1);
                                                 String cmd = textArea.getText(startPos, endPos - startPos);
                                                 execute(cmd);
-
+                                                startPos = textArea.getLineEndOffset(textArea.getLineCount()-1);
+                                                if(flag)
+                                                    textArea.append("_");
 
                                             }
                                             else if(e.getKeyChar() == KeyEvent.VK_BACK_SPACE)
@@ -149,7 +172,7 @@ public class Console extends JFrame {
                                                     textArea.replaceRange("", pos - 1, pos);
 
                                             }
-                                            else if(e.getKeyCode() != KeyEvent.VK_SHIFT){ //将来需要把所有的功能键去掉
+                                            else if(e.getKeyCode() != KeyEvent.VK_CAPS_LOCK && e.getKeyCode() != KeyEvent.VK_TAB && e.getKeyCode() != KeyEvent.VK_SHIFT ){ //将来需要把所有的功能键去掉
                                                 if (flag)
                                                     textArea.insert(e.getKeyChar() + "", pos - 1);
                                                 else
@@ -178,6 +201,8 @@ public class Console extends JFrame {
         Timer timer = new Timer(500, new ActionListener(){
             public void actionPerformed(ActionEvent e){
                 lock.lock();
+                if(flag2){
+
                 if(flag)
                 {
                     try {
@@ -193,8 +218,8 @@ public class Console extends JFrame {
                     flag = true;
                 }
                 textArea.setCaretPosition(textArea.getText().length());
-                lock.unlock();
-            }
+
+            }lock.unlock();}
         }
         );
         timer.start();
