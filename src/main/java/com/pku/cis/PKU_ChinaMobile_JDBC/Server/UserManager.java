@@ -68,7 +68,7 @@ class User
 		password[1] = "oracle1ORACLE";
 		password[2] = "vmtest";
 		password[3] = "";*/
-		dbNum = 2;
+		dbNum = 3;
 		URLS = new String[dbNum];
 		dbName = new String[dbNum];
 		username = new String[dbNum];
@@ -76,18 +76,22 @@ class User
 
 		URLS[0] = "jdbc:mysql://127.0.0.1:3306/test";
 		URLS[1] = "jdbc:oracle:thin:@127.0.0.1:1521:mytest";
-
+		URLS[2] = "jdbc:hive2://162.105.71.247:10000/test";
 
 		dbName[0] = "mysql";
 		dbName[1] = "oracle";
+		dbName[2] = "hive";
+
 
 
 		username[0] = "root";
 		username[1] = "SYSTEM";
+		username[2] = "hadoop";
 
 
 		password[0] = "06948859";
 		password[1] = "oracle1ORACLE";
+		password[2] = "";
 
 	};
 }
