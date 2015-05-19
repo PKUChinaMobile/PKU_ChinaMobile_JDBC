@@ -74,14 +74,13 @@ class User
 		username = new String[dbNum];
 		password = new String[dbNum];
 
-		URLS[0] = "jdbc:mysql://127.0.0.1:3306/test";
-		URLS[1] = "jdbc:oracle:thin:@127.0.0.1:1521:mytest";
+		URLS[0] = "jdbc:mysql://162.105.71.128:3306/test";
+		URLS[1] = "jdbc:oracle:thin:@162.105.71.128:1521:mytest";
 		URLS[2] = "jdbc:hive2://162.105.71.247:10000/test";
 
 		dbName[0] = "mysql";
 		dbName[1] = "oracle";
 		dbName[2] = "hive";
-
 
 
 		username[0] = "root";
