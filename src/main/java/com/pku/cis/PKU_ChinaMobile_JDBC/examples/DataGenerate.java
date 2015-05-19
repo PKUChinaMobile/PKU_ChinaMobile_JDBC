@@ -426,7 +426,6 @@ class Adapter_DataGenerate implements ActionListener
 				Statement stmt = conn.createStatement();
 				if (stmt == null)
 				{}
-
 				stmt.executeUpdate(sql);
 			} catch (SQLException  e1) {
 				Writer result = new StringWriter();
