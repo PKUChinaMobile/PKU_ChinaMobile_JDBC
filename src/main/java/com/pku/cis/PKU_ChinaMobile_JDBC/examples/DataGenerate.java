@@ -187,7 +187,7 @@ public class DataGenerate {
 }
 class Adapter_DataGenerate implements ActionListener
 {
-	static String tbName = "CallRecords";
+	static String tbName = "U_Status";
 	static int index;
 	static String URLS[];
 	static String dbName[];
@@ -209,7 +209,7 @@ class Adapter_DataGenerate implements ActionListener
 		password = new String[dbNum];
 		
 		URLS[0] = "jdbc:mysql://162.105.71.102:3306/test";
-		URLS[1] = "jdbc:oracle:thin:@162.105.71.102:1521:mytest";
+		URLS[1] = "jdbc:oracle:thin:@162.105.71.128:1521:mytest";
 		URLS[2] = "jdbc:teradata://162.105.71.205/vmtest";
 		URLS[3] = "jdbc:hive2://162.105.71.243:10000/test";
 		
@@ -304,15 +304,15 @@ class Adapter_DataGenerate implements ActionListener
 					}
 					String hour = (int) (Math.random() * 24) + "";
 					String minute = (int) (Math.random() * 60) + "";
-					String dualTime = (int) (Math.random() * 1000000) + "";
+					//String dualTime = (int) (Math.random() * 1000000) + "";
 					String location = lct + "";
 					String IMSI1 = (int) (Math.random() * 1000) + lct * 10000000 + "";
 					String IMSI2 = (int) (Math.random() * 1000) + lct * 10000000 + "";
-					String sql = "INSERT INTO " + tbName + "(biSessID, dualTime, intYear, intMonth, intDay, intHour, intMinute, "
-							+ "vcCallingIMSI, vcCalledIMSI, intLocation) VALUES('" + sessID + "','" + dualTime + "','" + y + "','" + m + "','" +
+					String sql = "INSERT INTO " + tbName + "(biSessID, intYear, intMonth, intDay, intHour, intMinute, "
+							+ "vcTextingIMSI, vcTextedIMSI, intLocation) VALUES('" + sessID + "','" + y + "','" + m + "','" +
 							day + "','" + hour + "','" + minute + "','" + IMSI1 + "','" + IMSI2 + "','" + location + "')";
 					if (index == 3)
-						insertIntoFile(sessID + "\001" + dualTime + "\001" + y + "\001" + m + "\001"
+						insertIntoFile(sessID + "\001" + y + "\001" + m + "\001"
 								+ day + "\001" + hour + "\001" + minute + "\001" + IMSI1 + "\001" +
 								IMSI2 + "\001" + location);
 					else
@@ -321,9 +321,8 @@ class Adapter_DataGenerate implements ActionListener
 				}
 
 			}
-
-
-	*/
+*/
+		/*
 			for (int i = 0; i < 1000; i++) {
 				String IMSI1 = lct * 10000000 + i + "";
 				String gender = (int) (Math.random() * 2) + "";
@@ -335,6 +334,66 @@ class Adapter_DataGenerate implements ActionListener
 					insertIntoDb(sql);
 			}
 
+*/
+		/*
+		for (int i = 0; i < 1000; i++) {
+			String IMSI1 = lct * 10000000 + i + "";
+			String indus_type = (int) (Math.random() * 10) + "";//行业类别10
+			String work_type = (int) (Math.random() * 50) + "";//职业类别50
+			String workUnit = "work_unit_" + (int) (Math.random() * 30) + "";//工作单位30
+			String workPosition = "work_position_" + (int) (Math.random() * 20) + "";//职位20
+			String maritalStatus = (int) (Math.random() * 2) + "";
+			String education = (int) (Math.random() * 10) + "";//教育程度10
+			String credit = (int) (Math.random() * 100) * 1000 + "";//信用评估100*1000
+			String ID = (((int) (Math.random() * 72) + 11) * 10000 + ((int) (Math.random() * 70) + 1) * 100 + ((int) (Math.random() * 99) + 1)) + "";//信用评估100*1000
+			ID += ((int)(Math.random() * 115) + 1900) + "";
+			ID += (int)(Math.random() * 9999) + "";
+			String asset = (int) (Math.random() * 2000) * 1000 + "";//资产2000*1000
+			String salary = (int) (Math.random() * 80) * 1000 + "";//工资80*1000
+			String sql = "INSERT INTO U_BACKGROUND(IMSI,INDUSTRYTYPE,WORKTYPE,WORKUNIT,WORKPOSITION,MARITALSTATUS,EDUCATION,CREDIT,ID,ASSET,SALARY) VALUES('"
+					     + IMSI1 + "','" + indus_type + "','" + work_type + "','" + workUnit + "','" + workPosition + "','" + maritalStatus + "','" + education + "','" + credit + "','" + ID + "','" + asset + "','" + salary + "')";
+			if (index == 3)
+				insertIntoFile(IMSI1 + "\001" + indus_type + "\001" + work_type + "\001" + workUnit + "\001" + workPosition + "\001" + maritalStatus + "\001" + education + "\001" + credit + "\001" + ID + "\001" + asset + "\001" + salary);
+			else
+				insertIntoDb(sql);
+		}
+		*/
+
+/*
+		for (int i = 0; i < 1000; i++) {
+			String IMSI1 = lct * 10000000 + i + "";
+			String ph_num = "188" + (int) (Math.random() * 99999999) + "";
+			String zip = (100000 + (int) (Math.random() * 999)) + "";
+			String e_m = "E-mail_" + (10000 + i) + "@e-mail.com";
+			String add = "Address_" + (10000 + i) + "";
+			String fax_num = "fax_number_" + (10000 + i) + "";
+			String prefer = (int) (Math.random() * 5) + "";
+			String sql = "INSERT INTO U_COMMUNICATION(IMSI,PHONENUMBER,ZIPCODE,EMAIL,DELIVERYADDRESS,FAXNUMBER,PREFERENCE) VALUES('"
+					+ IMSI1 + "','" + ph_num + "','" + zip + "','" + e_m + "','" + add + "','" + fax_num + "','" + prefer + "')";
+			if (index == 3)
+				insertIntoFile(IMSI1 + "\001" + ph_num + "\001" + zip + "\001" + e_m + "\001" + add + "\001" + fax_num + "\001" + prefer);
+			else
+				insertIntoDb(sql);
+		}
+*/
+
+/*
+		for (int i = 0; i < 1000; i++) {
+			String IMSI1 = lct * 10000000 + i + "";
+			String status = (int)(Math.random() * 4) + "";
+			String is_imp = (int)(Math.random() * 2) + "";
+			String b_point = (int)(Math.random() * 99999) + "";
+			String User_lv = (int)(Math.random() * 10) + "";
+			String VIPID = ((int)(Math.random() * 999) + i + 1000000 * lct) + "";
+			String sql = "INSERT INTO U_STATUS(IMSI,STATUS,ISIMPORTANT,BONUSPOINT,USERLEVEL,VIPID) VALUES('"
+					+ IMSI1 + "','" + status + "','" + is_imp + "','" + b_point + "','" + User_lv + "','" + VIPID + "')";
+			if (index == 3)
+				insertIntoFile(IMSI1 + "\001" + status + "\001" + is_imp + "\001" + b_point + "\001" + User_lv + "\001" + VIPID);
+			else
+				insertIntoDb(sql);
+		}
+
+*/
 
 			DataGenerate.board.setText("done!");
 		if(index == 3)
@@ -365,6 +424,8 @@ class Adapter_DataGenerate implements ActionListener
 		System.out.println(sql);
 			try {
 				Statement stmt = conn.createStatement();
+				if (stmt == null)
+				{}
 				stmt.executeUpdate(sql);
 			} catch (SQLException  e1) {
 				Writer result = new StringWriter();

@@ -30,7 +30,11 @@ public class FunctionMapping {
 		{
 			try {
 				instance=FunctionMappingAdapter.getMappingFromFile();
-			} catch (BiffException | IOException e) {
+			} catch (BiffException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return false;
