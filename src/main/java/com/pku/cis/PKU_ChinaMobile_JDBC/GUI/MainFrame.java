@@ -118,7 +118,8 @@ public class MainFrame extends JFrame {
 
     }
     class Adapter_btn3 implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(ActionEvent e)
+        {
             Console c = new Console();
         }
     }

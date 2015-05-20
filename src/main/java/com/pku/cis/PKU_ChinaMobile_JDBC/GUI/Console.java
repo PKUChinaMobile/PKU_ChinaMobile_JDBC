@@ -96,7 +96,7 @@ public class Console extends JFrame {
      */
     public Console(){
         setTitle("透明网关系统命令行控制台");
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 660, 454);
         contentPane = new JPanel();
         contentPane.setForeground(Color.WHITE);

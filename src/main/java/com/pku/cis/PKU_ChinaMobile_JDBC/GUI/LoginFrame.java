@@ -71,7 +71,7 @@ public class LoginFrame extends JFrame {
                               });
 
 
-                imagePanel.add(l);
+        imagePanel.add(l);
         imagePanel.add(l2);
         imagePanel.add(in);
         imagePanel.add(in2);
@@ -79,7 +79,6 @@ public class LoginFrame extends JFrame {
 
 
         this.getLayeredPane().add(imgLabel, new Integer(Integer.MIN_VALUE));
-        this.setVisible(true);
 
     }
 
@@ -94,6 +93,15 @@ public class LoginFrame extends JFrame {
     }
     public static void main(String[] args)
     {
-        LoginFrame lf = new LoginFrame();
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    LoginFrame frame = new LoginFrame();
+                    frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
