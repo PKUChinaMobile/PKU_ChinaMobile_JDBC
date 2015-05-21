@@ -43,7 +43,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 
-
 public class DataGenerate {
 	static JFrame f;
 	static JButton btn;
