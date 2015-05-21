@@ -657,20 +657,24 @@ public class PKUResultSet implements java.sql.ResultSet
 			      throw new java.sql.SQLException(e.getMessage());
 			    }
 			  }
-
-	public int getRow()
+	/*获取ResultSet数组总行数，非标准JDBC,使用时会将游标移回开头*/
+	public int getRows()
 			throws SQLException
 	{
 		try
 		{
-			return remoteResultSet.getRow();
+			return remoteResultSet.getRows();
 		}
 		catch(RemoteException ex)
 		{
 			throw(new SQLException(ex.getMessage()));
 		}
 	}
-
+	public int getRow()
+			throws SQLException
+	{
+		throw(new SQLException("Not Supported"));
+	}
 	public SQLWarning getWarnings()
 					   throws SQLException
 	{

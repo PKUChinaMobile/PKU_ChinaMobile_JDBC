@@ -9,6 +9,7 @@ import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUConnection;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUResultSet;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUResultSetMetaData;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUStatement;
+import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUDriver;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -18,37 +19,29 @@ import java.awt.Image;
 import java.awt.TextArea;
 
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
+import javax.swing.*;
 
 import java.awt.CardLayout;
-
-import javax.swing.JSplitPane;
-import javax.swing.JButton;
 
 import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.plaf.basic.BasicButtonUI;
-import javax.swing.ImageIcon;
-
-
 
 
 public class SelectFrame extends JFrame {
 
-
+    static PKUDriver d = new PKUDriver();
     public static TextArea textArea;//SQL语句输入框
     public static JLabel label_5;//底部状态框
-    public static String[] tableHeader;
+    public static String[] tableHeader; //查询结果表头
+    public static String[][] tableRow; //查询结果行
+    public static JTable table;
+    public static JScrollPane scrollPane;
+    public static JLabel label_2;//结果栏
     /**
      * Launch the application.
      */
@@ -111,10 +104,10 @@ public class SelectFrame extends JFrame {
         panel_3.setLayout(new BorderLayout(0, 0));
 
 
-        JLabel label_2 = new JLabel("");
+        label_2 = new JLabel("");
         label_2.setOpaque(true);
         label_2.setBackground(Color.WHITE);
-        JScrollPane scrollPane = new JScrollPane(label_2);
+        scrollPane = new JScrollPane(label_2);
         panel_3.add(scrollPane, BorderLayout.CENTER);
         JLabel label_3 = new JLabel(" ");
         panel_3.add(label_3, BorderLayout.WEST);
@@ -173,6 +166,7 @@ class Adapter_SelectFrame implements ActionListener
 {
     public void actionPerformed(ActionEvent e)
     {
+        /*获取查询结果*/
         String sql = SelectFrame.textArea.getText().toString();
         SelectFrame.label_5.setText("Execute: " + sql );
         String fullURL = Global.urlPrefix + Global.IP;
@@ -187,33 +181,36 @@ class Adapter_SelectFrame implements ActionListener
             PKUResultSet rs = (PKUResultSet)stmt.executeQuery(sql);
             PKUResultSetMetaData rmeta = (PKUResultSetMetaData) rs.getMetaData();
             int numColumns = rmeta.getColumnCount();
-            int numRows = rs.getRow();
+            int numRows = rs.getRows();
             SelectFrame.tableHeader = new String[numColumns];
+            SelectFrame.tableRow = new String[numRows][];
+            for(int i = 0; i < numRows; i++)
+                SelectFrame.tableRow[i] = new String[numColumns];
 
-            String temp = "";
-            for( int i = 1;i<= numColumns;i++ ) {
-                if( i < numColumns )
-                    temp += String.format("%-15s", rmeta.getColumnName(i))+" | ";
-                else
-                    temp += String.format("%-15s", rmeta.getColumnName(i))+" | " + "\r\n";
-            }
-
+            for( int i = 1;i<= numColumns;i++ ) //读取表头
+                SelectFrame.tableHeader[i-1] = String.format("%-15s", rmeta.getColumnName(i));
+            int j = 0;
             while( rs.next() ){
                 for( int i = 1;i <= numColumns;i++ ){
-                    if( i < numColumns )
-                        temp += String.format("%-15s",new String((rs.getString(i).trim()))) + " | ";
-                    else
-                        temp += String.format("%-15s",new String((rs.getString(i).trim()))) + " | " + "\r\n";
+                    SelectFrame.tableRow[j][i - 1] = String.format("%-15s",new String((rs.getString(i).trim())));
                 }
+                j++;
             }
-
+            SelectFrame.label_5.setText("Success.");
             rs.close();
             con.close();
-        } catch (SQLException e1) {
-            Writer result = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(result);
-            e1.printStackTrace(printWriter);
+        /*绘制查询结果*/
+            SelectFrame.table = new JTable(SelectFrame.tableRow, SelectFrame.tableHeader);
+            SelectFrame.table.setPreferredScrollableViewportSize(new Dimension(numColumns*15,numRows*10));
+            SelectFrame.table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);//某列改变或窗口改变时的调整
+            SelectFrame.table.setOpaque(false);
+            SelectFrame.scrollPane.add(SelectFrame.table);
 
+        } catch (SQLException e1) {
+            e1.printStackTrace();
+            SelectFrame.label_5.setText("Failed.");
         }
+
+
     }
 }
