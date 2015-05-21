@@ -218,6 +218,7 @@ class Adapter_SelectFrame implements ActionListener
         } catch (SQLException e1) {
             e1.printStackTrace();
             SelectFrame.label_5.setText("Failed.");
+            JOptionPane.showMessageDialog(null,e1.getMessage(),"连接失败", JOptionPane.ERROR_MESSAGE);
         }
 
 
