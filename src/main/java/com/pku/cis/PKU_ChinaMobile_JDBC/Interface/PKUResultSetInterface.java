@@ -12,6 +12,7 @@ public interface PKUResultSetInterface extends Remote
 {	   
 	Object[] getNextRow() throws RemoteException,SQLException;
 	int getRows() throws RemoteException,SQLException;
+	void beforeFirst()  throws RemoteException,SQLException;
 	void close() throws RemoteException,SQLException;
 	Hashtable getColumnList() throws RemoteException,SQLException;
     PKUResultSetMetaDataInterface getMetaData() throws java.rmi.RemoteException, SQLException;

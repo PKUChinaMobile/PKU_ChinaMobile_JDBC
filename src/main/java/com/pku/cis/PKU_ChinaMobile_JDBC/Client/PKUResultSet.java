@@ -670,6 +670,20 @@ public class PKUResultSet implements java.sql.ResultSet
 			throw(new SQLException(ex.getMessage()));
 		}
 	}
+	/*将ResultSet游标置于开头，此处将所有后台数据库的ResultSet都移到开头*/
+	public void beforeFirst()
+			throws SQLException
+	{
+		try
+		{
+			remoteResultSet.beforeFirst();
+		}
+		catch(RemoteException ex)
+		{
+			throw(new SQLException(ex.getMessage()));
+		}
+	}
+
 	public int getRow()
 			throws SQLException
 	{
@@ -748,11 +762,7 @@ public class PKUResultSet implements java.sql.ResultSet
 		throw(new SQLException("Not Supported"));
 	}
 
-	public void beforeFirst()
-				 throws SQLException
-	{
-		throw(new SQLException("Not Supported"));
-	}
+
 
 	public void afterLast()
 			   throws SQLException

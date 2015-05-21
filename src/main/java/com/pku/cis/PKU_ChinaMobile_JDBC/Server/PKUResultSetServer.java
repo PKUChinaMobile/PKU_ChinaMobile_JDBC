@@ -90,7 +90,18 @@ public class PKUResultSetServer extends UnicastRemoteObject
 		}
 		return cnt;
 	}
-	
+
+
+	/*将ResultSet游标置于开头，此处将所有后台数据库的ResultSet都移到开头*/
+	public void beforeFirst() throws RemoteException,SQLException
+	{
+
+		for(int i = 0; i < rsNum; i++) {
+			rs[i].beforeFirst(); //游标移到最后
+		}
+
+	}
+
 	/**
 	 * This method closes all the ResultSets
 	 */

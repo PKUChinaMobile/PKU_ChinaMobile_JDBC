@@ -3,6 +3,7 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.GUI;
 /**
  * 用户可输入查询窗口图形界面
  * Created by mrpen on 2015/5/21.
+ * 现在是只连接mysql，等数据库配置好了记得改回来
  */
 
 import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUConnection;
@@ -11,13 +12,15 @@ import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUResultSetMetaData;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUStatement;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUDriver;
 
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.TextArea;
-
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 
 import javax.swing.*;
 
@@ -27,6 +30,8 @@ import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileWriter;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -36,12 +41,14 @@ public class SelectFrame extends JFrame {
 
     static PKUDriver d = new PKUDriver();
     public static TextArea textArea;//SQL语句输入框
-    public static JLabel label_5;//底部状态框
-    public static String[] tableHeader; //查询结果表头
+    public static JLabel label_5;   //底部状态框
+    public static int numRows; //表行数
+    public static int numColumns; //表列数
+    public static String[] tableHeader;//查询结果表头
     public static String[][] tableRow; //查询结果行
-    public static JTable table;
-    public static JScrollPane scrollPane;
-    public static JLabel label_2;//结果栏
+    public static MyJTable table; //自定义表对象
+    public static JScrollPane scrollPane; //滚动条栏，包含表对象
+    public static JPanel panel_3; //下半部面板
     /**
      * Launch the application.
      */
@@ -70,11 +77,12 @@ public class SelectFrame extends JFrame {
 		/*第一个工具栏*/
         JPanel panel = new JPanel();
         panel.setLayout(null);
-        JButton btn = createBtn("Run","E:\\code\\java\\GUIDesigner\\icon0.png",10,0,65,25);//Run按钮
+        JButton btn = createBtn("Run","res/image/icon0.png",10,0,65,25);//Run按钮
         btn.addActionListener(new Adapter_SelectFrame());
         panel.add(btn);
-        JButton btn_2 = createBtn("Clear","E:\\code\\java\\GUIDesigner\\icon1.png",80,0,75,25);//Clear按钮
+        JButton btn_2 = createBtn("Clear","res/image/icon1.png",80,0,75,25);//Clear按钮
         panel.add(btn_2);
+        btn_2.addActionListener(new Adapter2_SelectFrame());
 
 		/*SQL输入栏*/
         JPanel panel_1 = new JPanel(); //SQL输入栏
@@ -86,7 +94,6 @@ public class SelectFrame extends JFrame {
         panel_1.add(label, BorderLayout.WEST);
         JLabel label_1 = new JLabel(" ");
         panel_1.add(label_1, BorderLayout.EAST);
-
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, false, panel, panel_1);
         splitPane.setDividerLocation(25);//设置分割线位置
         splitPane.setOneTouchExpandable(true);//设置是否可展开
@@ -96,30 +103,26 @@ public class SelectFrame extends JFrame {
 	    /*第二个工具栏*/
         JPanel panel_2 = new JPanel();
         panel_2.setLayout(null);
-        JButton btn_3 = createBtn("Save","E:\\code\\java\\GUIDesigner\\icon2.png",10,0,65,25);//Save按钮
+        JButton btn_3 = createBtn("Save","res/image/icon2.png",10,0,65,25);//Save按钮
+        btn_3.addActionListener(new Adapter3_SelectFrame());
         panel_2.add(btn_3);
 
 		/*结果栏*/
-        JPanel panel_3 = new JPanel(); //结果栏
+        panel_3 = new JPanel(); //结果栏
         panel_3.setLayout(new BorderLayout(0, 0));
-
-
-        label_2 = new JLabel("");
+        JLabel label_2 = new JLabel("");
         label_2.setOpaque(true);
-        label_2.setBackground(Color.WHITE);
         scrollPane = new JScrollPane(label_2);
         panel_3.add(scrollPane, BorderLayout.CENTER);
         JLabel label_3 = new JLabel(" ");
         panel_3.add(label_3, BorderLayout.WEST);
         JLabel label_4 = new JLabel(" ");
         panel_3.add(label_4, BorderLayout.EAST);
-
         JSplitPane splitPane_1 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, false, panel_2, panel_3);
         splitPane_1.setDividerLocation(25);
         splitPane_1.setOneTouchExpandable(true);
         splitPane_1.setDividerSize(0);
         splitPane_1.setOneTouchExpandable(false);
-
         JSplitPane splitPane_2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT, false, splitPane, splitPane_1);
         splitPane_2.setDividerLocation(100);
         splitPane_2.setOneTouchExpandable(true);
@@ -162,6 +165,7 @@ public class SelectFrame extends JFrame {
         return btn;
     }
 }
+/*Run按钮的响应事件*/
 class Adapter_SelectFrame implements ActionListener
 {
     public void actionPerformed(ActionEvent e)
@@ -182,6 +186,8 @@ class Adapter_SelectFrame implements ActionListener
             PKUResultSetMetaData rmeta = (PKUResultSetMetaData) rs.getMetaData();
             int numColumns = rmeta.getColumnCount();
             int numRows = rs.getRows();
+            SelectFrame.numColumns = numColumns;
+            SelectFrame.numRows = numRows;
             SelectFrame.tableHeader = new String[numColumns];
             SelectFrame.tableRow = new String[numRows][];
             for(int i = 0; i < numRows; i++)
@@ -200,17 +206,64 @@ class Adapter_SelectFrame implements ActionListener
             rs.close();
             con.close();
         /*绘制查询结果*/
-            SelectFrame.table = new JTable(SelectFrame.tableRow, SelectFrame.tableHeader);
-            SelectFrame.table.setPreferredScrollableViewportSize(new Dimension(numColumns*15,numRows*10));
+
+            SelectFrame.table = new MyJTable(new DefaultTableModel(SelectFrame.tableRow, SelectFrame.tableHeader));
+            SelectFrame.table.setPreferredScrollableViewportSize(new Dimension(numColumns*20,numRows*10));
             SelectFrame.table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);//某列改变或窗口改变时的调整
-            SelectFrame.table.setOpaque(false);
-            SelectFrame.scrollPane.add(SelectFrame.table);
+            SelectFrame.table.setBackground(Color.WHITE);
+            SelectFrame.panel_3.remove(SelectFrame.scrollPane);
+            SelectFrame.scrollPane  = new JScrollPane(SelectFrame.table);
+            SelectFrame.panel_3.add(SelectFrame.scrollPane, BorderLayout.CENTER);
 
         } catch (SQLException e1) {
             e1.printStackTrace();
             SelectFrame.label_5.setText("Failed.");
         }
 
+
+    }
+}
+/*Clear按钮的响应事件*/
+class Adapter2_SelectFrame implements ActionListener
+{
+    public void actionPerformed(ActionEvent e)
+    {
+        SelectFrame.textArea.setCaretPosition(0);
+        SelectFrame.textArea.setText("");
+    }
+}
+/*Save按钮的相应事件*/
+class Adapter3_SelectFrame implements ActionListener
+{
+    public void actionPerformed(ActionEvent e)
+    {
+
+        JFileChooser jf = new JFileChooser();
+        String saveType[] = {"txt","csv"};  //
+        jf.setFileFilter(new FileNameExtensionFilter("TXT & CSV FILE", saveType));
+        jf.setDialogTitle("导出结果");     //自定义选择框标题
+        jf.setSelectedFile(new File("result.txt")); //设置默认文件名
+        jf.showDialog(null, "保存文件");//这行代码取代showOpenDialog和showSaveDialog
+        File fi = jf.getSelectedFile();
+        String f = fi.getAbsolutePath();
+        try{
+            FileWriter out = new FileWriter(f);
+            out.write(SelectFrame.tableHeader[0]);
+            for(int i = 1; i < SelectFrame.numColumns; i++)
+                out.write(","+SelectFrame.tableHeader[i]);
+            out.write('\n');
+            for(int i = 0; i < SelectFrame.numRows; i++){
+                out.write(SelectFrame.tableRow[i][0]);
+                for(int j = 1; j < SelectFrame.numColumns; j++)
+                {
+                    out.write(","+SelectFrame.tableRow[i][j]);
+                }
+                out.write('\n');
+            }
+            out.close();
+        }
+        catch(Exception e1){}
+//如果还想限制文件类型
 
     }
 }
