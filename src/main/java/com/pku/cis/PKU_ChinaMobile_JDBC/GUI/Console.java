@@ -34,12 +34,10 @@ public class Console extends JFrame {
     static int startPos;
     Lock lock = new ReentrantLock();
 
-    static String userName ="C##MYTEST";
-    static String userPasswd ="123456";
+
     static String tableName ="person";
 
-    static String urlPrefix = "jdbc:PKUDriver:";
-    static String IP = "127.0.0.1";
+
     static PKUDriver d = new PKUDriver();
 
     /**
@@ -52,11 +50,11 @@ public class Console extends JFrame {
     public void execute(String sql)
     {
         textArea.append("\nExecute: " + sql + "\n");
-        String fullURL = urlPrefix + IP;
+        String fullURL = Global.urlPrefix + Global.IP;
         textArea.append("Attempt to connect " + fullURL+"\n");
         PKUConnection con;
         try {
-            con = (PKUConnection) DriverManager.getConnection(fullURL, userName, userPasswd);
+            con = (PKUConnection) DriverManager.getConnection(fullURL, Global.userName, Global.userPasswd);
             con.setDst(0); //设置为0表示普通连接，index表示对应的数据库类型
             PKUStatement stmt;
             stmt = (PKUStatement)con.createStatement();

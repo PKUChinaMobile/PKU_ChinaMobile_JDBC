@@ -78,6 +78,15 @@ public class PKUResultSetServer extends UnicastRemoteObject
 		//Return null if all data has already been iterated
 		return null;
 	}
+
+	public int getRow() throws RemoteException,SQLException
+	{
+		int cnt = 0;
+		for(int i = 0; i < rsNum; i++) {
+			cnt += rs[i].getRow();
+		}
+		return cnt;
+	}
 	
 	/**
 	 * This method closes all the ResultSets

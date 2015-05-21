@@ -278,9 +278,7 @@ public class PKUResultSet implements java.sql.ResultSet
 			return current.intValue();
 		}
 	}
-	
-	///////////////////////////////////////////////////////////////////////////
-	//might be put as Not Supported
+
 	public boolean getBoolean(int columnIndex)
 					   throws SQLException
 	{
@@ -659,7 +657,20 @@ public class PKUResultSet implements java.sql.ResultSet
 			      throw new java.sql.SQLException(e.getMessage());
 			    }
 			  }
-	
+
+	public int getRow()
+			throws SQLException
+	{
+		try
+		{
+			return remoteResultSet.getRow();
+		}
+		catch(RemoteException ex)
+		{
+			throw(new SQLException(ex.getMessage()));
+		}
+	}
+
 	public SQLWarning getWarnings()
 					   throws SQLException
 	{
@@ -757,11 +768,7 @@ public class PKUResultSet implements java.sql.ResultSet
 		throw(new SQLException("Not Supported"));
 	}
 
-	public int getRow()
-			   throws SQLException
-	{
-		throw(new SQLException("Not Supported"));
-	}
+
 
 	public boolean absolute(int row)
 					 throws SQLException
