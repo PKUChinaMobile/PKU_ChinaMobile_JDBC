@@ -6,40 +6,35 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.GUI;
 
 
 import com.pku.cis.PKU_ChinaMobile_JDBC.Client.*;
-import com.pku.cis.PKU_ChinaMobile_JDBC.examples.Test;
 
+
+import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.text.BadLocationException;
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.awt.Font;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.concurrent.locks.*;
+
 
 
 public class Console extends JFrame {
 
     private JPanel contentPane;
     static boolean flag = false; //标志文本末尾有无下滑线
-    static boolean flag2 = true;
     static JTextArea textArea;
     static int startPos;
-    Lock lock = new ReentrantLock();
+    static int scrollPos; //标记scrollPos的位置
+    static Timer timer;
+    static JScrollPane scroll;
 
-    static String userName ="C##MYTEST";
-    static String userPasswd ="123456";
+
     static String tableName ="person";
 
-    static String urlPrefix = "jdbc:PKUDriver:";
-    static String IP = "127.0.0.1";
+
     static PKUDriver d = new PKUDriver();
 
     /**
@@ -52,11 +47,11 @@ public class Console extends JFrame {
     public void execute(String sql)
     {
         textArea.append("\nExecute: " + sql + "\n");
-        String fullURL = urlPrefix + IP;
+        String fullURL = Global.urlPrefix + Global.IP;
         textArea.append("Attempt to connect " + fullURL+"\n");
         PKUConnection con;
         try {
-            con = (PKUConnection) DriverManager.getConnection(fullURL, userName, userPasswd);
+            con = (PKUConnection) DriverManager.getConnection(fullURL, Global.userName, Global.userPasswd);
             con.setDst(0); //设置为0表示普通连接，index表示对应的数据库类型
             PKUStatement stmt;
             stmt = (PKUStatement)con.createStatement();
@@ -87,7 +82,7 @@ public class Console extends JFrame {
             Writer result = new StringWriter();
             PrintWriter printWriter = new PrintWriter(result);
             e1.printStackTrace(printWriter);
-            textArea.append(result.toString());
+            textArea.append(result.toString()+">");
         }
 
     }
@@ -116,52 +111,34 @@ public class Console extends JFrame {
                 + "'\\c' to clear the current input statement.\n\n>");
         int rows = textArea.getLineCount()-1;
 
+        scroll = new JScrollPane(textArea); //设置滚动条
+        contentPane.add(scroll);
+        setVisible(true);
+
         try {
-            startPos = textArea.getLineEndOffset(rows);
+            startPos = textArea.getLineEndOffset(rows); //记录文本末尾位置
+            scrollPos = scroll.getVerticalScrollBar().getValue();
         } catch (BadLocationException e) {
             e.printStackTrace();
         }
 
-        textArea.addMouseListener(new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
-
-                flag2 = false;
-
-            }
-            public void mouseDragged(MouseEvent e) {
-
-                flag2 = false;
-
-            }
-            public void mouseReleased(MouseEvent e){
-
-                flag2 =false;
-
-            }
-            public void mouseWheelMoved(MouseWheelEvent e){
-
-                flag2 = false;
-            }
-        });
         textArea.addKeyListener(new KeyAdapter() {
                                     public void keyPressed(KeyEvent e)
                                     {
-                                        lock.lock();
+                                        timer.stop();
                                         try {
-                                            int pos = textArea.getLineEndOffset(textArea.getLineCount()-1);
-
-
+                                            int pos = textArea.getLineEndOffset(textArea.getLineCount()-1);//读取文本末尾位置
                                             if(e.getKeyCode() == KeyEvent.VK_ENTER)
                                             {
 
-                                                if(flag)
+                                                if(flag) //flag标记事件发生瞬间，文本末尾是‘_’，若是，替换掉
                                                     textArea.replaceRange("", pos - 1, pos);
                                                 int endPos = textArea.getLineEndOffset(textArea.getLineCount()-1);
-                                                String cmd = textArea.getText(startPos, endPos - startPos);
+                                                String cmd = textArea.getText(startPos, endPos - startPos); //读取输入语句
                                                 execute(cmd);
-                                                startPos = textArea.getLineEndOffset(textArea.getLineCount()-1);
+                                                startPos = textArea.getLineEndOffset(textArea.getLineCount() - 1);//记录文本末尾位置
                                                 if(flag)
-                                                    textArea.append("_");
+                                                    textArea.append("_"); //补回原来的下划线
 
                                             }
                                             else if(e.getKeyChar() == KeyEvent.VK_BACK_SPACE)
@@ -181,45 +158,32 @@ public class Console extends JFrame {
                                         } catch (BadLocationException e1) {
                                             e1.printStackTrace();
                                         }
-                                        lock.unlock();
+                                        timer.start();
                                     }
                                 }
         );
-        JScrollPane scroll = new JScrollPane(textArea); //为了设置滚动条
-        scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        textArea.getCaret().addChangeListener(new ChangeListener()
-        {
-            public void stateChanged(ChangeEvent e)
-            {
-                textArea.getCaret().setVisible(false);
-            }
-        });
-        contentPane.add(scroll);
-        setVisible(true);
-
-        Timer timer = new Timer(500, new ActionListener(){
+        timer = new Timer(500, new ActionListener(){ //设置光标闪烁效果
             public void actionPerformed(ActionEvent e){
-                lock.lock();
-                if(flag2){
 
-                if(flag)
-                {
-                    try {
-                        int rows = textArea.getLineCount()-1;
-                        textArea.replaceRange("", textArea.getLineEndOffset(rows) - 1,textArea.getLineEndOffset(rows));
-                        flag = false;
-                    } catch (BadLocationException e1) {
-                        e1.printStackTrace();
+                if(scroll.getVerticalScrollBar().getValue() >= scrollPos)
+                    scrollPos = scroll.getVerticalScrollBar().getValue(); //更新滚动条位置
+                if(scroll.getVerticalScrollBar().getValue() >= scrollPos) {//当滚动条移动时，取消闪烁事件，防止自动聚焦到光标位置
+                    if (flag) {
+                        try {
+                            int rows = textArea.getLineCount() - 1;
+                            textArea.replaceRange("", textArea.getLineEndOffset(rows) - 1, textArea.getLineEndOffset(rows));
+                            flag = false;
+                        } catch (BadLocationException e1) {
+                            e1.printStackTrace();
+                        }
+                    } else {
+                        textArea.append("_");
+                        flag = true;
                     }
+                    textArea.setCaretPosition(textArea.getText().length());
                 }
-                else {
-                    textArea.append("_");
-                    flag = true;
-                }
-                textArea.setCaretPosition(textArea.getText().length());
-
-            }lock.unlock();}
+            }
         }
         );
         timer.start();

@@ -278,9 +278,7 @@ public class PKUResultSet implements java.sql.ResultSet
 			return current.intValue();
 		}
 	}
-	
-	///////////////////////////////////////////////////////////////////////////
-	//might be put as Not Supported
+
 	public boolean getBoolean(int columnIndex)
 					   throws SQLException
 	{
@@ -659,7 +657,38 @@ public class PKUResultSet implements java.sql.ResultSet
 			      throw new java.sql.SQLException(e.getMessage());
 			    }
 			  }
-	
+	/*获取ResultSet数组总行数，非标准JDBC,使用时会将游标移回开头*/
+	public int getRows()
+			throws SQLException
+	{
+		try
+		{
+			return remoteResultSet.getRows();
+		}
+		catch(RemoteException ex)
+		{
+			throw(new SQLException(ex.getMessage()));
+		}
+	}
+	/*将ResultSet游标置于开头，此处将所有后台数据库的ResultSet都移到开头*/
+	public void beforeFirst()
+			throws SQLException
+	{
+		try
+		{
+			remoteResultSet.beforeFirst();
+		}
+		catch(RemoteException ex)
+		{
+			throw(new SQLException(ex.getMessage()));
+		}
+	}
+
+	public int getRow()
+			throws SQLException
+	{
+		throw(new SQLException("Not Supported"));
+	}
 	public SQLWarning getWarnings()
 					   throws SQLException
 	{
@@ -733,11 +762,7 @@ public class PKUResultSet implements java.sql.ResultSet
 		throw(new SQLException("Not Supported"));
 	}
 
-	public void beforeFirst()
-				 throws SQLException
-	{
-		throw(new SQLException("Not Supported"));
-	}
+
 
 	public void afterLast()
 			   throws SQLException
@@ -757,11 +782,7 @@ public class PKUResultSet implements java.sql.ResultSet
 		throw(new SQLException("Not Supported"));
 	}
 
-	public int getRow()
-			   throws SQLException
-	{
-		throw(new SQLException("Not Supported"));
-	}
+
 
 	public boolean absolute(int row)
 					 throws SQLException

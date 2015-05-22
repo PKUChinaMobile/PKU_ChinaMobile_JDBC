@@ -12,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -27,7 +26,7 @@ import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUDriver;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUResultSet;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUResultSetMetaData;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUStatement;
-import com.pku.cis.PKU_ChinaMobile_JDBC.Server.ConnectionManager;
+
 
 public class TestForSelect  {
 	static JFrame f;
