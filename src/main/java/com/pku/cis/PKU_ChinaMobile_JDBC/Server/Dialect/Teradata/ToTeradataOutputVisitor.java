@@ -7,12 +7,7 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.Server.Dialect.Teradata;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.*;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.pku.cis.PKU_ChinaMobile.DataSource.DataSourceType;
@@ -320,5 +315,52 @@ public class ToTeradataOutputVisitor extends OracleOutputVisitor {
         } else {
             left.accept(this);
         }
+    }
+
+    @Override
+    public boolean visit(SQLUnionQuery x) {
+        x.getLeft().accept(this);
+        println();
+        if(x.getOperator().name.toUpperCase()=="INTERSECT"){
+            print("EXCEPT");
+        }
+        else {
+            print(x.getOperator().name);
+        }
+        println();
+
+        boolean needParen = false;
+
+        if (x.getOrderBy() != null) {
+            needParen = true;
+        }
+
+        if (needParen) {
+            print('(');
+            x.getRight().accept(this);
+            print(')');
+        } else {
+            x.getRight().accept(this);
+        }
+
+        if (x.getOrderBy() != null) {
+            println();
+            x.getOrderBy().accept(this);
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(SQLWithSubqueryClause x) {
+        print("CREATE VIEW");
+        if (x.getRecursive() == Boolean.TRUE) {
+            print(" RECURSIVE");
+        }
+        incrementIndent();
+        println();
+        printlnAndAccept(x.getEntries(), ", ");
+        decrementIndent();
+        return false;
     }
 }

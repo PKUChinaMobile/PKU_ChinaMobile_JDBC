@@ -57,15 +57,23 @@ public class HiveTranslateTest {
         //String sql = "select * from student s inner join class c on s.classid=c.id";
       //  String sql = "select sin(a, b, c), sum(a) from student s group by a";
       //  System.out.println(translate("SELECT dualTime, vcCallingIMSI, vcCalledIMSI, intLocation FROM callRecords WHERE intLocation = 3 ORDER BY intYear"));
-        System.out.println(translate("SELECT count(1) FROM callRecords WHERE intLocation=1 GROUP BY intYear, intMonth, intDay"));
-        System.out.println(translate("WITH COUNT_2CALL AS (SELECT count(1) FROM callRecords WHERE intLocation = 2), COUNT_3CALL AS (SELECT\n" +
-                "            count(1) FROM callRecords WHERE intLocation = 3), COUNT_4CALL AS (SELECT count(1) FROM\n" +
-                "            callRecords WHERE intLocation = 4) SELECT biSessID FROM callRecords where COUNT_2CALL >\n" +
-                "        COUNT_3CALL / COUNT_4CALL"));
-        System.out.println(translate(" SELECT biSessID FROM callRecords where intLocation = 1 OR intLocation = 2 INTERSECT SELECT biSessID\n" +
-                "        FROM callRecords WHERE intLocation = 1"));
+        //System.out.println(translate("SELECT count(1) FROM callRecords WHERE intLocation=1 GROUP BY intYear, intMonth, intDay"));
+//        System.out.println(translate("WITH COUNT_2CALL AS (SELECT count(1) FROM callRecords WHERE intLocation = 2), COUNT_3CALL AS (SELECT\n" +
+//                "            count(1) FROM callRecords WHERE intLocation = 3), COUNT_4CALL AS (SELECT count(1) FROM\n" +
+//                "            callRecords WHERE intLocation = 4) SELECT biSessID FROM callRecords where COUNT_2CALL >\n" +
+//                "        COUNT_3CALL / COUNT_4CALL"));
+//        System.out.println(translate(" SELECT biSessID FROM callRecords where intLocation = 1 OR intLocation = 2 INTERSECT SELECT biSessID\n" +
+//                "        FROM callRecords WHERE intLocation = 1"));
         //System.out.println(translate(" SELECT biSessID FROM (select biSessID) where rownum < 10"));
-        System.out.println(translate(" SELECT CONCAT(biSessID, biSessID) FROM callRecords "));
-        System.out.println(translate(" SELECT MAX(biSessID) FROM callRecords "));
+        //String TestSQL1 = " SELECT CONCAT(biSessID, biSessID) FROM callRecords ";
+        //String TestSQL1 = " SELECT MOD(biSessID, biSessID) FROM callRecords ";
+        //String TestSQL1 = " SELECT * FROM callRecords limit 10 ";
+//        String TestSQL1 = "SELECT collect(A) FROM T intersect SELECT collect(A) FROM T";
+//        System.out.println(translate(TestSQL1));
+//        String TestSQL2 = "SELECT collect(A) FROM T union SELECT collect(A) FROM T";
+//        System.out.println(translate(TestSQL2));
+        String TestSQL1 = "WITH DATE(intYear, intMonth, intDay) AS (Select intYear, intMonth, intDay from callRecords)";
+        System.out.println(translate(TestSQL1));
+//        System.out.println(translate(" SELECT MAX(biSessID) FROM callRecords "));
     }
 }
