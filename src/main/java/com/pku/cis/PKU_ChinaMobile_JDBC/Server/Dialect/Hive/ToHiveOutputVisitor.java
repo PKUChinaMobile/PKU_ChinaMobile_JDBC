@@ -7,12 +7,9 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.Server.Dialect.Hive;
 import com.alibaba.druid.sql.ast.SQLExpr;
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.expr.*;
-import com.alibaba.druid.sql.ast.statement.SQLSelect;
-import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
-import com.alibaba.druid.sql.ast.statement.SQLSelectQueryBlock;
-import com.alibaba.druid.sql.ast.statement.SQLSelectStatement;
-import com.alibaba.druid.sql.ast.statement.SQLSubqueryTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLTableSource;
+import com.alibaba.druid.sql.ast.statement.*;
+import com.alibaba.druid.sql.dialect.oracle.ast.OracleOrderBy;
+import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectJoin;
 import com.alibaba.druid.sql.dialect.oracle.ast.stmt.OracleSelectQueryBlock;
 import com.alibaba.druid.sql.dialect.oracle.visitor.OracleOutputVisitor;
 import com.pku.cis.PKU_ChinaMobile.DataSource.DataSourceType;
@@ -322,4 +319,62 @@ public class ToHiveOutputVisitor extends OracleOutputVisitor {
             left.accept(this);
         }
     }
+
+    @Override
+    public boolean visit(OracleOrderBy x) {
+        if(x.getItems().size() > 0) {
+            this.print("SORT ");
+            if(x.isSibings()) {
+                this.print("SIBLINGS ");
+            }
+
+            this.print("BY ");
+            this.printAndAccept(x.getItems(), ", ");
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean visit(OracleSelectJoin x) {
+        x.getLeft().accept(this);
+        if(x.getJoinType() == SQLJoinTableSource.JoinType.COMMA) {
+            this.print(", ");
+            x.getRight().accept(this);
+        } else if (x.getJoinType() == SQLJoinTableSource.JoinType.INNER_JOIN){
+            boolean isRoot = x.getParent() instanceof SQLSelectQueryBlock;
+            if(isRoot) {
+                this.incrementIndent();
+            }
+
+            this.println();
+            this.print(SQLJoinTableSource.JoinType.JOIN.toString());
+            this.print(" ");
+            x.getRight().accept(this);
+            if(isRoot) {
+                this.decrementIndent();
+            }
+
+            if(x.getCondition() != null) {
+                this.print(" ON (");
+                x.getCondition().accept(this);
+                this.print(") ");
+            }
+
+            if(x.getUsing().size() > 0) {
+                this.print(" USING (");
+                this.printAndAccept(x.getUsing(), ", ");
+                this.print(")");
+            }
+
+            if(x.getFlashback() != null) {
+                this.println();
+                x.getFlashback().accept(this);
+            }
+        }
+
+        return false;
+    }
+
+
 }

@@ -72,7 +72,7 @@ public class HiveTranslateTest {
 //        System.out.println(translate(TestSQL1));
 //        String TestSQL2 = "SELECT collect(A) FROM T union SELECT collect(A) FROM T";
 //        System.out.println(translate(TestSQL2));
-        String TestSQL1 = "WITH DATE(intYear, intMonth, intDay) AS (Select intYear, intMonth, intDay from callRecords)";
+        String TestSQL1 = "SELECT DISTINCT records.bisessID FROM records INNER JOIN users ON records.vcCallingIMSI = users.IMSI ORDER BY records.bisessID";
         System.out.println(translate(TestSQL1));
 //        System.out.println(translate(" SELECT MAX(biSessID) FROM callRecords "));
     }
