@@ -42,6 +42,7 @@ public class HiveTranslateTest {
 
         System.out.println("TD: " + out2.toString());
 
+        System.out.println("-----------------");
         for (SQLStatement stmt : stmtList) {
             stmt.accept(visitor);
             out.append(";");
@@ -72,7 +73,7 @@ public class HiveTranslateTest {
 //        System.out.println(translate(TestSQL1));
 //        String TestSQL2 = "SELECT collect(A) FROM T union SELECT collect(A) FROM T";
 //        System.out.println(translate(TestSQL2));
-        String TestSQL1 = "SELECT DISTINCT records.bisessID FROM records INNER JOIN users ON records.vcCallingIMSI = users.IMSI ORDER BY records.bisessID";
+        String TestSQL1 = "Select * from callRecords where vcCallingIMSI not in (select IMSI from USERS)";
         System.out.println(translate(TestSQL1));
 //        System.out.println(translate(" SELECT MAX(biSessID) FROM callRecords "));
     }
