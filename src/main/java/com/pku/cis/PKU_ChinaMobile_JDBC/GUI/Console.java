@@ -90,7 +90,7 @@ public class Console extends JFrame {
      * Create the frame.
      */
     public Console(){
-        setTitle("透明网关系统命令行控制台");
+        setTitle("透明网关系统——命令行控制台");
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 660, 454);
         contentPane = new JPanel();

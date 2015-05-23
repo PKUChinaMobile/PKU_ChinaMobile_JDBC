@@ -2,22 +2,15 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.GUI;
 
 /**
  * Created by mrpen on 2015/5/23.
+ * 查询生成器界面
  */
 import java.awt.*;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
-import javax.swing.JComboBox;
-import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -25,7 +18,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.io.IOException;
+import java.io.RandomAccessFile;
 
 
 public class QueryGenerateFrame extends JFrame {
@@ -50,6 +44,8 @@ public class QueryGenerateFrame extends JFrame {
     public static JTextArea textfield;//生成分组条件文本框
     public static JTextArea textField_1;//生成排序条件文本框
     public static JTextArea textArea_1; //查询语句面板
+
+
     /**
      * Launch the application.
      */
@@ -57,7 +53,7 @@ public class QueryGenerateFrame extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    QueryGenerateFrame frame = new QueryGenerateFrame();
+                    QueryGenerateFrame frame = new QueryGenerateFrame(null);
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -117,10 +113,12 @@ public class QueryGenerateFrame extends JFrame {
     /**
      * Create the frame.
      */
-    public QueryGenerateFrame() {
+
+    public QueryGenerateFrame(BuildInFrame f) {
         fetchData();
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 600, 600);
+        setTitle("透明网关系统——预置查询窗口");
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -689,7 +687,18 @@ public class QueryGenerateFrame extends JFrame {
         btnNewButton_6.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                if(!textArea_1.getText().equals(""))
+                try{
+                    RandomAccessFile rf=new RandomAccessFile("res/BuildinSQLs.txt","rw");
+                    rf.seek(rf.length());  //将指针移动到文件末尾
+                    rf.writeBytes(textArea_1.getText() + "\n"); //字符串末尾需要换行符
+                    rf.close();//关闭文件流
+                    if(f != null) //更新父窗口的comboBox
+                        f.updateComboBox();
+                    dispose();
+                }catch(IOException e1){
+                    JOptionPane.showMessageDialog(null, "无法写入配置文件 BuildinSQLs.txt", "添加语句失败", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
         panel_15.add(btnNewButton_6);

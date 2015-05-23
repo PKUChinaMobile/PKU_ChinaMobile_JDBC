@@ -1,0 +1,4 @@
+select age,location from users
+select * from users
+select * from persons
+select age from users

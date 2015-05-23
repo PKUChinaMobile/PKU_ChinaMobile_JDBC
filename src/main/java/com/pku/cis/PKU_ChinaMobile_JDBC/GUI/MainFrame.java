@@ -5,19 +5,15 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.GUI;
  */
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.SwingConstants;
-import javax.swing.ImageIcon;
 
 
 public class MainFrame extends JFrame {
@@ -66,6 +62,9 @@ public class MainFrame extends JFrame {
         gbc_panel.gridy = 0;
         contentPane.add(panel, gbc_panel);
         panel.setLayout(new GridLayout(4, 0, 0, 0));
+        panel.setBorder(BorderFactory.createTitledBorder("Application"));
+
+        panel.setOpaque(true);
 
         JButton btnNewButton_1 = new JButton("数据源管理");
         btnNewButton_1.addActionListener(new ActionListener() {
@@ -120,7 +119,8 @@ public class MainFrame extends JFrame {
     class Adapter_btn3 implements ActionListener {
         public void actionPerformed(ActionEvent e)
         {
-            Console c = new Console();
+            ChooseModeFrame c = new ChooseModeFrame();
+            c.setVisible(true);
         }
     }
 }
