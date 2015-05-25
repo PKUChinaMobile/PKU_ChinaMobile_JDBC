@@ -1,5 +1,7 @@
 package com.pku.cis.PKU_ChinaMobile_JDBC.GUI;
 
+import com.pku.cis.PKU_ChinaMobile_JDBC.Server.PermissionManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -56,16 +58,23 @@ public class LoginFrame extends JFrame {
         btn.setFont(new Font("黑体", Font.PLAIN, 19));
         btn.addActionListener(new ActionListener() {
                                   public void actionPerformed(ActionEvent e) {
-                                      if(accessCheck())
-                                      {
-                                          MainFrame mf = new MainFrame();
-                                          mf.show();
-                                          setVisible(false);
-
-                                      }
-                                      else
-                                      {
-                                          JOptionPane.showMessageDialog(null,"错误的用户名密码!","登录失败", JOptionPane.ERROR_MESSAGE);
+                                      String usr = in.getText();
+                                      String pwd = new String(in2.getPassword());
+                                      PermissionManager pm = new PermissionManager();
+                                      try {
+                                          int permission = pm.login(usr, pwd);
+                                          Global.userName = usr;
+                                          Global.permission = permission;
+                                          if(permission == 0)
+                                              JOptionPane.showMessageDialog(null,"错误的用户名密码!","登录失败", JOptionPane.ERROR_MESSAGE);
+                                          else
+                                          {
+                                              MainFrame mf = new MainFrame();
+                                              mf.setVisible(true);
+                                              dispose();
+                                          }
+                                      } catch (Exception e1) {
+                                          JOptionPane.showMessageDialog(null,e1.getMessage(),"连接服务器失败", JOptionPane.ERROR_MESSAGE);
                                       }
                                   }
                               });
@@ -82,15 +91,6 @@ public class LoginFrame extends JFrame {
 
     }
 
-    boolean accessCheck() //查询访问权限
-    {
-        String usr = in.getText();
-        String pwd = new String(in2.getPassword());
-        System.out.println("usr: " + usr + "  pwd: " + pwd);
-        if(pwd.equals("123"))
-            return false;
-        return true;
-    }
     public static void main(String[] args)
     {
         EventQueue.invokeLater(new Runnable() {

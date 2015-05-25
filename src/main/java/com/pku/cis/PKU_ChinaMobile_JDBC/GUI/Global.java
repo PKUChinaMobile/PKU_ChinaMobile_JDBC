@@ -7,6 +7,7 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.GUI;
 public class Global {
     static String urlPrefix = "jdbc:PKUDriver:";
     static String IP = "127.0.0.1";
-    static String userName ="C##MYTEST";
-    static String userPasswd ="123456";
+    static String userName ="";
+    static String userPasswd ="";
+    static int permission;
 }

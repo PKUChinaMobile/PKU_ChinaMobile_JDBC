@@ -3,6 +3,8 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.GUI;
 /**
  * Created by mrpen on 2015/5/5.
  */
+import com.pku.cis.PKU_ChinaMobile_JDBC.Server.PermissionManager;
+
 import java.awt.EventQueue;
 
 import javax.swing.*;
@@ -14,6 +16,8 @@ import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 
 public class MainFrame extends JFrame {
@@ -76,12 +80,37 @@ public class MainFrame extends JFrame {
         JButton btnNewButton_2 = new JButton("元数据管理");
         panel.add(btnNewButton_2);
 
-        JButton btnNewButton = new JButton("账户管理");
+        JButton btnNewButton = new JButton("权限管理");
+        btnNewButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(Global.permission != 2)
+                    JOptionPane.showMessageDialog(null, "没有执行权限", "提示", JOptionPane.ERROR_MESSAGE);
+                else {
+                    btnNewButton.setEnabled(false);
+                    PermissionManagerFrame pmf = new PermissionManagerFrame();
+                    pmf.setVisible(true);
+                    pmf.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            btnNewButton.setEnabled(true);
+                            super.windowClosing(e);
+                        }
+                    });
+                }
+            }
+        });
         panel.add(btnNewButton);
 
         JButton btnNewButton_3 = new JButton("数据查询");
         panel.add(btnNewButton_3);
-        btnNewButton_3.addActionListener(new Adapter_btn3());
+        btnNewButton_3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ChooseModeFrame c = new ChooseModeFrame();
+                c.setVisible(true);
+            }
+        });
 
         JPanel panel_2 = new JPanel();
         GridBagConstraints gbc_panel_2 = new GridBagConstraints();
@@ -115,13 +144,6 @@ public class MainFrame extends JFrame {
         panel_1.add(lblNewLabel);
 
 
-    }
-    class Adapter_btn3 implements ActionListener {
-        public void actionPerformed(ActionEvent e)
-        {
-            ChooseModeFrame c = new ChooseModeFrame();
-            c.setVisible(true);
-        }
     }
 }
 

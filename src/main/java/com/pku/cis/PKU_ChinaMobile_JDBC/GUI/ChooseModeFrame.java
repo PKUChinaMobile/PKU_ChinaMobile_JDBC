@@ -4,15 +4,9 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.GUI;
  * Created by mrpen on 2015/5/23.
  * 供用户选择查询模式
  */
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import javax.swing.border.BevelBorder;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.GridBagLayout;
-import javax.swing.JButton;
-import javax.swing.JTextArea;
 import java.awt.Color;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -53,7 +47,7 @@ public class ChooseModeFrame extends JFrame {
         contentPane.setLayout(null);
 
         JPanel panel = new JPanel();
-        panel.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+        panel.setBorder(BorderFactory.createEtchedBorder());
         panel.setOpaque(true);
         panel.setBounds(10, 22, 414, 66);
         contentPane.add(panel);
@@ -81,7 +75,7 @@ public class ChooseModeFrame extends JFrame {
 
         JPanel panel_1 = new JPanel();
         panel_1.setBounds(10, 98, 414, 66);
-        panel_1.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+        panel_1.setBorder(BorderFactory.createEtchedBorder());
         panel_1.setOpaque(true);
         contentPane.add(panel_1);
         panel_1.setLayout(null);
@@ -108,7 +102,7 @@ public class ChooseModeFrame extends JFrame {
 
         JPanel panel_2 = new JPanel();
         panel_2.setBounds(10, 174, 414, 66);
-        panel_2.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
+        panel_2.setBorder(BorderFactory.createEtchedBorder());
         panel_2.setOpaque(true);
         contentPane.add(panel_2);
         panel_2.setLayout(null);
