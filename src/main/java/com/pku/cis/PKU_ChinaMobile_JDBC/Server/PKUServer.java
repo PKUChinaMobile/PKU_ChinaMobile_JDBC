@@ -47,18 +47,22 @@ public class PKUServer {
 		PKUServer theServer = new PKUServer();
 		String rmiRef = "rmi://localhost:1099/RemoteDriver";
 		PKUDriverServer theDriver;
-		
+		String rmiRef2 = "rmi://localhost:1099/RemotePermissionManager";
+		PermissionManager thePM;
+
 		MethodNameMapping.getSingleton();
 		
 		try {
 			//Build the driver server object. 
 			theDriver = new PKUDriverServer();
-			
+			thePM = new PermissionManager();
+
 			//Register the server.
 			Registry registry = LocateRegistry.createRegistry(1099);
 		    registry.rebind("RemoteDriver", theDriver);
-			Naming.rebind(rmiRef,theDriver);			
-			
+			Naming.rebind(rmiRef,theDriver);
+			registry.rebind("RemotePermissionManager", thePM);
+			Naming.rebind(rmiRef2,thePM);
 		    
 		    System.out.println();
 			System.out.println("Remote Driver server has started successfully...");

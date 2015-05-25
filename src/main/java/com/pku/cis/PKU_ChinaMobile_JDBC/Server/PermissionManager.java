@@ -1,15 +1,20 @@
 package com.pku.cis.PKU_ChinaMobile_JDBC.Server;
 
+import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PermissionManagerInterface;
+
 import java.io.*;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.sql.DriverManager;
 import java.lang.Class;
 import java.util.ArrayList;
+import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.P_Users;
 
 /**
  * Created by lyy on 2015/5/24.
  */
-public class PermissionManager
+public class PermissionManager extends UnicastRemoteObject
+        implements PermissionManagerInterface
 {
     private static String driverName ="com.mysql.jdbc.Driver";
     private static String userName ="root";
@@ -17,13 +22,14 @@ public class PermissionManager
     private static String dbName ="pku_chinamobile_jdbc_metadata";
     private static String url ="jdbc:mysql://162.105.71.128:3306/";//"jdbc:mysql://162.105.71.247:3306/";
 
+    PermissionManager() throws Exception{}
     private static Connection getConnection() throws  Exception
     {
         Class.forName("com.mysql.jdbc.Driver").newInstance();
         return DriverManager.getConnection(url + dbName, userName, userPasswd);
     }
 
-    public static P_Users[] getUsers() throws Exception
+    public  P_Users[] getUsers() throws Exception
     {
         System.out.println("getUsers");
         Connection connection = getConnection();
@@ -42,7 +48,10 @@ public class PermissionManager
         return (P_Users[])ans.toArray(new P_Users[0]);
     }
 
-    public static boolean insert(String userName, int permission, String password) throws  Exception
+    public int getUserCount() throws Exception{
+        return getUsers().length;
+    }
+    public boolean insert(String userName, int permission, String password) throws  Exception
     {
         Connection connection = getConnection();
         Statement statement = connection.createStatement();
@@ -55,7 +64,7 @@ public class PermissionManager
         return rs == 1;
     }
 
-    public static boolean remove(String userName) throws  Exception {
+    public boolean remove(String userName) throws  Exception {
         Connection connection = getConnection();
         Statement statement = connection.createStatement();
         String sql = "delete from users where username=";
@@ -65,7 +74,7 @@ public class PermissionManager
         return rs == 1;
     }
 
-    public static int login(String userName, String passWord) throws  Exception
+    public int login(String userName, String passWord) throws  Exception
     {
         Connection connection = getConnection();
         Statement statement = connection.createStatement();
@@ -81,7 +90,7 @@ public class PermissionManager
         connection.close();
         return permission;
     }
-    public static boolean editPermission(String userName, int permission) throws  Exception
+    public boolean editPermission(String userName, int permission) throws  Exception
     {
         Connection connection = getConnection();
         Statement statement = connection.createStatement();
@@ -92,7 +101,7 @@ public class PermissionManager
         return rs == 1;
     }
 
-    public static boolean editPassword(String userName, String newPassWord) throws  Exception
+    public boolean editPassword(String userName, String newPassWord) throws  Exception
     {
         Connection connection = getConnection();
         Statement statement = connection.createStatement();
@@ -104,59 +113,51 @@ public class PermissionManager
     }
 
     //only for testing
+    /*
     public static void main(String[]args) throws  Exception
     {
+        PermissionManager pm = new PermissionManager();
         PrintStream out = System.out;
-        P_Users[] users = getUsers();
+        P_Users[] users = (P_Users[])pm.getUsers();
         out.println("test GetUsers:");
         for (int i = 0; i < users.length; ++i)
             out.println(users[i].userName + " " + users[i].permission);
 
         out.println("test insert:");
-        out.println("remove:" + remove("userName"));
-        out.println("insert:" + insert("userName", 1, "password"));
+        out.println("remove:" + pm.remove("userName"));
+        out.println("insert:" + pm.insert("userName", 1, "password"));
 
         out.println("test remove:");
-        out.println("remove:" + remove("userName"));
+        out.println("remove:" + pm.remove("userName"));
 
         out.println("test login:");
-        out.println("login userName:" + login("userName", "password"));
-        out.println("insert userName:" + insert("userName", 1, "password"));
-        out.println("login userName:" + login("userName", "password"));
-        out.println("remove userName:" + remove("userName"));
-        out.println("insert userName:" + insert("userName", 2, "password"));
-        out.println("login userName:" + login("userName", "password"));
-        out.println("remove userName:" + remove("userName"));
+        out.println("login userName:" + pm.login("userName", "password"));
+        out.println("insert userName:" +pm.insert("userName", 1, "password"));
+        out.println("login userName:" + pm.login("userName", "password"));
+        out.println("remove userName:" + pm.remove("userName"));
+        out.println("insert userName:" + pm.insert("userName", 2, "password"));
+        out.println("login userName:" + pm.login("userName", "password"));
+        out.println("remove userName:" + pm.remove("userName"));
 
         out.println("test editPermission:");
-        out.println("insert userName:" + insert("userName", 1, "password"));
-        users = getUsers();
+        out.println("insert userName:" + pm.insert("userName", 1, "password"));
+        users = (P_Users[])pm.getUsers();
         out.println("GetUsers:");
         for (int i = 0; i < users.length; ++i)
             out.println(users[i].userName + " " + users[i].permission);
-        users = getUsers();
-        out.println("editPermission:" + editPermission("userName", 2));
+        users = (P_Users[])pm.getUsers();
+        out.println("editPermission:" + pm.editPermission("userName", 2));
         out.println("GetUsers:");
         for (int i = 0; i < users.length; ++i)
             out.println(users[i].userName + " " + users[i].permission);
-        out.println("remove userName:" + remove("userName"));
+        out.println("remove userName:" + pm.remove("userName"));
 
         out.println("test editPassword:");
-        out.println("insert userName:" + insert("userName", 1, "password"));
-        out.println("login userName:" + login("userName", "password"));
-        out.println("editPassword:" + editPassword("userName", "passWord"));
-        out.println("login userName:" + login("userName", "password"));
-        out.println("remove userName:" + remove("userName"));
-    }
+        out.println("insert userName:" + pm.insert("userName", 1, "password"));
+        out.println("login userName:" + pm.login("userName", "password"));
+        out.println("editPassword:" + pm.editPassword("userName", "passWord"));
+        out.println("login userName:" + pm.login("userName", "password"));
+        out.println("remove userName:" + pm.remove("userName"));
+    }*/
 }
 
-class P_Users
-{
-    public String userName;
-    public int permission;//0-非法；1-普通；2-管理员
-    P_Users(String userName_, int permission_)
-    {
-        userName = userName_;
-        permission = permission_;
-    }
-}

@@ -1,6 +1,10 @@
 package com.pku.cis.PKU_ChinaMobile_JDBC.Client;
 
+import com.pku.cis.PKU_ChinaMobile_JDBC.GUI.Global;
+import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.P_Users;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PermissionManagerInterface;
+
+import java.rmi.Naming;
 
 /**
  * PKUPermissionManager - This class implements the PermissionManagerInterface and act as the
@@ -10,10 +14,11 @@ import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PermissionManagerInterface;
  */
 public class PKUPermissionManager {
     private PermissionManagerInterface remotePermissionManager;
-    P_Users_client[] users;
-    public PKUPermissionManager(PermissionManagerInterface pmInstance) throws Exception
+    P_Users[] users;
+    public PKUPermissionManager() throws Exception
     {
-        remotePermissionManager = pmInstance;
+        if( remotePermissionManager == null)
+            remotePermissionManager = (PermissionManagerInterface) Naming.lookup("rmi://" + Global.IP + ":1099" + "/RemotePermissionManager");
     }
 
     public boolean insert(String userName, int permission, String password) throws Exception
@@ -34,25 +39,15 @@ public class PKUPermissionManager {
     }
     public boolean editPassword(String userName, String newPassWord) throws  Exception
     {
-        return remotePermissionManager.editPassword(userName,newPassWord);
+        return remotePermissionManager.editPassword(userName, newPassWord);
     }
     public int getUserCount() throws Exception
     {
-        return 3;
+        return remotePermissionManager.getUserCount();
     }
     public Object[] getUsers() throws Exception
     {
-        users = (P_Users_client[])remotePermissionManager.getUsers();
+        users = (P_Users[])remotePermissionManager.getUsers();
         return users;
-    }
-}
-class P_Users_client
-{
-    public String userName;
-    public int permission;//0-非法；1-普通；2-管理员
-    P_Users_client(String userName_, int permission_)
-    {
-        userName = userName_;
-        permission = permission_;
     }
 }

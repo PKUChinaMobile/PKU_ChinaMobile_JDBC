@@ -1,6 +1,6 @@
 package com.pku.cis.PKU_ChinaMobile_JDBC.GUI;
 
-import com.pku.cis.PKU_ChinaMobile_JDBC.Server.PermissionManager;
+import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUPermissionManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,8 +60,8 @@ public class LoginFrame extends JFrame {
                                   public void actionPerformed(ActionEvent e) {
                                       String usr = in.getText();
                                       String pwd = new String(in2.getPassword());
-                                      PermissionManager pm = new PermissionManager();
                                       try {
+                                          PKUPermissionManager pm = new PKUPermissionManager();
                                           int permission = pm.login(usr, pwd);
                                           Global.userName = usr;
                                           Global.permission = permission;

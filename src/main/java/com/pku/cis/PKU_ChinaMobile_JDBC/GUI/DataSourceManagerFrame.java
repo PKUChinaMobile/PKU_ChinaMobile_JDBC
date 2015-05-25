@@ -162,6 +162,12 @@ public class DataSourceManagerFrame extends JFrame {
                         glbbutton.setEnabled(true);
                         glbbutton_1.setEnabled(true);
                         glbbutton_2.setEnabled(true);
+                        try {
+                            fetchData();
+                        }catch(Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        glbtable.setModel(new DefaultTableModel(data,head));
                         glbtable.updateUI(); //更新表
                         glbtable.setEnabled(true);
                         f.dispose();
@@ -300,6 +306,12 @@ public class DataSourceManagerFrame extends JFrame {
                         glbbutton.setEnabled(true);
                         glbbutton_1.setEnabled(true);
                         glbbutton_2.setEnabled(true);
+                        try {
+                            fetchData();
+                        }catch(Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        glbtable.setModel(new DefaultTableModel(data,head));
                         glbtable.updateUI(); //更新表
                         glbtable.setEnabled(true);
                         f.dispose();
@@ -380,6 +392,12 @@ public class DataSourceManagerFrame extends JFrame {
                 glbbutton.setEnabled(true);
                 glbbutton_1.setEnabled(true);
                 glbbutton_2.setEnabled(true);
+                try {
+                    fetchData();
+                }catch(Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                }
+                glbtable.setModel(new DefaultTableModel(data,head));
                 glbtable.updateUI(); //更新表
                 glbtable.setEnabled(true);
             }

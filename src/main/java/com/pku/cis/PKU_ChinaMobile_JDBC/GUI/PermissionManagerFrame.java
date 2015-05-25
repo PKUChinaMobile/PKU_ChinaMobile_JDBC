@@ -1,5 +1,6 @@
 package com.pku.cis.PKU_ChinaMobile_JDBC.GUI;
-import com.pku.cis.PKU_ChinaMobile_JDBC.Server.PermissionManager;
+import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUPermissionManager;
+import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.P_Users;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -13,8 +14,9 @@ public class PermissionManagerFrame extends JFrame {
 
     public static String userInfo[][];
     public static String head[] = {"用户","权限"};
-    public static PermissionManager pm;
+    public static PKUPermissionManager pm;
     public static int userCount;
+    public static int columnCount = 2;
     public static JButton glbbutton;
     public static JButton glbbutton_1;
     public static JButton glbbutton_2;
@@ -40,25 +42,24 @@ public class PermissionManagerFrame extends JFrame {
         });
     }
 
-    public void fetchData()
+    public void fetchData() throws Exception
     {
-        userCount = 3;
+        userCount = pm.getUserCount();
+        P_Users[] usr = (P_Users[])pm.getUsers();
         userInfo = new String[userCount][];
-        userInfo[0] = new String[2];
-        userInfo[0][0] = "mrpen";
-        userInfo[0][1] = "管理员";
-        userInfo[1] = new String[2];
-        userInfo[1][0] = "mrpen3";
-        userInfo[1][1] = "管理员";
-        userInfo[2] = new String[2];
-        userInfo[2][0] = "mrpen2";
-        userInfo[2][1] = "普通用户";
-
+        for(int i = 0; i < userCount; i++)
+        {
+            userInfo[i] = new String[columnCount];
+            userInfo[i][0] = usr[i].userName;
+            if(usr[i].permission == 1)
+                userInfo[i][1] = "普通用户";
+            else
+                userInfo[i][1] = "管理员";
+        }
     }
-    public MyJTable updateTable()
+    public MyJTable updateTable() throws Exception
     {
         fetchData();
-        userInfo[2][1] = "普通用户";
         MyJTable t =  new MyJTable(new DefaultTableModel(userInfo,head));
         t.setRowSelectionInterval(0, 0);
         t.setBackground(Color.WHITE);
@@ -71,11 +72,23 @@ public class PermissionManagerFrame extends JFrame {
      * Create the frame.
      */
     public PermissionManagerFrame() {
-        pm = new PermissionManager();
+        try {
+            pm = new PKUPermissionManager();
+        }catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "连接失败", JOptionPane.ERROR_MESSAGE);
+            dispose();
+        }
         setTitle("透明网管系统——权限管理");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 484, 300);
+        try{
         glbtable = updateTable();
+        }catch(Exception e)
+        {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+            dispose();
+        }
         panel = new JScrollPane(glbtable);
         panel.getViewport().setBackground(Color.WHITE);
 
@@ -105,8 +118,14 @@ public class PermissionManagerFrame extends JFrame {
                         glbbutton.setEnabled(true);
                         glbbutton_1.setEnabled(true);
                         glbbutton_2.setEnabled(true);
+                        try {
+                            glbtable = updateTable();
+                        }catch(Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                        }
                         glbtable.updateUI(); //更新表
                         glbtable.setEnabled(true);
+                        f.dispose();
                         super.windowClosing(e);
                     }
                 });
@@ -169,7 +188,6 @@ public class PermissionManagerFrame extends JFrame {
                         glbbutton.setEnabled(true);
                         glbbutton_1.setEnabled(true);
                         glbbutton_2.setEnabled(true);
-                        glbtable.updateUI(); //更新表
                         glbtable.setEnabled(true);
                         f.dispose();
                     }
@@ -198,12 +216,19 @@ public class PermissionManagerFrame extends JFrame {
                             try {
                                 if(pm.insert(userName, permission, psw1))
                                 {
-                                    JOptionPane.showMessageDialog(null,"添加成功","添加成功", JOptionPane.ERROR_MESSAGE);
+                                    JOptionPane.showMessageDialog(null,"添加成功","添加成功", JOptionPane.PLAIN_MESSAGE);
                                     glbbutton.setEnabled(true);
                                     glbbutton_1.setEnabled(true);
                                     glbbutton_2.setEnabled(true);
+                                    try {
+                                        fetchData();
+                                    }catch(Exception e1) {
+                                        JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                                    }
+                                    glbtable.setModel(new DefaultTableModel(userInfo,head));
                                     glbtable.updateUI(); //更新表
                                     glbtable.setEnabled(true);
+                                    f.dispose();
                                     f.dispose();
                                 }
                                 else
@@ -250,7 +275,7 @@ public class PermissionManagerFrame extends JFrame {
                 f.setLocation(FWidth / 3, FHeight / 3);
                 f.setTitle("编辑用户");
                 f.setVisible(true);
-                String userName = userInfo[glbtable.getSelectedRowCount()][0];
+                String userName = userInfo[glbtable.getSelectedRow()][0];
 
                 JPanel contentPane = new JPanel();
                 contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -320,6 +345,12 @@ public class PermissionManagerFrame extends JFrame {
                                 glbbutton.setEnabled(true);
                                 glbbutton_1.setEnabled(true);
                                 glbbutton_2.setEnabled(true);
+                                try {
+                                    fetchData();
+                                }catch(Exception e1) {
+                                    JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                                }
+                                glbtable.setModel(new DefaultTableModel(userInfo,head));
                                 glbtable.updateUI(); //更新表
                                 glbtable.setEnabled(true);
                                 f.dispose();
@@ -347,7 +378,7 @@ public class PermissionManagerFrame extends JFrame {
                 glbbutton_1.setEnabled(false);
                 glbbutton_2.setEnabled(false);
                 glbtable.setEnabled(false);
-                String userName = userInfo[glbtable.getSelectedRowCount()][0];
+                String userName = userInfo[glbtable.getSelectedRow()][0];
                 int result = JOptionPane.showConfirmDialog(null, "确定删除该用户？", "提示", JOptionPane.YES_NO_OPTION);
                 if(result == 0)
                 {
@@ -363,6 +394,12 @@ public class PermissionManagerFrame extends JFrame {
                 glbbutton.setEnabled(true);
                 glbbutton_1.setEnabled(true);
                 glbbutton_2.setEnabled(true);
+                try {
+                    fetchData();
+                }catch(Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                }
+                glbtable.setModel(new DefaultTableModel(userInfo,head));
                 glbtable.updateUI(); //更新表
                 glbtable.setEnabled(true);
             }
