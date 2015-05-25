@@ -72,12 +72,40 @@ public class MainFrame extends JFrame {
 
         JButton btnNewButton_1 = new JButton("数据源管理");
         btnNewButton_1.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btnNewButton_1.setEnabled(false);
+                DataSourceManagerFrame dmf = new DataSourceManagerFrame();
+                dmf.setVisible(true);
+                dmf.addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosing(WindowEvent e) {
+                        btnNewButton_1.setEnabled(true);
+                        super.windowClosing(e);
+                    }
+                });
+
             }
         });
         panel.add(btnNewButton_1);
 
         JButton btnNewButton_2 = new JButton("元数据管理");
+        btnNewButton_2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                    btnNewButton_2.setEnabled(false);
+                    MetaDataManagerFrame mmf = new MetaDataManagerFrame();
+                    mmf.setVisible(true);
+                    mmf.addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosing(WindowEvent e) {
+                            btnNewButton_2.setEnabled(true);
+                            super.windowClosing(e);
+                        }
+                    });
+
+            }
+        });
         panel.add(btnNewButton_2);
 
         JButton btnNewButton = new JButton("权限管理");

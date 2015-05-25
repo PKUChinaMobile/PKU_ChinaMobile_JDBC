@@ -22,6 +22,10 @@ public class MyJTable extends JTable{
         this.setGridColor(gridColor);
         this.setRowHeight(rowHeight);
     }
+    public boolean isCellEditable(int row, int column)//设置可选择行但不能编辑数据
+    {
+        return false;
+    }
     public TableCellRenderer getCellRenderer(int row, int column) {
         return new MyCellRenderer();
     }
