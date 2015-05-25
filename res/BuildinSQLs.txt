@@ -2,3 +2,12 @@ select age,location from users
 select * from users
 select * from persons
 select age from users
+SELECT vcCallingIMSI, USERS.LOCATION, vcCalledIMSI, intYear, dualTime, intLocation FROM callRecords, USERS WHERE callRecords.vcCallingIMSI=USERS.IMSI AND dualTime>180
+SELECT USERS.IMSI, USERS.LOCATION, USERS. GENDER, USERS.AGE FROM USERS WHERE GENDER=0 ORDER BY USERS.AGE asc
+SELECT callRecords.biSessID, callRecords.intYear, callRecords.intMonth, callRecords.intDay,mod(callRecords.dualTime,60), callRecords.vcCallingIMSI, callRecords.vcCalledIMSI FROM callRecords WHERE callRecords.dualTime > 60
+SELECT concat(callRecords.intYear, callRecords.intMonth), callRecords.biSessID, callRecords.vcCallingIMSI, callRecords.vcCalledIMSI, callRecords.dualTime FROM callRecords WHERE callRecords.dualTime > 60
+SELECT callRecords.biSessID, callRecords.intYear, callRecords.intMonth, callRecords.intDay, callRecords.dualTime, callRecords.vcCallingIMSI, callRecords.vcCalledIMSI FROM callRecords WHERE vcCallingIMSI in (SELECT IMSI FROM USERS WHERE GENDER=0)
+SELECT callRecords.biSessID, callRecords.intYear, callRecords.intMonth, callRecords.intDay, callRecords.dualTime, callRecords.vcCallingIMSI, callRecords.vcCalledIMSI FROM callRecords WHERE vcCallingIMSI not in (SELECT IMSI FROM USERS WHERE GENDER=0)
+(SELECT callRecords.intYear, callRecords.intLocation, callRecords.vcCallingIMSI FROM callRecords) INTERSECT (SELECT smsRecords.intYear, smsRecords.intLocation, smsRecords. vcTextingIMSI FROM smsRecords)
+SELECT * FROM callRecords INTERSECT SELECT * FROM USERS
+WITH  smsInBJ(biSessID, intYear, intLocation, vcTextingIMSI, vcTextedIMSI) AS  (SELECT smsRecords.biSessID, smsRecords.intYear, smsRecords.intLocation, smsRecords. vcTextingIMSI, smsRecords. vcTextedIMSI FROM smsRecords WHERE smsRecords.intLocation=10 )
