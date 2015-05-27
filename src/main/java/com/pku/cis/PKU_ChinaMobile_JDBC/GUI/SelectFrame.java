@@ -185,7 +185,7 @@ class Adapter_SelectFrame implements ActionListener
             PKUResultSet rs = (PKUResultSet)stmt.executeQuery(sql);
             PKUResultSetMetaData rmeta = (PKUResultSetMetaData) rs.getMetaData();
             int numColumns = rmeta.getColumnCount();
-            int numRows = rs.getRows();
+            int numRows = rs.getRowCount();
             SelectFrame.numColumns = numColumns;
             SelectFrame.numRows = numRows;
             SelectFrame.tableHeader = new String[numColumns];
@@ -263,8 +263,10 @@ class Adapter3_SelectFrame implements ActionListener
             }
             out.close();
         }
-        catch(Exception e1){}
-//如果还想限制文件类型
+        catch(Exception e1){
+            JOptionPane.showMessageDialog(null,e1.getMessage(),"保存失败", JOptionPane.ERROR_MESSAGE);
+
+        }
 
     }
 }

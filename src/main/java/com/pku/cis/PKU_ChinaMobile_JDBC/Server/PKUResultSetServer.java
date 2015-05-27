@@ -80,7 +80,7 @@ public class PKUResultSetServer extends UnicastRemoteObject
 	}
 
 	/*获取ResultSet数组总行数，非标准JDBC*/
-	public int getRows() throws RemoteException,SQLException
+	public int getRowCount() throws RemoteException,SQLException
 	{
 		int cnt = 0;
 		for(int i = 0; i < rsNum; i++) {

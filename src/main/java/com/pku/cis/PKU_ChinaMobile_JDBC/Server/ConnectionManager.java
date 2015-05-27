@@ -59,6 +59,7 @@ public class ConnectionManager {
 				conNum++;
 			}catch(SQLException e){
 				System.out.println("Connection for "+usr.dbName[i]+" failed.");
+				throw e;
 			}
 		}
 
@@ -90,6 +91,7 @@ public class ConnectionManager {
 				conNum++;
 			}catch(SQLException e){
 				System.out.println("Connection for "+usr.dbName[i]+" failed.");
+				throw e;
 			}
 		}
 		

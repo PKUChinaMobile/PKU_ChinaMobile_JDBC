@@ -482,7 +482,7 @@ public class MetaDataManagerFrame extends JFrame {
                         }catch(Exception e1) {
                             JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
                         }
-                        glbtable2.setModel(new DefaultTableModel(data,head));
+                        glbtable2.setModel(new DefaultTableModel(data2,head));
                         glbtable2.updateUI(); //更新表
                         glbtable2.setEnabled(true);
                         super.windowClosing(e);
@@ -613,7 +613,7 @@ public class MetaDataManagerFrame extends JFrame {
                         }catch(Exception e1) {
                             JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
                         }
-                        glbtable2.setModel(new DefaultTableModel(data,head));
+                        glbtable2.setModel(new DefaultTableModel(data2,head));
                         glbtable2.updateUI(); //更新表
                         glbtable2.setEnabled(true);
                         super.windowClosing(e);
@@ -750,7 +750,7 @@ public class MetaDataManagerFrame extends JFrame {
                 }catch(Exception e1) {
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
                 }
-                glbtable2.setModel(new DefaultTableModel(data,head));
+                glbtable2.setModel(new DefaultTableModel(data2,head));
                 glbtable2.updateUI(); //更新表
                 glbtable2.setEnabled(true);
             }

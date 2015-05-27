@@ -658,12 +658,12 @@ public class PKUResultSet implements java.sql.ResultSet
 			    }
 			  }
 	/*获取ResultSet数组总行数，非标准JDBC,使用时会将游标移回开头*/
-	public int getRows()
+	public int getRowCount()
 			throws SQLException
 	{
 		try
 		{
-			return remoteResultSet.getRows();
+			return remoteResultSet.getRowCount();
 		}
 		catch(RemoteException ex)
 		{

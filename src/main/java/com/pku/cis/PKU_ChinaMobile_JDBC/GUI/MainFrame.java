@@ -23,7 +23,10 @@ import java.awt.event.WindowEvent;
 public class MainFrame extends JFrame {
 
     private JPanel contentPane;
-
+    public JButton btnNewButton;
+    public JButton btnNewButton_1;
+    public JButton btnNewButton_2;
+    public JButton btnNewButton_3;
     /**
      * Launch the application.
      */
@@ -70,7 +73,7 @@ public class MainFrame extends JFrame {
 
         panel.setOpaque(true);
 
-        JButton btnNewButton_1 = new JButton("数据源管理");
+        btnNewButton_1 = new JButton("数据源管理");
         btnNewButton_1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,7 +92,7 @@ public class MainFrame extends JFrame {
         });
         panel.add(btnNewButton_1);
 
-        JButton btnNewButton_2 = new JButton("元数据管理");
+        btnNewButton_2 = new JButton("元数据管理");
         btnNewButton_2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -108,7 +111,7 @@ public class MainFrame extends JFrame {
         });
         panel.add(btnNewButton_2);
 
-        JButton btnNewButton = new JButton("权限管理");
+        btnNewButton = new JButton("权限管理");
         btnNewButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -130,7 +133,7 @@ public class MainFrame extends JFrame {
         });
         panel.add(btnNewButton);
 
-        JButton btnNewButton_3 = new JButton("数据查询");
+        btnNewButton_3 = new JButton("数据查询");
         panel.add(btnNewButton_3);
         btnNewButton_3.addActionListener(new ActionListener() {
             @Override

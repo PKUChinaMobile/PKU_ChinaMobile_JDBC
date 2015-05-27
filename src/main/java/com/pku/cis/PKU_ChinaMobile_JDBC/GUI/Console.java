@@ -12,13 +12,12 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.text.BadLocationException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.Writer;
+
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
+import java.util.*;
 
 
 public class Console extends JFrame {
@@ -30,13 +29,19 @@ public class Console extends JFrame {
     static int scrollPos; //标记scrollPos的位置
     static Timer timer;
     static JScrollPane scroll;
-
+    static Vector<String> records = new Vector<String>();
+    static int recordPos;
 
     static String tableName ="person";
 
 
     static PKUDriver d = new PKUDriver();
 
+    public static void MyAppend(String str)
+    {
+        textArea.append(str);
+        textArea.paintImmediately(textArea.getBounds()); //实时刷新textArea，否则会等主线程结束才刷新
+    }
     /**
      * Launch the application.
      */
@@ -46,16 +51,15 @@ public class Console extends JFrame {
 
     public void execute(String sql)
     {
-        textArea.append("\nExecute: " + sql + "\n");
+        MyAppend("\nExecute: " + sql + "\n");
         String fullURL = Global.urlPrefix + Global.IP;
-        textArea.append("Attempt to connect " + fullURL+"\n");
+        MyAppend("Attempt to connect " + fullURL+"\n");
         PKUConnection con;
         try {
             con = (PKUConnection) DriverManager.getConnection(fullURL, Global.userName, Global.userPasswd);
             con.setDst(0); //设置为0表示普通连接，index表示对应的数据库类型
             PKUStatement stmt;
             stmt = (PKUStatement)con.createStatement();
-            textArea.append("Executing " + sql);
             PKUResultSet rs = (PKUResultSet)stmt.executeQuery(sql);
             PKUResultSetMetaData rmeta = (PKUResultSetMetaData) rs.getMetaData();
             int numColumns = rmeta.getColumnCount();
@@ -66,23 +70,26 @@ public class Console extends JFrame {
                 else
                     temp += String.format("%-15s", rmeta.getColumnName(i))+" | " + "\r\n";
             }
-
-            while( rs.next() ){
+            MyAppend("\n"+temp);
+            textArea.paintImmediately(textArea.getBounds());
+            temp = "";
+            while( rs.next()) {
                 for( int i = 1;i <= numColumns;i++ ){
                     if( i < numColumns )
-                        temp += String.format("%-15s",new String((rs.getString(i).trim()))) + " | ";
+                        temp += String.format("%-15s", new String((rs.getString(i).trim()))) + " | ";
                     else
                         temp += String.format("%-15s",new String((rs.getString(i).trim()))) + " | " + "\r\n";
                 }
+                MyAppend(temp);
+                temp = "";
             }
-            textArea.append("\n" + temp + "\n>");
+            MyAppend(">");
             rs.close();
             con.close();
         } catch (SQLException e1) {
-            Writer result = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(result);
-            e1.printStackTrace(printWriter);
-            textArea.append(result.toString()+">");
+            e1.printStackTrace();
+            MyAppend(e1.getMessage()+"\n>");
+
         }
 
     }
@@ -107,7 +114,7 @@ public class Console extends JFrame {
         textArea.setFont(new Font("Terminal", Font.BOLD, 14));
         textArea.setBackground(Color.BLACK);
         textArea.setForeground(new Color(211, 211, 211));
-        textArea.setText("Welcome to the Transparent GateWay System monitor.\nCommands end with '\\n'.\nType 'help' or '\\h' for help. \nType "
+        textArea.setText("Welcome to the Transparent GateWay System monitor.\nCommands end with '\\n'.\nType "
                 + "'\\c' to clear the current input statement.\n\n>");
         int rows = textArea.getLineCount()-1;
 
@@ -123,37 +130,70 @@ public class Console extends JFrame {
         }
 
         textArea.addKeyListener(new KeyAdapter() {
-                                    public void keyPressed(KeyEvent e)
-                                    {
+                                    public void keyPressed(KeyEvent e) {
                                         timer.stop();
                                         try {
-                                            int pos = textArea.getLineEndOffset(textArea.getLineCount()-1);//读取文本末尾位置
-                                            if(e.getKeyCode() == KeyEvent.VK_ENTER)
-                                            {
+                                            int pos = textArea.getLineEndOffset(textArea.getLineCount() - 1);//读取文本末尾位置
+                                            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 
-                                                if(flag) //flag标记事件发生瞬间，文本末尾是‘_’，若是，替换掉
+                                                if (flag) //flag标记事件发生瞬间，文本末尾是‘_’，若是，替换掉
                                                     textArea.replaceRange("", pos - 1, pos);
-                                                int endPos = textArea.getLineEndOffset(textArea.getLineCount()-1);
+                                                int endPos = textArea.getLineEndOffset(textArea.getLineCount() - 1);
                                                 String cmd = textArea.getText(startPos, endPos - startPos); //读取输入语句
-                                                execute(cmd);
+                                                /*更新执行历史*/
+                                                records.add(cmd);
+                                                recordPos = records.size();
+
+                                                if (cmd.equals("\\c"))
+                                                    textArea.setText(">");
+                                                else
+                                                    execute(cmd);
                                                 startPos = textArea.getLineEndOffset(textArea.getLineCount() - 1);//记录文本末尾位置
-                                                if(flag)
-                                                    textArea.append("_"); //补回原来的下划线
+                                                if (flag)
+                                                    MyAppend("_"); //补回原来的下划线
 
                                             }
-                                            else if(e.getKeyChar() == KeyEvent.VK_BACK_SPACE)
-                                            {
+                                            else if (e.getKeyChar() == KeyEvent.VK_BACK_SPACE) {
                                                 if (flag)
-                                                    textArea.replaceRange("", pos - 2, pos-1);
+                                                    textArea.replaceRange("", pos - 2, pos - 1);
                                                 else
                                                     textArea.replaceRange("", pos - 1, pos);
 
                                             }
-                                            else if(e.getKeyCode() != KeyEvent.VK_CAPS_LOCK && e.getKeyCode() != KeyEvent.VK_TAB && e.getKeyCode() != KeyEvent.VK_SHIFT ){ //将来需要把所有的功能键去掉
+                                            else if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+                                                if(recordPos < records.size() - 1) {
+                                                    recordPos++;
+                                                    String cmd = records.elementAt(recordPos);
+                                                    if (flag)
+                                                        textArea.replaceRange(cmd, startPos, pos - 1);
+                                                    else
+                                                        textArea.replaceRange(cmd, startPos, pos);
+                                                }
+                                                else
+                                                {
+                                                    recordPos = records.size();
+                                                    String cmd = "";
+                                                    if (flag)
+                                                        textArea.replaceRange(cmd, startPos, pos - 1);
+                                                    else
+                                                        textArea.replaceRange(cmd, startPos, pos);
+                                                }
+                                            }
+                                            else if(e.getKeyCode() == KeyEvent.VK_UP) {
+                                                if(recordPos > 0) {
+                                                    recordPos--;
+                                                    String cmd = records.elementAt(recordPos);
+                                                    if (flag)
+                                                        textArea.replaceRange(cmd, startPos, pos - 1);
+                                                    else
+                                                        textArea.replaceRange(cmd, startPos, pos);
+                                                }
+                                            }
+                                            else if (e.getKeyCode() != KeyEvent.VK_CAPS_LOCK && e.getKeyCode() != KeyEvent.VK_TAB && e.getKeyCode() != KeyEvent.VK_SHIFT) { //将来需要把所有的功能键去掉
                                                 if (flag)
                                                     textArea.insert(e.getKeyChar() + "", pos - 1);
                                                 else
-                                                    textArea.append(e.getKeyChar() + "");
+                                                    MyAppend(e.getKeyChar() + "");
                                             }
                                         } catch (BadLocationException e1) {
                                             e1.printStackTrace();
@@ -178,7 +218,7 @@ public class Console extends JFrame {
                             e1.printStackTrace();
                         }
                     } else {
-                        textArea.append("_");
+                        MyAppend("_");
                         flag = true;
                     }
                     textArea.setCaretPosition(textArea.getText().length());

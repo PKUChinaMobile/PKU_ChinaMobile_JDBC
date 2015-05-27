@@ -17,9 +17,7 @@ public class UserManager {
 	 */
 	User login(String usr, String pwd)
 	{
-		if(usr.equals("C##MYTEST") && pwd.equals("123456"))
 			return new User(usr, pwd);
-		return null;
 	}
 
 }

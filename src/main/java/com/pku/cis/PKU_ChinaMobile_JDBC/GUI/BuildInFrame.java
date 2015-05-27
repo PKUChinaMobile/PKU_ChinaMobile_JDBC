@@ -257,7 +257,7 @@ class Adapter_BuildInFrame implements ActionListener
                 PKUResultSet rs = (PKUResultSet) stmt.executeQuery(sql);
                 PKUResultSetMetaData rmeta = (PKUResultSetMetaData) rs.getMetaData();
                 int numColumns = rmeta.getColumnCount();
-                int numRows = rs.getRows();
+                int numRows = rs.getRowCount();
                 BuildInFrame.numColumns = numColumns;
                 BuildInFrame.numRows = numRows;
                 BuildInFrame.tableHeader = new String[numColumns];

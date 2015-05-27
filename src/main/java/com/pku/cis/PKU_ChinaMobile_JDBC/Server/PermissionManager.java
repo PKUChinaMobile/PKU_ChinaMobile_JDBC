@@ -31,7 +31,7 @@ public class PermissionManager extends UnicastRemoteObject
 
     public  P_Users[] getUsers() throws Exception
     {
-        System.out.println("getUsers");
+        //System.out.println("getUsers");
         Connection connection = getConnection();
         Statement statement = connection.createStatement();
         String sql = "SELECT username, permission FROM users" ;
