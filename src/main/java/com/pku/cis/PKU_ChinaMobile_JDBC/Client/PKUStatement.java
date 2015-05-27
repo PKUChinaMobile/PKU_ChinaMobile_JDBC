@@ -12,6 +12,7 @@ import java.rmi.*;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PKUResultSetInterface;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PKUStatementInterface;
 
+// test for git
 /**
  * A Statement object is used for executing a static SQL statement and obtaining
  * the results produced by it.
