@@ -305,6 +305,7 @@ class Adapter2_PermissionManagerFrame implements ActionListener {
     JFrame f;
     JTextField textField;
     JRadioButton radioButton;
+    String userName;
     public void actionPerformed(ActionEvent e) {
         f = new JFrame();
         PermissionManagerFrame.glbbutton.setEnabled(false);
@@ -328,7 +329,7 @@ class Adapter2_PermissionManagerFrame implements ActionListener {
         f.setLocation( PermissionManagerFrame.FWidth / 3,  PermissionManagerFrame.FHeight / 3);
         f.setTitle("编辑用户");
         f.setVisible(true);
-        String userName =  PermissionManagerFrame.userInfo[ PermissionManagerFrame.glbtable.getSelectedRow()][0];
+        userName =  PermissionManagerFrame.userInfo[ PermissionManagerFrame.glbtable.getSelectedRow()][0];
 
         JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
