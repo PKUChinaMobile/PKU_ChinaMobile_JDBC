@@ -26,19 +26,21 @@ public class QueryGenerateFrame extends JFrame {
 
     private JPanel contentPane;
     public static String tName; //当前选择表名
-    public static String[] head = {"选择表"};
     public static int tableNo;//表数量
     public static int columnNo; //字段数
-    public static String[][] tableName; //存储表名
     public static String[] s;//字段名
     public static String[] s1 = {"--添加运算符--","=","+","-","*","/","(",")"}; //运算符
     public static String[] s2 = {"--添加逻辑符--","AND","OR","NOT"};
-
+    public static String[] head = {"选择表"};
+    public static String[][] tableName = {{"person"},{"users"},{"callRecords"},{"smsRecords"}};
+    public static JTable table;
     public static JComboBox comboBox_6;
     public static JComboBox comboBox;
     public static JComboBox comboBox_3;
     public static JComboBox comboBox_4;
-
+    public static JComboBox comboBox_1;
+    public static JComboBox comboBox_2;
+    public static JComboBox comboBox_5;
     public static JTextArea textArea_2; //显示字段文本框
     public static JTextArea textArea;//生成where条件文本框
     public static JTextArea textfield;//生成分组条件文本框
@@ -130,9 +132,7 @@ public class QueryGenerateFrame extends JFrame {
         contentPane.setLayout(gbl_contentPane);
 
 		/*选择表面板*/
-        String[] head = {"选择表"};
-        String[][] tableName = {{"person"},{"users"},{"callRecords"},{"smsRecords"}};
-        JTable table = new JTable(tableName,head);
+        table = new JTable(tableName,head);
         table.setRowSelectionInterval(0, 0);
         table.setBackground(Color.WHITE); //设置单元格背景为白色
         table.setBorder(null);
@@ -321,7 +321,7 @@ public class QueryGenerateFrame extends JFrame {
         panel_3.add(comboBox, gbc_comboBox);
 
 
-        JComboBox comboBox_1 = new JComboBox(s1);
+        comboBox_1 = new JComboBox(s1);
         comboBox_1.addActionListener(new ActionListener()
         {
             @Override
@@ -344,7 +344,7 @@ public class QueryGenerateFrame extends JFrame {
         gbc_comboBox_1.gridy = 1;
         panel_3.add(comboBox_1, gbc_comboBox_1);
 
-        JComboBox comboBox_2 = new JComboBox(s2);
+        comboBox_2 = new JComboBox(s2);
         comboBox_2.addActionListener(new ActionListener() {
                                          @Override
                                          public void actionPerformed(ActionEvent e) {
