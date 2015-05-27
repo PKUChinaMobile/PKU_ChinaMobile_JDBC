@@ -153,7 +153,7 @@ class Adapter_DataSourceManagerFrame implements ActionListener
     JTextField textField_2;
     JTextField textField_3;
     public void actionPerformed(ActionEvent e) {
-        JFrame f = new JFrame();
+        f = new JFrame();
         DataSourceManagerFrame.glbbutton.setEnabled(false);
         DataSourceManagerFrame.glbbutton_1.setEnabled(false);
         DataSourceManagerFrame.glbbutton_2.setEnabled(false);
