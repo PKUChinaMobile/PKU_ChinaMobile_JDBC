@@ -24,6 +24,7 @@ import java.io.RandomAccessFile;
 
 public class QueryGenerateFrame extends JFrame {
 
+    public BuildInFrame f;
     private JPanel contentPane;
     public static String tName; //当前选择表名
     public static int tableNo;//表数量
@@ -116,7 +117,8 @@ public class QueryGenerateFrame extends JFrame {
      * Create the frame.
      */
 
-    public QueryGenerateFrame(BuildInFrame f) {
+    public QueryGenerateFrame(BuildInFrame _f) {
+        f = _f;
         fetchData();
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 600, 600);
@@ -535,7 +537,7 @@ public class QueryGenerateFrame extends JFrame {
         gbc_comboBox_4.gridy = 1;
         panel_1.add(comboBox_4, gbc_comboBox_4);
         String s3[] = {"--选择方向--","升序","降序"};
-        JComboBox comboBox_5 = new JComboBox(s3);
+        comboBox_5 = new JComboBox(s3);
         comboBox_5.addActionListener(new ActionListener()
         {
             @Override
