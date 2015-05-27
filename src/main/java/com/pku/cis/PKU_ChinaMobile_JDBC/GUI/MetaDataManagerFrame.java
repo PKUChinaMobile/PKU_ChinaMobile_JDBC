@@ -462,7 +462,7 @@ public class MetaDataManagerFrame extends JFrame {
         panel2_2.setLayout(null);
 
         /*添加按钮*/
-        glbbutton2 = new JButton("添加");
+        glbbutton2 = new JButton("添加映射");
         glbbutton2.setBounds(6, 16, 135, 30);
         panel2_2.add(glbbutton2);
 
