@@ -178,7 +178,7 @@ class Adapter_SelectFrame implements ActionListener
         PKUConnection con;
         try {
             con = (PKUConnection) DriverManager.getConnection(fullURL, Global.userName, Global.userPasswd);
-            con.setDst(1);//0-连接所有数据库
+            con.setDst(0);//0-连接所有数据库
             PKUStatement stmt;
             stmt = (PKUStatement)con.createStatement();
             System.out.println("Executing " + sql);

@@ -8,6 +8,8 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -37,6 +39,7 @@ public class MetaDataManagerFrame extends JFrame {
     public static JButton glbbutton2_2;
     public static MyJTable glbtable2;
     public static JTree tree2;
+    public static JPanel panel;
 
 
     static final int FHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -155,6 +158,7 @@ public class MetaDataManagerFrame extends JFrame {
         tree = new JTree(root);
         tree.setRootVisible(false);
         tree.setShowsRootHandles(true);
+        tree.addTreeSelectionListener(new Adapter_MetaDataManagerFrame(tree, panel));
     }
     public void updateTree2()
     {
@@ -245,5 +249,45 @@ public class MetaDataManagerFrame extends JFrame {
         tabbedPane.addTab("全局模式", tab1);
         tabbedPane.addTab("本地模式", tab2);
         getContentPane().add(tabbedPane);
+    }
+}
+class Adapter_MetaDataManagerFrame implements TreeSelectionListener
+{
+    JTree tree;
+    JPanel panel;
+    JTable table;
+    Adapter_MetaDataManagerFrame(JTree _tree, JPanel _panel)
+    {
+        tree = _tree;
+        panel = _panel;
+    }
+    public void updateTable()
+    {
+
+    }
+    public void valueChanged(TreeSelectionEvent e) {
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
+        int depth = selectedNode.getDepth();//0-列层，1-表层，2-数据库层
+        if(depth == 2)
+        {
+            updateTable();
+            JScrollPane scrollPane = new JScrollPane(table);//文件树包裹在可滚动模板里
+            /*按钮区*/
+            JPanel panel_1 = new JPanel();
+            JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, false, scrollPane, panel);
+            splitPane.setDividerLocation(200);//设置分割线位置
+            splitPane.setOneTouchExpandable(true);//设置是否可展开
+            splitPane.setDividerSize(10);//设置分隔线宽度的大小，以pixel为计算单位。
+            splitPane.setResizeWeight(0.5);//设置改变大小时上下两部分改变的比例
+            panel.setLayout(new CardLayout(1,1));
+        }
+        else if(depth == 1)
+        {
+
+        }
+        else if(depth == 0)
+        {
+
+        }
     }
 }
