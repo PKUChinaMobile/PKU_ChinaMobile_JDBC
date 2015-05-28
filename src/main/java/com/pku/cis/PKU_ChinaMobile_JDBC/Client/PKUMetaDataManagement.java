@@ -93,7 +93,7 @@ public class PKUMetaDataManagement {
     static String showLColumn[][];
 
     static String showMappingU[][];
-    static String showMappingL[];
+    static String showMappingL[][];
 
     /*Tree Can Fetch*/
     static String UT[];
@@ -1076,7 +1076,7 @@ public class PKUMetaDataManagement {
 
         return showMappingU;
     }
-    public String[] showMappingByL(int LCID) {
+    public String[][] showMappingByL(int LCID) {
         try {
             tarList = new String[1];
             tarList[0] = "*";
@@ -1086,10 +1086,11 @@ public class PKUMetaDataManagement {
             conList[0] = "LCID=" + LCID;
             Select(1, 1, 1);
 
-            showMappingL = new String[6];
+            showMappingL = new String[1][];
+            showMappingL[0] = new String[6];
             while (rs.next()){
                 for (int i = 1; i <= 6; i++) {
-                    showMappingL[i - 1] = new String((rs.getString(i).trim()));
+                    showMappingL[0][i - 1] = new String((rs.getString(i).trim()));
                 }
             }
         } catch (SQLException e) {
