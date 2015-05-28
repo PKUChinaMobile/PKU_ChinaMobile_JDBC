@@ -873,14 +873,13 @@ public class PKUMetaDataManagement {
         int rowNum = 0;
 
         try {
-            tarList = new String[2];
-            tarList[0] = "UID";
-            tarList[1] = "ColumnName";
+            tarList = new String[1];
+            tarList[0] = "*";
             tableList = new String[1];
             tableList[0] = "UColumn";
             conList = new String[1];
             conList[0] = "UTableID=" + tableID;
-            Select(2, 1, 1);
+            Select(1, 1, 1);
             while (rs.next()) {
                 rowNum++;
             }
@@ -889,9 +888,10 @@ public class PKUMetaDataManagement {
             showUColumn = new String[rowNum][];
             int i = 0;
             while (rs.next()){
-                showUColumn[i] = new String[2];
+                showUColumn[i] = new String[3];
                 showUColumn[i][0] = new String((rs.getString(1).trim()));
                 showUColumn[i][1] = new String((rs.getString(2).trim()));
+                showUColumn[i][2] = new String((rs.getString(3).trim()));
                 i++;
             }
         } catch (SQLException e) {
@@ -1363,7 +1363,7 @@ public class PKUMetaDataManagement {
                 tarList = new String[1];
                 tarList[0] = "Name";
                 tableList[0] = "LDateSource";
-                conList[0] = "UID=" + databaseID;
+                conList[0] = "UID=" + dataSourceID;
                 Select(1, 1, 1);
                 while(rs.next()) {
                     NoMapLSName[i] = new String((rs.getString(2).trim()));
