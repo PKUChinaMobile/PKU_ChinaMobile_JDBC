@@ -933,14 +933,15 @@ public class PKUMetaDataManagement {
         int rowNum = 0;
 
         try {
-            tarList = new String[2];
+            tarList = new String[3];
             tarList[0] = "UID";
             tarList[1] = "DBName";
+            tarList[2] = "DSID";
             tableList = new String[1];
             tableList[0] = "LDataBase";
             conList = new String[1];
             conList[0] = "DSID=" + DSID;
-            Select(2, 1, 1);
+            Select(3, 1, 1);
             while (rs.next()) {
                 rowNum++;
             }
@@ -949,9 +950,10 @@ public class PKUMetaDataManagement {
             showLDB = new String[rowNum][];
             int i = 0;
             while (rs.next()){
-                showLDB[i] = new String[2];
+                showLDB[i] = new String[3];
                 showLDB[i][0] = new String((rs.getString(1).trim()));
                 showLDB[i][1] = new String((rs.getString(2).trim()));
+                showLDB[i][2] = "" + DSID;
                 i++;
             }
         } catch (SQLException e) {
@@ -980,9 +982,10 @@ public class PKUMetaDataManagement {
             showLTable = new String[rowNum][];
             int i = 0;
             while (rs.next()){
-                showLTable[i] = new String[2];
+                showLTable[i] = new String[3];
                 showLTable[i][0] = new String((rs.getString(1).trim()));
                 showLTable[i][1] = new String((rs.getString(2).trim()));
+                showLTable[i][2] = "" + DBID;
                 i++;
             }
         } catch (SQLException e) {
