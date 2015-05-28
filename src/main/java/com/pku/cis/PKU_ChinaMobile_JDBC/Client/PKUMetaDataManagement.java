@@ -93,7 +93,7 @@ public class PKUMetaDataManagement {
     static String showLColumn[][];
 
     static String showMappingU[][];
-    static String showMappingL[];
+    static String showMappingL[][];
 
     /*Tree Can Fetch*/
     static String UT[];
@@ -873,14 +873,13 @@ public class PKUMetaDataManagement {
         int rowNum = 0;
 
         try {
-            tarList = new String[2];
-            tarList[0] = "UID";
-            tarList[1] = "ColumnName";
+            tarList = new String[1];
+            tarList[0] = "*";
             tableList = new String[1];
             tableList[0] = "UColumn";
             conList = new String[1];
             conList[0] = "UTableID=" + tableID;
-            Select(2, 1, 1);
+            Select(1, 1, 1);
             while (rs.next()) {
                 rowNum++;
             }
@@ -889,9 +888,10 @@ public class PKUMetaDataManagement {
             showUColumn = new String[rowNum][];
             int i = 0;
             while (rs.next()){
-                showUColumn[i] = new String[2];
+                showUColumn[i] = new String[3];
                 showUColumn[i][0] = new String((rs.getString(1).trim()));
                 showUColumn[i][1] = new String((rs.getString(2).trim()));
+                showUColumn[i][2] = new String((rs.getString(3).trim()));
                 i++;
             }
         } catch (SQLException e) {
@@ -949,9 +949,10 @@ public class PKUMetaDataManagement {
             showLDB = new String[rowNum][];
             int i = 0;
             while (rs.next()){
-                showLDB[i] = new String[2];
+                showLDB[i] = new String[3];
                 showLDB[i][0] = new String((rs.getString(1).trim()));
                 showLDB[i][1] = new String((rs.getString(2).trim()));
+                showLDB[i][2] = "" + DSID;
                 i++;
             }
         } catch (SQLException e) {
@@ -980,9 +981,10 @@ public class PKUMetaDataManagement {
             showLTable = new String[rowNum][];
             int i = 0;
             while (rs.next()){
-                showLTable[i] = new String[2];
+                showLTable[i] = new String[3];
                 showLTable[i][0] = new String((rs.getString(1).trim()));
                 showLTable[i][1] = new String((rs.getString(2).trim()));
+                showLTable[i][2] = "" + DBID;
                 i++;
             }
         } catch (SQLException e) {
@@ -993,27 +995,48 @@ public class PKUMetaDataManagement {
     }
     public String[][] showLColumn(int TableID) {
         int rowNum = 0;
+        int typeNum = 0;
+        String typeName[];
 
         try {
-            tarList = new String[2];
+            tarList = new String[1];
+            tarList[0] = "LColumnType";
+            tableList = new String[1];
+            tableList[0] = "LColumnType";
+            Select(1, 1, 0);
+            while (rs.next()) {
+                typeNum++;
+            }
+            rs.beforeFirst();
+            typeName = new String[typeNum];
+            int i = 0;
+            while (rs.next()){
+                typeName[i] = new String((rs.getString(1).trim()));
+                i++;
+            }
+
+            tarList = new String[3];
             tarList[0] = "UID";
             tarList[1] = "ColumnName";
-            tableList = new String[1];
+            tarList[2] = "ColumnTypeID";
             tableList[0] = "LColumn";
             conList = new String[1];
             conList[0] = "TableID=" + TableID;
-            Select(2, 1, 1);
+            Select(3, 1, 1);
             while (rs.next()) {
                 rowNum++;
             }
             rs.beforeFirst();
 
             showLColumn = new String[rowNum][];
-            int i = 0;
+            i = 0;
             while (rs.next()){
-                showLColumn[i] = new String[2];
+                showLColumn[i] = new String[4];
                 showLColumn[i][0] = new String((rs.getString(1).trim()));
                 showLColumn[i][1] = new String((rs.getString(2).trim()));
+                showLColumn[i][2] = typeName[Integer.parseInt(new String((rs.getString(3).trim()))) - 1];
+                showLColumn[i][3] = "" + TableID;
+
                 i++;
             }
         } catch (SQLException e) {
@@ -1043,7 +1066,10 @@ public class PKUMetaDataManagement {
             while (rs.next()){
                 showMappingU[i] = new String[6];
                 for (int j = 1; j <= 6; j++) {
-                    showMappingU[i][j - 1] = new String((rs.getString(j).trim()));
+                    if (rs.getString(j) != null)
+                        showMappingU[i][j - 1] = new String((rs.getString(j).trim()));
+                    else
+                        showMappingU[i][j - 1] = "";
                 }
                 i++;
             }
@@ -1053,7 +1079,7 @@ public class PKUMetaDataManagement {
 
         return showMappingU;
     }
-    public String[] showMappingByL(int LCID) {
+    public String[][] showMappingByL(int LCID) {
         try {
             tarList = new String[1];
             tarList[0] = "*";
@@ -1063,10 +1089,14 @@ public class PKUMetaDataManagement {
             conList[0] = "LCID=" + LCID;
             Select(1, 1, 1);
 
-            showMappingL = new String[6];
+            showMappingL = new String[1][];
+            showMappingL[0] = new String[6];
             while (rs.next()){
                 for (int i = 1; i <= 6; i++) {
-                    showMappingL[i - 1] = new String((rs.getString(i).trim()));
+                    if (rs.getString(i) != null)
+                        showMappingL[0][i - 1] = new String((rs.getString(i).trim()));
+                    else
+                        showMappingL[0][i - 1] = "";
                 }
             }
         } catch (SQLException e) {
@@ -1363,7 +1393,7 @@ public class PKUMetaDataManagement {
                 tarList = new String[1];
                 tarList[0] = "Name";
                 tableList[0] = "LDateSource";
-                conList[0] = "UID=" + databaseID;
+                conList[0] = "UID=" + dataSourceID;
                 Select(1, 1, 1);
                 while(rs.next()) {
                     NoMapLSName[i] = new String((rs.getString(2).trim()));
