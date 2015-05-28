@@ -933,15 +933,14 @@ public class PKUMetaDataManagement {
         int rowNum = 0;
 
         try {
-            tarList = new String[3];
+            tarList = new String[2];
             tarList[0] = "UID";
             tarList[1] = "DBName";
-            tarList[2] = "DSID";
             tableList = new String[1];
             tableList[0] = "LDataBase";
             conList = new String[1];
             conList[0] = "DSID=" + DSID;
-            Select(3, 1, 1);
+            Select(2, 1, 1);
             while (rs.next()) {
                 rowNum++;
             }
@@ -1023,7 +1022,7 @@ public class PKUMetaDataManagement {
             tableList[0] = "LColumn";
             conList = new String[1];
             conList[0] = "TableID=" + TableID;
-            Select(2, 1, 1);
+            Select(3, 1, 1);
             while (rs.next()) {
                 rowNum++;
             }
@@ -1032,10 +1031,11 @@ public class PKUMetaDataManagement {
             showLColumn = new String[rowNum][];
             i = 0;
             while (rs.next()){
-                showLColumn[i] = new String[2];
+                showLColumn[i] = new String[4];
                 showLColumn[i][0] = new String((rs.getString(1).trim()));
                 showLColumn[i][1] = new String((rs.getString(2).trim()));
-                showLColumn[i][1] = typeName[Integer.parseInt(new String((rs.getString(3).trim()))) - 1];
+                showLColumn[i][2] = typeName[Integer.parseInt(new String((rs.getString(3).trim()))) - 1];
+                showLColumn[i][3] = "" + TableID;
 
                 i++;
             }
@@ -1066,7 +1066,10 @@ public class PKUMetaDataManagement {
             while (rs.next()){
                 showMappingU[i] = new String[6];
                 for (int j = 1; j <= 6; j++) {
-                    showMappingU[i][j - 1] = new String((rs.getString(j).trim()));
+                    if (rs.getString(j) != null)
+                        showMappingU[i][j - 1] = new String((rs.getString(j).trim()));
+                    else
+                        showMappingU[i][j - 1] = "";
                 }
                 i++;
             }
@@ -1090,7 +1093,10 @@ public class PKUMetaDataManagement {
             showMappingL[0] = new String[6];
             while (rs.next()){
                 for (int i = 1; i <= 6; i++) {
-                    showMappingL[0][i - 1] = new String((rs.getString(i).trim()));
+                    if (rs.getString(i) != null)
+                        showMappingL[0][i - 1] = new String((rs.getString(i).trim()));
+                    else
+                        showMappingL[0][i - 1] = "";
                 }
             }
         } catch (SQLException e) {

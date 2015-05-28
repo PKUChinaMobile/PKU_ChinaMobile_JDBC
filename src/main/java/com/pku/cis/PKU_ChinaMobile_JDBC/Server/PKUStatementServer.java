@@ -69,6 +69,7 @@ public class PKUStatementServer extends UnicastRemoteObject
 			//Translate the SQL query into the corresponding type.
 			String dialect = SQLTranslate.translate(sp, dbType);
 			//Execute the query.
+			System.out.println(dbType);
 			System.out.println(dialect);
 			rs[i] = stmt[i].executeQuery(dialect);
 		}
