@@ -280,6 +280,7 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
             splitPane.setDividerSize(10);//设置分隔线宽度的大小，以pixel为计算单位。
             splitPane.setResizeWeight(0.5);//设置改变大小时上下两部分改变的比例
             panel.setLayout(new CardLayout(1,1));
+            panel.add(splitPane);
         }
         else if(depth == 1)
         {
