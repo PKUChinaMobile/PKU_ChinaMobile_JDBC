@@ -8,6 +8,8 @@ import java.sql.*;
 import java.sql.DriverManager;
 import java.lang.Class;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.P_Users;
 
 /**
@@ -112,16 +114,177 @@ public class PermissionManager extends UnicastRemoteObject
         return rs == 1;
     }
 
+    public String getField(String sql) throws Exception
+    {
+        //System.out.println("getUsers");
+        Connection connection = getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(sql);
+        String field = null;
+        while(rs.next()) {
+            field = new String((rs.getString(1).trim()).getBytes("ISO-8859-1"));
+            break;
+        }
+        rs.close();
+        connection.close();
+
+        return field;
+    }
+
+    public ArrayList<String> getFieldArray(String sql) throws Exception
+    {
+        //System.out.println("getUsers");
+        Connection connection = getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet rs = statement.executeQuery(sql);
+        ArrayList<String> ans = new ArrayList<String>();
+        while(rs.next()) {
+           ans.add(new String((rs.getString(1).trim()).getBytes("ISO-8859-1")));
+        }
+        rs.close();
+        connection.close();
+
+        return ans;
+    }
+
+    //grant username the permission on the database named databaseName
+    public boolean grantPermissionOnDatabase(String username, String databaseName) throws Exception
+    {
+        Connection connection = getConnection();
+        Statement statement = connection.createStatement();
+        String databaseId = getField("select UID from ldatabase where DBName=\'" + databaseName + "\'");
+        if (databaseId == null)
+        {
+            connection.close();
+            throw new Exception("Can not find the database " + databaseName);
+        }
+
+        String userId = getField("select UID from users where username=\'" + username + "\'");
+        if (userId == null)
+        {
+            connection.close();
+            throw new Exception("Can not find the user " + username);
+        }
+
+        String sql = "insert into ldatabaseusers(userId, databaseId) values(";
+        sql += "\'" + userId + "\'" ;
+        sql += ",\'" + databaseId + "\');";
+        int rs = statement.executeUpdate(sql);
+        connection.close();
+        return rs == 1;
+    }
+
+    //cancel username the permission on the database named databaseName
+    public boolean canceltPermissionOnDatabase(String username, String databaseName) throws Exception
+    {
+        Connection connection = getConnection();
+        Statement statement = connection.createStatement();
+        String databaseId = getField("select UID from ldatabase where DBName=\'" + databaseName + "\'");
+        if (databaseId == null)
+        {
+            connection.close();
+            throw new Exception("Can not find the database " + databaseName);
+        }
+
+        String userId = getField("select UID from users where username=\'" + username + "\'");
+        if (userId == null)
+        {
+            connection.close();
+            throw new Exception("Can not find the user " + username);
+        }
+
+        String sql = "delete from ldatabaseusers where userId=";
+        sql += "\'" + userId + "\'" ;
+        sql += " and databaseId=\'" + databaseId + "\';";
+        int rs = statement.executeUpdate(sql);
+        connection.close();
+        return rs == 1;
+    }
+
+    public  String[][] getUsersDatabasePermission() throws Exception
+    {
+        //System.out.println("getUsers");
+        Connection connection = getConnection();
+        Statement statement = connection.createStatement();
+        String sql = "SELECT users.username, ldatabase.DBName FROM ldatabase, ldatabaseusers, users " +
+                "where ldatabase.uid=ldatabaseusers.databaseid AND " +
+                "ldatabaseusers.userid=users.uid" ;
+        ResultSet rs = statement.executeQuery(sql);
+        HashMap<String, String>mp = new HashMap<String, String>();
+        while(rs.next()) {
+            String userName = new String((rs.getString(1).trim()).getBytes("ISO-8859-1"));
+            String databaseName = new String((rs.getString(2).trim()).getBytes("ISO-8859-1"));
+            mp.put(userName, databaseName);
+        }
+        rs.close();
+        connection.close();
+
+        sql = "select username from users;";
+        ArrayList<String> usernames = getFieldArray(sql);
+        sql = "select DBName from ldatabase;";
+        ArrayList<String> databasenames = getFieldArray(sql);
+        String [][] ans = new String[usernames.size() * databasenames.size()][3];
+        for (int i = 0, k = 0; i < usernames.size(); ++i)
+            for (int j = 0; j < databasenames.size(); ++j)
+            {
+                ans[k][0] = usernames.get(i);
+                ans[k][1] = databasenames.get(j);
+                ans[k][2] = "false";
+                if (ans[k][1].equals(mp.get(usernames.get(i))))
+                    ans[k][2] = "true";
+
+                ++k;
+            }
+
+        return ans;
+    }
+
+
     //only for testing
-    /*
+/*
     public static void main(String[]args) throws  Exception
     {
         PermissionManager pm = new PermissionManager();
         PrintStream out = System.out;
+        out.println("-------------------");
+        String usersdatabase = "DD";
+        //pm.remove(usersdatabase);
+        pm.insert(usersdatabase, 2, "123456");
+        String [][] ans = pm.getUsersDatabasePermission();
+        for (int i = 0; i < ans.length; ++i)
+            if(ans[i][0].equals(usersdatabase))
+            {
+                for (int j = 0; j < 3; ++j)
+                    out.print(ans[i][j] + " ");
+                out.println("");
+            }
+        pm.grantPermissionOnDatabase(usersdatabase, "mytest");
+        ans = pm.getUsersDatabasePermission();
+        for (int i = 0; i < ans.length; ++i)
+            if(ans[i][0].equals(usersdatabase))
+            {
+                for (int j = 0; j < 3; ++j)
+                    out.print(ans[i][j] + " ");
+                out.println("");
+            }
+        pm.canceltPermissionOnDatabase(usersdatabase, "mytest");
+        ans = pm.getUsersDatabasePermission();
+        for (int i = 0; i < ans.length; ++i)
+            if(ans[i][0].equals(usersdatabase))
+            {
+                for (int j = 0; j < 3; ++j)
+                    out.print(ans[i][j] + " ");
+                out.println("");
+            }
+        pm.remove(usersdatabase);
+        out.println("-------------------");
+
         P_Users[] users = (P_Users[])pm.getUsers();
         out.println("test GetUsers:");
         for (int i = 0; i < users.length; ++i)
             out.println(users[i].userName + " " + users[i].permission);
+
+
 
         out.println("test insert:");
         out.println("remove:" + pm.remove("userName"));
