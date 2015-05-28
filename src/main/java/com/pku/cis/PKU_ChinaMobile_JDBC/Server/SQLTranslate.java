@@ -5,6 +5,9 @@
 package com.pku.cis.PKU_ChinaMobile_JDBC.Server;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
+import com.pku.cis.PKU_ChinaMobile_JDBC.Server.Dialect.Hive.ToHiveOutputVisitor;
+import com.pku.cis.PKU_ChinaMobile_JDBC.Server.Dialect.Oracle.ToOracleOutputVisitor;
+import com.pku.cis.PKU_ChinaMobile_JDBC.Server.Dialect.Teradata.ToTeradataOutputVisitor;
 
 public class SQLTranslate {
 	
@@ -28,16 +31,22 @@ public class SQLTranslate {
 		
 		switch(getDatabaseType(dbType)){
 		case Oracle:
-			out.append(SQLDialect.toOracleString(stmt));
-			break;
-		case MySql:
-			out.append(SQLDialect.toMySqlString(stmt));
+            StringBuilder outOracle = new StringBuilder();
+            ToOracleOutputVisitor visitorOracle = new ToOracleOutputVisitor(outOracle);
+            stmt.accept(visitorOracle);
+			out.append(outOracle);
 			break;
 		case Teradata:
-			out.append(SQLDialect.toTeradataString(stmt));
+            StringBuilder outTeradata = new StringBuilder();
+            ToTeradataOutputVisitor visitorTeradata = new ToTeradataOutputVisitor(outTeradata);
+            stmt.accept(visitorTeradata);
+            out.append(outTeradata);
 			break;
 		case Hive:
-			out.append(SQLDialect.toHiveString(stmt));
+            StringBuilder outHive = new StringBuilder();
+            ToHiveOutputVisitor visitorHive = new ToHiveOutputVisitor(outHive);
+            stmt.accept(visitorHive);
+            out.append(outHive);
 			break;
 		}
 		
