@@ -46,7 +46,7 @@ public class PKUStatementServer extends UnicastRemoteObject
 	 * Finally we execute the query on each database, and save each java.sql.ResultSet in an
 	 * array. And wrap it over PKUResultSetServer and return the PKUResultSetServer.
 	 *  
-	 * @param sql typically this is a static SQL SELECT statement
+	 * @param Query typically this is a static SQL SELECT statement
 	 * @return a remote ResultSet object; never null 
 	 */
 	public PKUResultSetInterface executeQuery(String Query) throws RemoteException,SQLException
@@ -69,6 +69,7 @@ public class PKUStatementServer extends UnicastRemoteObject
 			//Translate the SQL query into the corresponding type.
 			String dialect = SQLTranslate.translate(sp, dbType);
 			//Execute the query.
+			System.out.println(dialect);
 			rs[i] = stmt[i].executeQuery(dialect);
 		}
 		PKUResultSetServer remoteRs = new PKUResultSetServer(rs);
@@ -88,7 +89,7 @@ public class PKUStatementServer extends UnicastRemoteObject
 	 * Finally we execute the query on each database, and save each java.sql.ResultSet in an
 	 * array. And wrap it over PKUResultSetServer and return the PKUResultSetServer.
 	 *  
-	 * @param sql a SQL INSERT, UPDATE or DELETE statement or a SQL
+	 * @param Query a SQL INSERT, UPDATE or DELETE statement or a SQL
 	 * statement that returns nothing
 	 * @return either the row count for INSERT, UPDATE or DELETE or 0
 	 * for SQL statements that return nothing
