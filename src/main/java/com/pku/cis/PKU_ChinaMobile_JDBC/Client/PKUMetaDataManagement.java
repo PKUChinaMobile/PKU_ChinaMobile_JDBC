@@ -1104,9 +1104,10 @@ public class PKUMetaDataManagement {
             }
 
             for (i = 0; i < UTNum; i++) {
+                UCNum = 0;
                 tarList = new String[1];
                 tarList[0] = "ColumnName";
-                tableList[0] = "UTable";
+                tableList[0] = "UColumn";
                 conList = new String[1];
                 conList[0] = "UTableID=" + UTID[i];
                 Select(1, 1, 1);
@@ -1136,6 +1137,7 @@ public class PKUMetaDataManagement {
         int LCNum = 0;
 
         try {
+            LSNum = 0;
             tarList = new String[2];
             tarList[0] = "UID";
             tarList[1] = "Name";
@@ -1162,6 +1164,7 @@ public class PKUMetaDataManagement {
             }
 
             for (i = 0; i < LSNum; i++) {
+                LBNum = 0;
                 tarList = new String[2];
                 tarList[0] = "UID";
                 tarList[1] = "DBName";
@@ -1188,13 +1191,14 @@ public class PKUMetaDataManagement {
                 }
 
                 for (j = 0; j < LBNum; j++) {
+                    LTNum = 0;
                     tarList = new String[2];
                     tarList[0] = "UID";
                     tarList[1] = "TableName";
                     tableList = new String[1];
                     tableList[0] = "LTable";
                     conList = new String[1];
-                    conList[0] = "DBID=" + LBID[i];
+                    conList[0] = "DBID=" + LBID[i][j];
                     Select(2, 1, 1);
                     while (rs.next()) {
                         LTNum++;
@@ -1212,19 +1216,20 @@ public class PKUMetaDataManagement {
                     }
 
                     for (k = 0; k < LTNum; k++) {
+                        LCNum = 0;
                         tarList = new String[1];
                         tarList[0] = "ColumnName";
                         tableList = new String[1];
                         tableList[0] = "LColumn";
                         conList = new String[1];
-                        conList[0] = "TableID=" + LBID[i];
+                        conList[0] = "TableID=" + LTID[i][j][k];
                         Select(1, 1, 1);
                         while (rs.next()) {
-                            LTNum++;
+                            LCNum++;
                         }
                         rs.beforeFirst();
 
-                        LC[i][j][k] = new String[LTNum];
+                        LC[i][j][k] = new String[LCNum];
                         int l = 0;
                         while (rs.next()) {
                             LC[i][j][k][l] = new String((rs.getString(1).trim()));

@@ -1,11 +1,15 @@
 package com.pku.cis.PKU_ChinaMobile_JDBC.GUI;
 
+import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUMetaDataManagement;
+import org.datanucleus.metadata.MetaDataManager;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 
 public class MetaDataManagerFrame extends JFrame {
@@ -21,6 +25,7 @@ public class MetaDataManagerFrame extends JFrame {
     public static JButton glbbutton_1;
     public static JButton glbbutton_2;
     public static MyJTable glbtable;
+    public static JTree tree;
 
     /*标签页2的组件*/
     public static int rowCount2;
@@ -31,6 +36,7 @@ public class MetaDataManagerFrame extends JFrame {
     public static JButton glbbutton2_1;
     public static JButton glbbutton2_2;
     public static MyJTable glbtable2;
+    public static JTree tree2;
 
 
     static final int FHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
@@ -120,154 +126,124 @@ public class MetaDataManagerFrame extends JFrame {
 
         return t;
     }
+    /*更新文件树*/
+    public void updateTree()
+    {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("");
+        PKUMetaDataManagement mm = new PKUMetaDataManagement();//mm使用时需要调用Init，结束时需要调用
+        mm.Init();
+        mm.showUTree();
+        String[] tbName = mm.FetchUT();
+        String[][] columnName = mm.FetchUC();
+        mm.CloseCon();
+
+        DefaultMutableTreeNode db = new DefaultMutableTreeNode("test");
+
+        DefaultMutableTreeNode[] level1 = new DefaultMutableTreeNode[tbName.length];
+        for(int i = 0; i < tbName.length; i++)
+        {
+            level1[i] = new DefaultMutableTreeNode(tbName[i]);
+            DefaultMutableTreeNode[] level2 = new DefaultMutableTreeNode[columnName[i].length];
+            for(int j = 0; j < columnName[i].length; j++)
+            {
+                level2[j] = new DefaultMutableTreeNode(columnName[i][j]);
+                level1[i].add(level2[j]);
+            }
+            db.add(level1[i]);
+        }
+        root.add(db);
+        tree = new JTree(root);
+        tree.setRootVisible(false);
+        tree.setShowsRootHandles(true);
+    }
+    public void updateTree2()
+    {
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("");
+        PKUMetaDataManagement mm = new PKUMetaDataManagement();//mm使用时需要调用Init，结束时需要调用
+        mm.Init();
+        mm.showLTree();
+        String[] datasourceName = mm.FetchLS(); //返回数据源数组
+        String[][] dbName = mm.FetchLB(); //返回数据库名数组
+        String[][][] tbName = mm.FetchLT();//返回表名数组
+        String[][][][] columnName = mm.FetchLC(); //返回列名数组
+        mm.CloseCon();
+
+        DefaultMutableTreeNode[] level1 = new DefaultMutableTreeNode[datasourceName.length];
+        for(int i = 0; i < datasourceName.length; i++)
+        {
+            level1[i] = new DefaultMutableTreeNode(datasourceName[i]);
+            DefaultMutableTreeNode[] level2 = new DefaultMutableTreeNode[dbName[i].length];
+            for(int j = 0; j < dbName[i].length; j++)
+            {
+                level2[j] = new DefaultMutableTreeNode(dbName[i][j]);
+                DefaultMutableTreeNode[] level3 = new DefaultMutableTreeNode[tbName[i][j].length];
+                for(int k = 0; k < tbName[i][j].length; k++)
+                {
+                    level3[k] = new DefaultMutableTreeNode(tbName[i][j][k]);
+                    DefaultMutableTreeNode[] level4 = new DefaultMutableTreeNode[columnName[i][j][k].length];
+                    for(int l = 0; l < columnName[i][j][k].length; l++)
+                    {
+                        level4[l] = new DefaultMutableTreeNode(columnName[i][j][k][l]);
+                        level3[k].add(level4[l]);
+                    }
+                    level2[j].add(level3[k]);
+                }
+                level1[i].add(level2[j]);
+            }
+            root.add(level1[i]);
+
+        }
+
+        tree2 = new JTree(root);
+        tree2.setRootVisible(false);
+        tree2.setShowsRootHandles(true);
+    }
     /**
      * Create the frame.
      */
     public MetaDataManagerFrame() {
 
         setTitle("透明网管系统——权限管理");
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 550, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setBounds(100, 100, 700, 400);
         getContentPane().setLayout(new GridLayout(1,1));
 
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);//标签页
 
         /*标签页1——全局映射*/
-        glbtable = updateTable();
-        JScrollPane panel = new JScrollPane(glbtable);
-        panel.getViewport().setBackground(Color.WHITE);
-
-        JPanel panel_1 = new JPanel();
-        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, false, panel, panel_1);
-        panel_1.setLayout(null);
-
-        JPanel panel_2 = new JPanel();
-        panel_2.setBorder(BorderFactory.createTitledBorder("Operation"));
-        panel_2.setBounds(9, 6, 146, 138);
-        panel_1.add(panel_2);
-        panel_2.setLayout(null);
-
-        /*添加全局模式按钮*/
-        glbbutton = new JButton("添加");
-        glbbutton.setBounds(6, 16, 135, 30);
-        panel_2.add(glbbutton);
-
-
-        /*编辑全局模式按钮*/
-        glbbutton_1 = new JButton("编辑");
-        glbbutton_1.setBounds(6, 58, 135, 30);
-        panel_2.add(glbbutton_1);
-
-        /*删除全局模式按钮*/
-        glbbutton_2 = new JButton("删除");
-        glbbutton_2.setBounds(6, 98, 135, 30);
-        glbbutton_2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                glbbutton.setEnabled(false);
-                glbbutton_1.setEnabled(false);
-                glbbutton_2.setEnabled(false);
-                glbtable.setEnabled(false);
-                String userName = data[glbtable.getSelectedRowCount()][0];
-                int result = JOptionPane.showConfirmDialog(null, "确定删除该用户？", "提示", JOptionPane.YES_NO_OPTION);
-                if(result == 0)
-                {
-                    try {
-                        if(true)
-                            JOptionPane.showMessageDialog(null,"删除成功","提示", JOptionPane.PLAIN_MESSAGE);
-                        /*else
-                            JOptionPane.showMessageDialog(null,"删除失败","删除失败", JOptionPane.ERROR_MESSAGE);*/
-                    } catch (Exception e1) {
-                        JOptionPane.showMessageDialog(null,e1.getMessage(),"删除失败", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-                glbbutton.setEnabled(true);
-                glbbutton_1.setEnabled(true);
-                glbbutton_2.setEnabled(true);
-                try {
-                    fetchData();
-                }catch(Exception e1) {
-                    JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
-                }
-                glbtable.setModel(new DefaultTableModel(data,head));
-                glbtable.updateUI(); //更新表
-                glbtable.setEnabled(true);
-            }
-        });
-        panel_2.add(glbbutton_2);
-        splitPane.setDividerLocation(366);
-        splitPane.setResizeWeight(1);
-        splitPane.setDividerSize(0);
+        JPanel tab1 = new JPanel();
+        tab1.setBorder(new EmptyBorder(5, 5, 5, 5));
+        tab1.setLayout(new CardLayout(1, 1));
+        /*文件树*/
+        updateTree();
+        JScrollPane scrollPane = new JScrollPane(tree);//文件树包裹在可滚动模板里
+        /*右侧模板*/
+        JPanel panel = new JPanel();
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, false, scrollPane, panel);
+        splitPane.setDividerLocation(200);//设置分割线位置
+        splitPane.setOneTouchExpandable(true);//设置是否可展开
+        splitPane.setDividerSize(10);//设置分隔线宽度的大小，以pixel为计算单位。
+        splitPane.setResizeWeight(0.5);//设置改变大小时上下两部分改变的比例
+        tab1.add(splitPane);
 
         /*标签页2——映射关系*/
-        glbtable2 = updateTable2();
-        JScrollPane panel2 = new JScrollPane(glbtable2);
-        panel2.getViewport().setBackground(Color.WHITE);
+        JPanel tab2 = new JPanel();
+        tab2.setBorder(new EmptyBorder(5, 5, 5, 5));
+        tab2.setLayout(new CardLayout(1, 1));
+        /*文件树*/
+        updateTree2();
+        JScrollPane scrollPane2 = new JScrollPane(tree2);//文件树包裹在可滚动模板里
+        /*右侧模板*/
+        JPanel panel2 = new JPanel();
+        JSplitPane splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, false, scrollPane2, panel2);
+        splitPane2.setDividerLocation(200);//设置分割线位置
+        splitPane2.setOneTouchExpandable(true);//设置是否可展开
+        splitPane2.setDividerSize(10);//设置分隔线宽度的大小，以pixel为计算单位。
+        splitPane2.setResizeWeight(0.5);//设置改变大小时上下两部分改变的比例
+        tab2.add(splitPane2);
 
-        JPanel panel2_1 = new JPanel();
-        JSplitPane splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, false, panel2, panel2_1);
-        panel2_1.setLayout(null);
-
-        JPanel panel2_2 = new JPanel();
-        panel2_2.setBorder(BorderFactory.createTitledBorder("Operation"));
-        panel2_2.setBounds(9, 6, 146, 138);
-        panel2_1.add(panel2_2);
-        panel2_2.setLayout(null);
-
-        /*添加按钮*/
-        glbbutton2 = new JButton("添加映射");
-        glbbutton2.setBounds(6, 16, 135, 30);
-        panel2_2.add(glbbutton2);
-
-
-        /*编辑按钮*/
-        glbbutton2_1 = new JButton("编辑");
-        glbbutton2_1.setBounds(6, 58, 135, 30);
-        panel2_2.add(glbbutton2_1);
-
-        /*删除按钮*/
-        glbbutton2_2 = new JButton("删除");
-        glbbutton2_2.setBounds(6, 98, 135, 30);
-        glbbutton2_2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                glbbutton2.setEnabled(false);
-                glbbutton2_1.setEnabled(false);
-                glbbutton2_2.setEnabled(false);
-                glbtable2.setEnabled(false);
-                String userName = data2[glbtable2.getSelectedRowCount()][0];
-                int result = JOptionPane.showConfirmDialog(null, "确定删除该用户？", "提示", JOptionPane.YES_NO_OPTION);
-                if(result == 0)
-                {
-                    try {
-                        if(true)
-                            JOptionPane.showMessageDialog(null,"删除成功","提示", JOptionPane.PLAIN_MESSAGE);
-                        /*else
-                            JOptionPane.showMessageDialog(null,"删除失败","删除失败", JOptionPane.ERROR_MESSAGE);*/
-                    } catch (Exception e1) {
-                        JOptionPane.showMessageDialog(null,e1.getMessage(),"删除失败", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-                glbbutton2.setEnabled(true);
-                glbbutton2_1.setEnabled(true);
-                glbbutton2_2.setEnabled(true);
-                try {
-                    fetchData2();
-                }catch(Exception e1) {
-                    JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
-                }
-                glbtable2.setModel(new DefaultTableModel(data2,head));
-                glbtable2.updateUI(); //更新表
-                glbtable2.setEnabled(true);
-            }
-        });
-        panel2_2.add(glbbutton2_2);
-        splitPane2.setDividerLocation(366);
-        splitPane2.setResizeWeight(1);
-        splitPane2.setDividerSize(0);
-
-        tabbedPane.addTab("全局模式", splitPane);
-        tabbedPane.addTab("映射关系", splitPane2);
+        tabbedPane.addTab("全局模式", tab1);
+        tabbedPane.addTab("本地模式", tab2);
         getContentPane().add(tabbedPane);
     }
 }

@@ -47,7 +47,7 @@ public class PKUStatement implements java.sql.Statement
 	 * This method executes the SQL query via Remote Statement and then
 	 * returns the PKUResultSet holding remote ResultSet.
 	 * 
-	 * @param sql
+	 * @param sqlQuery
 	 *            typically a static SQL SELECT statement
 	 * 
 	 * @return a ResulSet that contains the data produced by the query
@@ -76,7 +76,7 @@ public class PKUStatement implements java.sql.Statement
 	 * 
 	 * This method executes the SQL data write/modify statement via Remote Statement 
 	 * 
-	 * @param sql
+	 * @param sqlQuery
 	 *            a SQL statement
 	 * 
 	 * @return either a row count, or 0 for SQL commands
