@@ -996,12 +996,30 @@ public class PKUMetaDataManagement {
     }
     public String[][] showLColumn(int TableID) {
         int rowNum = 0;
+        int typeNum = 0;
+        String typeName[];
 
         try {
-            tarList = new String[2];
+            tarList = new String[1];
+            tarList[0] = "LColumnType";
+            tableList = new String[1];
+            tableList[0] = "LColumnType";
+            Select(1, 1, 0);
+            while (rs.next()) {
+                typeNum++;
+            }
+            rs.beforeFirst();
+            typeName = new String[typeNum];
+            int i = 0;
+            while (rs.next()){
+                typeName[i] = new String((rs.getString(1).trim()));
+                i++;
+            }
+
+            tarList = new String[3];
             tarList[0] = "UID";
             tarList[1] = "ColumnName";
-            tableList = new String[1];
+            tarList[2] = "ColumnTypeID";
             tableList[0] = "LColumn";
             conList = new String[1];
             conList[0] = "TableID=" + TableID;
@@ -1012,11 +1030,13 @@ public class PKUMetaDataManagement {
             rs.beforeFirst();
 
             showLColumn = new String[rowNum][];
-            int i = 0;
+            i = 0;
             while (rs.next()){
                 showLColumn[i] = new String[2];
                 showLColumn[i][0] = new String((rs.getString(1).trim()));
                 showLColumn[i][1] = new String((rs.getString(2).trim()));
+                showLColumn[i][1] = typeName[Integer.parseInt(new String((rs.getString(3).trim()))) - 1];
+
                 i++;
             }
         } catch (SQLException e) {
