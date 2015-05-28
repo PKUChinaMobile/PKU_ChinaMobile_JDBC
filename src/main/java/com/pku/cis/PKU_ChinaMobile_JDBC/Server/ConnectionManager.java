@@ -53,9 +53,7 @@ public class ConnectionManager {
 				if(dst != 0 && !dbName[dst].equals(usr.dbName[i]))//测试用，用于TestForSelect样例
 					continue;
 
-				System.out.println("Connection for "+usr.URLS[i]+" "+usr.username[i]+" "+usr.password[i]);
 				Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
-				System.out.println("Connection for "+usr.URLS[i]+" "+usr.username[i]+" "+usr.password[i]);
 				cons.add(conn);
 				dbs.add(usr.dbName[i]);
 				conNum++;
