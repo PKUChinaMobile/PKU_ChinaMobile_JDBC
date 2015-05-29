@@ -25,13 +25,14 @@ public class ConnectionManager {
 	int conNum;//连接总数
 
 	public static int dst;//测试用，在TestForSelect样例内设置 ：0-全数据库；1-Oracle；2-Mysql；3-Teradata；4-hive
-	public static ArrayList<String> dbName;
+    public static String dbName[] = {"","mysql","oracle","teradata","hive"};
 
 	ConnectionManager(User _usr)
 	{
 		usr = _usr;
 
-        dbName = new ArrayList<String>(Arrays.asList("","mysql","oracle","teradata","hive2"));
+        //dbName = new ArrayList<String>(Arrays.asList("","mysql","oracle","teradata","hive2"));
+
 	}
 	/**
 	 * 关闭所有连接即可
@@ -50,53 +51,82 @@ public class ConnectionManager {
 	 * @return 连接数组
 	 * @throws SQLException
 	 */
-	public Connection[] getConnections(SQLParse sp) throws SQLException
-	{
-		cons = new ArrayList<Connection>();
-		dbs = new ArrayList<String>();
-        ArrayList<String> connected = new ArrayList<String>();
+    public Connection[] getConnections(SQLParse sp) throws SQLException
+    {
+        cons = new ArrayList<Connection>();
+        dbs = new ArrayList<String>();
 
 
-        Set<TableStat.Name> tableName = sp.getTableName().keySet();
-        Set<TableStat.Column> fieldsName = sp.getFields();
+        conNum = 0;
 
-        System.out.println(tableName);
-        System.out.println(fieldsName);
+        for(int i=0; i<usr.dbNum; ++i){
+            try{
 
-		conNum = 0;
+                if(dst != 0 && !dbName[dst].equals(usr.dbName[i]))//测试用，用于TestForSelect样例
+                    continue;
 
-        for(TableStat.Name tn : tableName){
-            for(TableStat.Column fn : fieldsName){
-                PKUMetaDataManagement mdm = new PKUMetaDataManagement();
-                mdm.Init();
-                mdm.Mapping("test", tn.toString(), fn.toString().split("\\.")[1], Integer.MAX_VALUE, 0, 1);
-                mdm.CloseCon();
-                String[] dBList = mdm.FetchLDataSourceTypeList();
-                for(String dBName : dBList){
-                    if(connected.indexOf(dBName) >= 0)
-                        continue;
-                    int i = dbName.indexOf(dBName);
-                    i--;
-                    //System.out.println(i + dBName);
-                    try{
-                        System.out.println(usr.URLS[i]+usr.username[i]+usr.password[i]);
-                        Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
-                        cons.add(conn);
-                    }catch(SQLException e){
-                        System.out.println("Connection for "+usr.dbName[i]+" failed.");
-                        throw e;
-                    }
-
-                    connected.add(dBName);
-                    conNum++;
-                }
-                System.out.println(dBList[0]);
-
+                Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
+                cons.add(conn);
+                dbs.add(usr.dbName[i]);
+                conNum++;
+            }catch(SQLException e){
+                System.out.println("Connection for "+usr.dbName[i]+" failed.");
+                throw e;
             }
         }
 
-		return (Connection[])cons.toArray(new Connection[conNum]);
-	}
+        return (Connection[])cons.toArray(new Connection[conNum]);
+    }
+
+//	public Connection[] getConnections(SQLParse sp) throws SQLException
+//	{
+//		cons = new ArrayList<Connection>();
+//		dbs = new ArrayList<String>();
+//        ArrayList<String> connected = new ArrayList<String>();
+//
+//
+//        Set<TableStat.Name> tableName = sp.getTableName().keySet();
+//        Set<TableStat.Column> fieldsName = sp.getFields();
+//
+//        System.out.println(tableName);
+//        System.out.println(fieldsName);
+//
+//		conNum = 0;
+//
+//        for(TableStat.Name tn : tableName){
+//            for(TableStat.Column fn : fieldsName){
+//                PKUMetaDataManagement mdm = new PKUMetaDataManagement();
+//                mdm.Init();
+//                mdm.Mapping("test", tn.toString(), fn.toString().split("\\.")[1], Integer.MAX_VALUE, 0, 1);
+//                System.out.println(tn.toString() + fn.toString().split("\\.")[1]);
+//                String[] dBList = mdm.FetchLDataSourceTypeList();
+//                mdm.CloseCon();
+//                System.out.println(dBList[0]);
+//                for(String dBName : dBList){
+//                    if(connected.indexOf(dBName) >= 0)
+//                        continue;
+//                    int i = dbName.indexOf(dBName);
+//                    i--;
+//                    //System.out.println(i + dBName);
+//                    try{
+//                        System.out.println(usr.URLS[i]+usr.username[i]+usr.password[i]);
+//                        Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
+//                        cons.add(conn);
+//                    }catch(SQLException e){
+//                        System.out.println("Connection for "+usr.dbName[i]+" failed.");
+//                        throw e;
+//                    }
+//
+//                    connected.add(dBName);
+//                    conNum++;
+//                }
+//
+//
+//            }
+//        }
+//
+//		return (Connection[])cons.toArray(new Connection[conNum]);
+//	}
 
 	/**
 	 * 要求返回用户所能够连接的所有连接；
@@ -113,12 +143,14 @@ public class ConnectionManager {
 
 		conNum = 0;
 
-		for(int i=0; i<usr.dbNum; ++i){
+		for(int i=1; i<usr.dbNum; ++i){
 			try{
-				if(dst != 0 && !dbName.get(dst).equals(usr.dbName[i]))//测试用，用于TestForSelect样例
+				if(dst != 0 && !dbName[dst].equals(usr.dbName[i]))//测试用，用于TestForSelect样例
 					continue;
 				Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
-				cons.add(conn);
+                System.out.println(usr.URLS[i]+usr.username[i]+usr.password[i]);
+                System.out.println("ok");
+                cons.add(conn);
 				dbs.add(usr.dbName[i]);
 				conNum++;
 			}catch(SQLException e){
@@ -148,8 +180,13 @@ public class ConnectionManager {
         User usr = usm.login("a", "b");
         ConnectionManager cm  = new ConnectionManager(usr);
 
-        String TestSQL = "Select intYear, dualTime from callRecords";
+        String TestSQL = "Select vcCallingIMSI, USERS.LOCATION, vcCalledIMSI, intYear, dualTime, intLocation\n" +
+                "from callRecords join USERS on callRecords.vcCallingIMSI=USERS.IMSI \n" +
+                "where callRecords.dualtime>180\n";
+        //String TestSQL = "Select intYear, dualTime from callRecords";
         SQLParse sp = new SQLParse(TestSQL);
+
+        cm.getAllConnection();
 
         cm.getConnections(sp);
 
