@@ -77,10 +77,16 @@ public class ConnectionManager {
                         continue;
                     int i = dbName.indexOf(dBName);
                     i--;
-                    System.out.println(i + dBName);
-                    Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
-                    cons.add(conn);
-                    System.out.println(usr.URLS[i]+usr.username[i]+usr.password[i]);
+                    //System.out.println(i + dBName);
+                    try{
+                        System.out.println(usr.URLS[i]+usr.username[i]+usr.password[i]);
+                        Connection conn = (Connection)DriverManager.getConnection(usr.URLS[i], usr.username[i], usr.password[i]);
+                        cons.add(conn);
+                    }catch(SQLException e){
+                        System.out.println("Connection for "+usr.dbName[i]+" failed.");
+                        throw e;
+                    }
+
                     connected.add(dBName);
                     conNum++;
                 }
