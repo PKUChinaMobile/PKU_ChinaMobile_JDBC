@@ -240,7 +240,7 @@ public class PKUResultSet implements java.sql.ResultSet
 	  /**
 	   * Get the value of a column in the current row as a Java int.
 	   *
-	   * @param columnName is the SQL name of the column
+	   * @param columnIndex is the SQL name of the column
 	   * @return the column value; if the value is SQL NULL, the result is 0
 	   */	
 	public int getInt(int columnIndex)
@@ -657,31 +657,15 @@ public class PKUResultSet implements java.sql.ResultSet
 			      throw new java.sql.SQLException(e.getMessage());
 			    }
 			  }
-	/*获取ResultSet数组总行数，非标准JDBC,使用时会将游标移回开头*/
 	public int getRowCount()
 			throws SQLException
 	{
-		try
-		{
-			return remoteResultSet.getRowCount();
-		}
-		catch(RemoteException ex)
-		{
-			throw(new SQLException(ex.getMessage()));
-		}
+		throw(new SQLException("Not Supported"));
 	}
-	/*将ResultSet游标置于开头，此处将所有后台数据库的ResultSet都移到开头*/
 	public void beforeFirst()
 			throws SQLException
 	{
-		try
-		{
-			remoteResultSet.beforeFirst();
-		}
-		catch(RemoteException ex)
-		{
-			throw(new SQLException(ex.getMessage()));
-		}
+		throw(new SQLException("Not Supported"));
 	}
 
 	public int getRow()

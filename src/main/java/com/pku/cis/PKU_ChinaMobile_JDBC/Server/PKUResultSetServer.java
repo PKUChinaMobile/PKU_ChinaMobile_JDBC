@@ -79,28 +79,7 @@ public class PKUResultSetServer extends UnicastRemoteObject
 		return null;
 	}
 
-	/*获取ResultSet数组总行数，非标准JDBC*/
-	public int getRowCount() throws RemoteException,SQLException
-	{
-		int cnt = 0;
-		for(int i = 0; i < rsNum; i++) {
-			rs[i].last(); //游标移到最后
-			cnt += rs[i].getRow(); //获取当前行
-			rs[i].beforeFirst(); //游标移回最前
-		}
-		return cnt;
-	}
 
-
-	/*将ResultSet游标置于开头，此处将所有后台数据库的ResultSet都移到开头*/
-	public void beforeFirst() throws RemoteException,SQLException
-	{
-
-		for(int i = 0; i < rsNum; i++) {
-			rs[i].beforeFirst(); //游标移到最后
-		}
-
-	}
 
 	/**
 	 * This method closes all the ResultSets

@@ -37,6 +37,7 @@ import java.awt.CardLayout;
 
 import java.awt.BorderLayout;
 import java.awt.Insets;
+import java.util.Vector;
 
 
 public class BuildInFrame extends JFrame {
@@ -257,23 +258,31 @@ class Adapter_BuildInFrame implements ActionListener
                 PKUResultSet rs = (PKUResultSet) stmt.executeQuery(sql);
                 PKUResultSetMetaData rmeta = (PKUResultSetMetaData) rs.getMetaData();
                 int numColumns = rmeta.getColumnCount();
-                int numRows = rs.getRowCount();
+                Vector<String[]> temp = new Vector<String[]>();
+                String[] tempRow;
+                tempRow = new String[numColumns]; //先将结果读取到vector，为了得知行数
+                for(int i = 1; i <= numColumns; i++) //读取表头
+                    tempRow[i-1] =  String.format("%-15s", rmeta.getColumnName(i));
+                temp.add(tempRow);
+                while(rs.next()){
+                    tempRow = new String[numColumns];
+                    for(int i = 1; i <= numColumns; i++)
+                        tempRow[i-1] = String.format("%-15s",new String((rs.getString(i).trim())));
+                    temp.add(tempRow);
+                }
+                int numRows = temp.size()-1;
                 BuildInFrame.numColumns = numColumns;
                 BuildInFrame.numRows = numRows;
                 BuildInFrame.tableHeader = new String[numColumns];
                 BuildInFrame.tableRow = new String[numRows][];
-                for (int i = 0; i < numRows; i++)
+                for(int j = 0; j < numColumns; j++)
+                    BuildInFrame.tableHeader[j] = temp.get(0)[j];
+                for(int i = 0; i < numRows; i++) {
                     BuildInFrame.tableRow[i] = new String[numColumns];
-
-                for (int i = 1; i <= numColumns; i++) //读取表头
-                    BuildInFrame.tableHeader[i - 1] = String.format("%-15s", rmeta.getColumnName(i));
-                int j = 0;
-                while (rs.next()) {
-                    for (int i = 1; i <= numColumns; i++) {
-                        BuildInFrame.tableRow[j][i - 1] = String.format("%-15s", new String((rs.getString(i).trim())));
-                    }
-                    j++;
+                    for(int j = 0; j < numColumns; j++)
+                        BuildInFrame.tableRow[i][j] = temp.get(i+1)[j];
                 }
+                temp.clear();
                 BuildInFrame.label_5.setText("Success.");
                 rs.close();
                 con.close();

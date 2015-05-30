@@ -64,7 +64,7 @@ public class PKUStatementServer extends UnicastRemoteObject
 		for(int i = 0; i < conm.conNum; i++)
 		{
 			//Create the Statement object of corresponding Connection object.
-			stmt[i] = cons[i].createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);//默认参数是ResultSet.TYPE_FORWARD_ONLY.这会使得rs.last无法使用，导致getRowCount出错
+			stmt[i] = cons[i].createStatement();
 			String dbType = cons[i].getMetaData().getDatabaseProductName();
 			//Translate the SQL query into the corresponding type.
 			String dialect = SQLTranslate.translate(sp, dbType);
