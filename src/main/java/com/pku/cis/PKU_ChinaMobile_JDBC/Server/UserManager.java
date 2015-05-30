@@ -41,31 +41,31 @@ class User
 		name = _name;
 		pwd = _pwd;
 
-		dbNum = 4;
+		dbNum = 3;
 		URLS = new String[dbNum];
 		dbName = new String[dbNum];
 		username = new String[dbNum];
 		password = new String[dbNum];
+
+		//URLS[0] = "jdbc:mysql://162.105.71.128:3306/test";
+		URLS[0] = "jdbc:oracle:thin:@162.105.71.128:1521:mytest";
+		URLS[1] = "jdbc:teradata://162.105.71.140/vmtest";
+		URLS[2] = "jdbc:hive2://162.105.71.247:10000/test";
+
+		//dbName[0] = "mysql";
+		dbName[0] = "oracle";
+		dbName[1] = "teradata";
+		dbName[2] = "hive";
 		
-		URLS[0] = "jdbc:mysql://162.105.71.128:3306/test";
-		URLS[1] = "jdbc:oracle:thin:@162.105.71.128:1521:mytest";
-		URLS[2] = "jdbc:teradata://162.105.71.140/vmtest";
-		URLS[3] = "jdbc:hive2://162.105.71.247:10000/test";
+		//username[0] = "root";
+		username[0] = "SYSTEM";
+		username[1] = "vmtest";
+		username[2] = "hadoop";
 		
-		dbName[0] = "mysql";
-		dbName[1] = "oracle";
-		dbName[2] = "teradata";
-		dbName[3] = "hive";
-		
-		username[0] = "root";
-		username[1] = "SYSTEM";
-		username[2] = "vmtest";
-		username[3] = "hadoop";
-		
-		password[0] = "06948859";
-		password[1] = "oracle1ORACLE";
-		password[2] = "vmtest";
-		password[3] = "";
+		//password[0] = "06948859";
+		password[0] = "oracle1ORACLE";
+		password[1] = "vmtest";
+		password[2] = "";
 
 	};
 }
