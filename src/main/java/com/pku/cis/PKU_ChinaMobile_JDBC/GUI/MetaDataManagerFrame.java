@@ -261,6 +261,9 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
     MyJTable dbtable;
     MyJTable tbtable;
     MyJTable columntable;
+    JButton btnNewButton;
+    JButton button;
+    JButton button_1;
     public static String data[][];
     public static String head[] = {"UID","TableName"};
     public static String head2[] = {"UID","ColumnName","Table ID"};
@@ -271,6 +274,16 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
         tree = _tree;
         panel = _panel;
 
+    }
+    public void updateTable()
+    {
+        int depth = selectedNode.getDepth();//0-列层，1-表层，2-数据库层
+        if(depth == 2)
+            updateDBTable();
+        else if(depth == 1)
+            updateTBTable();
+        else if(depth == 0)
+            updateColumnTable();
     }
     public void updateDBTable()
     {
@@ -325,7 +338,6 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
         selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
         if (selectedNode != null) {
             int depth = selectedNode.getDepth();//0-列层，1-表层，2-数据库层
-            System.out.println(depth);
             panel.removeAll();
             if (depth == 2) {
                 updateDBTable();
@@ -333,13 +345,14 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
             /*按钮区*/
                 JPanel panel_1 = new JPanel();
                 panel_1.setLayout(null);
-                JButton btnNewButton = new JButton("添加");
+                btnNewButton = new JButton("添加");
                 btnNewButton.setBounds(6, 16, 135, 30);
+                btnNewButton.addActionListener(new Adapter_btn_MetaDataManagerFrame(this));
                 panel_1.add(btnNewButton);
-                JButton button = new JButton("编辑");
+                button = new JButton("编辑");
                 button.setBounds(6, 58, 135, 30);
                 panel_1.add(button);
-                JButton button_1 = new JButton("删除");
+                button_1 = new JButton("删除");
                 button_1.setBounds(6, 98, 135, 30);
                 panel_1.add(button_1);
 
@@ -356,13 +369,13 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
             /*按钮区*/
                 JPanel panel_1 = new JPanel();
                 panel_1.setLayout(null);
-                JButton btnNewButton = new JButton("添加");
+                btnNewButton = new JButton("添加");
                 btnNewButton.setBounds(6, 16, 135, 30);
                 panel_1.add(btnNewButton);
-                JButton button = new JButton("编辑");
+                button = new JButton("编辑");
                 button.setBounds(6, 58, 135, 30);
                 panel_1.add(button);
-                JButton button_1 = new JButton("删除");
+                button_1 = new JButton("删除");
                 button_1.setBounds(6, 98, 135, 30);
                 panel_1.add(button_1);
 
@@ -379,13 +392,13 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
             /*按钮区*/
                 JPanel panel_1 = new JPanel();
                 panel_1.setLayout(null);
-                JButton btnNewButton = new JButton("添加");
+                btnNewButton = new JButton("添加");
                 btnNewButton.setBounds(6, 16, 135, 30);
                 panel_1.add(btnNewButton);
-                JButton button = new JButton("编辑");
+                button = new JButton("编辑");
                 button.setBounds(6, 58, 135, 30);
                 panel_1.add(button);
-                JButton button_1 = new JButton("删除");
+                button_1 = new JButton("删除");
                 button_1.setBounds(6, 98, 135, 30);
                 panel_1.add(button_1);
 
@@ -605,5 +618,46 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
             panel.removeAll();
             panel.updateUI();
         }
+    }
+}
+
+class Adapter_btn_MetaDataManagerFrame implements ActionListener {
+    Adapter_MetaDataManagerFrame p;
+    JFrame f;
+    Adapter_btn_MetaDataManagerFrame(Adapter_MetaDataManagerFrame _p)
+    {
+        p = _p;
+    }
+    public void actionPerformed(ActionEvent e) {
+        f = new JFrame();
+        p.btnNewButton.setEnabled(false);
+        p.button.setEnabled(false);
+        p.button_1.setEnabled(false);
+        p.dbtable.setEnabled(false);
+        f.addWindowListener(new WindowAdapter() { //关闭窗口事件
+            @Override
+            public void windowClosing(WindowEvent e) {
+                p.btnNewButton.setEnabled(true);
+                p.button.setEnabled(true);
+                p.button_1.setEnabled(true);
+                try {
+                    p.updateTable();
+                }catch(Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                }
+                p.dbtable.updateUI(); //更新表
+                p.dbtable.setEnabled(true);
+                f.dispose();
+                super.windowClosing(e);
+            }
+        });
+        f.setResizable(false);
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.setBounds(100, 100, 329, 234);
+        f.setLocation(PermissionManagerFrame.FWidth / 3, PermissionManagerFrame.FHeight / 3);
+        f.setTitle("添加用户");
+
+
+        f.setVisible(true);
     }
 }
