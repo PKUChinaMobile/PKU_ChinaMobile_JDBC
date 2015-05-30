@@ -133,7 +133,7 @@ public class PKUMetaDataManagement {
         conType = input.nextInt();
         System.out.println("请输入划分属性最大值（conMax）：");
         conMax = input.nextInt();
-        System.out.println("请输入划分属性最小值（conMax）：");
+        System.out.println("请输入划分属性最小值（conMin）：");
         conMin = input.nextInt();
 
         PKU_MDM.Mapping(UDBName, UTableName, UColumnName, conMax, conMin, conType);
@@ -568,7 +568,10 @@ public class PKUMetaDataManagement {
             conList[0] = "UCID=" + UCID;
             switch (conType) {
                 case 0:
-                    conList[1] = "Location=" + conMax;
+                    if (conMax != Integer.MAX_VALUE)
+                        conList[1] = "Location=" + conMax;
+                    else
+                        conList[1] = "Location is not null";
                     break;
                 case 1:
                     conList[1] = "Max>=" + conMin;
