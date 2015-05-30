@@ -107,7 +107,7 @@ public class ToTeradataOutputVisitor extends OracleOutputVisitor {
             return false;
 
         name = fun.name;
-         System.out.println("name = [" +x.getMethodName() + " " + name);
+        //System.out.println("name = [" +x.getMethodName() + " " + name);
         if(fun.funcType == FunctionType.function) {
             print(name);
             print("(");
@@ -118,7 +118,7 @@ public class ToTeradataOutputVisitor extends OracleOutputVisitor {
             // System.out.println("[[[[[" + name);
             if(x.getParameters().size() > 0)
                 print(x.getParameters().get(0).toString());
-            print(name);
+            print(" "+ name + " ");
             //printAndAccept(x.getParameters(), ", ");
             if(x.getParameters().size() > 1)
                 print(x.getParameters().get(1).toString());

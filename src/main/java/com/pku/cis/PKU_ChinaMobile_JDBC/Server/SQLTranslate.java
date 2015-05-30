@@ -34,19 +34,19 @@ public class SQLTranslate {
             StringBuilder outOracle = new StringBuilder();
             ToOracleOutputVisitor visitorOracle = new ToOracleOutputVisitor(outOracle);
             stmt.accept(visitorOracle);
-			out.append(outOracle);
+			out.append(outOracle.toString().replace('\n',' ').trim().replaceAll(";",""));
 			break;
 		case Teradata:
             StringBuilder outTeradata = new StringBuilder();
             ToTeradataOutputVisitor visitorTeradata = new ToTeradataOutputVisitor(outTeradata);
             stmt.accept(visitorTeradata);
-            out.append(outTeradata);
+            out.append(outTeradata.toString().replace('\n',' ').trim().replaceAll(";",""));
 			break;
 		case Hive:
             StringBuilder outHive = new StringBuilder();
             ToHiveOutputVisitor visitorHive = new ToHiveOutputVisitor(outHive);
             stmt.accept(visitorHive);
-            out.append(outHive);
+            out.append(outHive.toString().replace('\n',' ').trim().replaceAll(";",""));
 			break;
 		}
 		
