@@ -129,14 +129,14 @@ public class PKUMetaDataManagement {
         UTableName = input.nextLine();
         System.out.println("请输入列名（UColumn）：");
         UColumnName = input.nextLine();
-        System.out.println("请输入划分属性类型（conType），location(0)，intYear(1)：");
-        conType = input.nextInt();
+        /*System.out.println("请输入划分属性类型（conType），location(0)，intYear(1)：");
+        conType = input.nextInt();*/
         System.out.println("请输入划分属性最大值（conMax）：");
         conMax = input.nextInt();
         System.out.println("请输入划分属性最小值（conMin）：");
         conMin = input.nextInt();
 
-        PKU_MDM.Mapping(UDBName, UTableName, UColumnName, conMax, conMin, conType);
+        PKU_MDM.Mapping(UDBName, UTableName, UColumnName, conMax, conMin);
 
         for (int i = 0; i < LColumnNum; i++) {
             System.out.println(LColumnList[i] + " " + LTableList[i] + " " + LDataBaseList[i] + " " + LDataSourceURLList[i] + " " + LDataSourceTypeList[i]);
@@ -519,10 +519,11 @@ public class PKUMetaDataManagement {
         return UID;
     }
 
-    public void Mapping(String UDataBase, String UTable, String UColumn, int conMax, int conMin, int conType) {
+    public void Mapping(String UDataBase, String UTable, String UColumn, int conMax, int conMin) {
         int UCID = -1;
         int UTID = -1;
         int UDID = -1;
+        int conType = -1;
 
         int LColumnIDList[];
         int count = 0;
@@ -560,6 +561,17 @@ public class PKUMetaDataManagement {
             while(rs.next()) {
                 UCID = Integer.parseInt(new String((rs.getString(1).trim())));
             }
+
+            tarList[0] = "*";
+            tableList[0] = "ColumnMapping";
+            conList = new String[2];
+            conList[0] = "UCID=" + UCID;
+            conList[1] = "Location is not null";
+            Select(1, 1, 2);
+            if (rs.next())
+                conType = 0;
+            else
+                conType = 1;
 
             int conNum = conType + 2;
             tarList[0] = "LCID";
