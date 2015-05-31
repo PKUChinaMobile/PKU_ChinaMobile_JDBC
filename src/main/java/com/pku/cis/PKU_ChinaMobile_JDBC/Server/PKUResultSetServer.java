@@ -24,6 +24,7 @@ public class PKUResultSetServer extends UnicastRemoteObject
 	int colNum; //Column numbers of one query;
 	int rsNum; //Number of ResultSet array; 
 	Hashtable columnList; //Map of column index to column names in the ResultSet
+	int tot;
 
 	/**
 	 * Constructor for creating PKUResultSetServer  with ResultSets of all databases.
@@ -78,8 +79,30 @@ public class PKUResultSetServer extends UnicastRemoteObject
 		//Return null if all data has already been iterated
 		return null;
 	}
-
-
+	/**
+	 * This method returns one ResultSet row in an array of Objects to client PKUResultSet.
+	 * It returns null if all ResultSets does not have any more rows.
+	 * 轮流从数据库取一行
+	 * @return either the object array of one ResultSet row or null
+	 */
+	public Object[] getNextRow2() throws RemoteException,SQLException
+	{
+		//Search the elements in ResultSet array one by one.
+		int i = tot % rsNum;
+		while(rs[i].next() == false)
+		{
+			i = (i + 1) % rsNum;
+			if(i == tot % rsNum)
+				return null;
+		}
+		Object []row = new Object[colNum];
+		for(int j = 1; j <= colNum; j++)
+		{
+			row[j-1] = rs[i].getString(j);
+		}
+		tot = i + 1;
+		return row;
+	}
 
 	/**
 	 * This method closes all the ResultSets

@@ -43,17 +43,23 @@ public class DataSourceManagerFrame extends JFrame {
         rowCount = 3;
         data = new String[rowCount][];
         data[0] = new String[columnCount];
-        data[0][0] = "a";
-        data[0][1] = "b";
-        data[0][2] = "a";
-        data[0][3] = "b";
-        data[0][4] = "a";
+        data[0][0] = "1";
+        data[0][1] = "Mytest";
+        data[0][2] = "Oracle";
+        data[0][3] = "162.105.71.128";
+        data[0][4] = "1521";
         data[1] = new String[columnCount];
-        data[1][0] = "a";
-        data[1][1] = "b";
-        data[1][2] = "a";
-        data[1][3] = "b";
-        data[1][4] = "a";
+        data[1][0] = "2";
+        data[1][1] = "vmtest";
+        data[1][2] = "teradata";
+        data[1][3] = "162.105.71.140";
+        data[1][4] = "1600";
+        data[2] = new String[columnCount];
+        data[2][0] = "3";
+        data[2][1] = "test";
+        data[2][2] = "hive";
+        data[2][3] = "162.105.71.247";
+        data[2][4] = "10000";
 
     }
     public static MyJTable updateTable()
@@ -113,7 +119,7 @@ public class DataSourceManagerFrame extends JFrame {
                 glbbutton_2.setEnabled(false);
                 glbtable.setEnabled(false);
                 String userName = data[glbtable.getSelectedRowCount()][0];
-                int result = JOptionPane.showConfirmDialog(null, "确定删除该用户？", "提示", JOptionPane.YES_NO_OPTION);
+                int result = JOptionPane.showConfirmDialog(null, "确定删除该数据源？", "提示", JOptionPane.YES_NO_OPTION);
                 if(result == 0)
                 {
                     try {
@@ -255,10 +261,10 @@ class Adapter_DataSourceManagerFrame implements ActionListener
 }
 class Adapter2_DataSourceManagerFrame implements ActionListener
 {
-    String type = "a";
-    String name = "b";
-    String ip = "c";
-    String port = "d";
+    String type = "teradata";
+    String name = "test";
+    String ip = "162.105.71.140";
+    String port = "1600";
     JFrame f;
     JTextField textField;
     JTextField textField_1;

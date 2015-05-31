@@ -103,7 +103,8 @@ public class PKUResultSet implements java.sql.ResultSet
 		{
 			//get the current data row from remote ResultSet
 			//All the getXXX methods will get data from local 'row' object
-			row = remoteResultSet.getNextRow();
+			//row = remoteResultSet.getNextRow();
+			row = remoteResultSet.getNextRow2();//该方法轮流从各个数据库取一行
 		}
 		catch(Exception ex)
 		{
