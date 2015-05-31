@@ -316,6 +316,38 @@ public class ToHiveOutputVisitor extends OracleOutputVisitor {
                 this.println();
                 x.getFlashback().accept(this);
             }
+        }else {
+            boolean isRoot = x.getParent() instanceof SQLSelectQueryBlock;
+            if (isRoot) {
+                incrementIndent();
+            }
+
+            println();
+            print(SQLJoinTableSource.JoinType.toString(x.getJoinType()));
+            print(" ");
+
+            x.getRight().accept(this);
+
+            if (isRoot) {
+                decrementIndent();
+            }
+
+            if (x.getCondition() != null) {
+                print(" ON ");
+                x.getCondition().accept(this);
+                print(" ");
+            }
+
+            if (x.getUsing().size() > 0) {
+                print(" USING (");
+                printAndAccept(x.getUsing(), ", ");
+                print(")");
+            }
+
+            if (x.getFlashback() != null) {
+                println();
+                x.getFlashback().accept(this);
+            }
         }
 
         return false;
