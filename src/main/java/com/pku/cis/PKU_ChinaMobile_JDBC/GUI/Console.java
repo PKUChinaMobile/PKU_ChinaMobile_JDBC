@@ -41,6 +41,8 @@ public class Console extends JFrame {
     {
         textArea.append(str);
         textArea.paintImmediately(textArea.getBounds()); //实时刷新textArea，否则会等主线程结束才刷新
+        textArea.setCaretPosition(textArea.getText().length());
+
     }
     /**
      * Launch the application.
@@ -71,7 +73,6 @@ public class Console extends JFrame {
                     temp += String.format("%-15s", rmeta.getColumnName(i))+" | " + "\r\n";
             }
             MyAppend("\n"+temp);
-            textArea.paintImmediately(textArea.getBounds());
             temp = "";
             while( rs.next()) {
                 for( int i = 1;i <= numColumns;i++ ){

@@ -71,6 +71,8 @@ public class PKUStatementServer extends UnicastRemoteObject
 			//Execute the query.
 			System.out.println(dbType);
 			System.out.println(dialect);
+			//dialect = "Select vcCallingIMSI, USERS.LOCATION, vcCalledIMSI, intYear, dualTime, intLocation " +
+					//"from callRecords join USERS on callRecords.vcCallingIMSI=USERS.IMSI where callRecords.dualtime>180";
 			rs[i] = stmt[i].executeQuery(dialect);
 		}
 		PKUResultSetServer remoteRs = new PKUResultSetServer(rs);
