@@ -792,7 +792,7 @@ public class PKUMetaDataManagement {
             tableList[0] = "LDataSource";
             tableList[1] = "LDataSourceType";
             conList = new String[1];
-            conList[0] = "LDataSource.Type=LDataSourceType.UID";
+            conList[0] = "LDataSource.TypeID=LDataSourceType.UID";
             Select(5, 2, 1);
             while (rs.next()) {
                 rowNum++;
