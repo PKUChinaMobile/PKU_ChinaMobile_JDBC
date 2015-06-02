@@ -1317,7 +1317,7 @@ public class PKUMetaDataManagement {
             int databaseID = -1;
             int dataSourceID = -1;
             int typeID = -1;
-            for (i = 0; i < LColumnNum; i++) {
+            for (i = 0; i < num; i++) {
                 tarList = new String[2];
                 tarList[0] = "UTableID";
                 tarList[1] = "ColumnName";
