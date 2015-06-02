@@ -1555,6 +1555,7 @@ public class PKUMetaDataManagement {
 
     public String[] FetchUT() { return UT;}
     public String[][] FetchUC() { return UC;}
+    public String[] FetchLSID() { return LSID;}
     public String[] FetchLS() { return LS;}
     public String[][] FetchLB() { return LB;}
     public String[][][] FetchLT() { return LT;}
