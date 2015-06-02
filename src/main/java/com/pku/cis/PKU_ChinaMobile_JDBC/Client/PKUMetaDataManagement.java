@@ -1297,7 +1297,7 @@ public class PKUMetaDataManagement {
             tableList = new String[1];
             tableList[0] = "UColumn";
             conList = new String[1];
-            conList[0] = "Where UID not in (Select UCID From columnmapping Where LCID=" + LCID + ")";
+            conList[0] = "UID not in (Select UCID From columnmapping Where LCID=" + LCID + ")";
             Select(1, 1, 1);
             while (rs.next()) {
                 num++;
@@ -1336,7 +1336,7 @@ public class PKUMetaDataManagement {
                 conList[0] = "UID=" + tableID;
                 Select(1, 1, 1);
                 while(rs.next()) {
-                    NoMapUTName[i] = new String((rs.getString(2).trim()));
+                    NoMapUTName[i] = new String((rs.getString(1).trim()));
                 }
             }
         } catch (SQLException e) {
@@ -1440,13 +1440,13 @@ public class PKUMetaDataManagement {
         addLColumn(Integer.parseInt(TableID), LColumn, LColumnType);
         return true;
     }
-    public boolean addMap(int UCID, int LCID, int Max, int Min, int Location) {
+    public boolean addMap(int UCID, int LCID, String Max, String Min, String Location) {
         valList = new String[5];
         valList[0] = UCID + "";
         valList[1] = LCID + "";
-        valList[2] = Max + "";
-        valList[3] = Min + "";
-        valList[4] = Location + "";
+        valList[2] = Max;
+        valList[3] = Min;
+        valList[4] = Location;
         Insert("ColumnMapping", 5);
         return true;
     }
@@ -1501,15 +1501,15 @@ public class PKUMetaDataManagement {
         Update("LColumn", 1, 1);
         return true;
     }
-    public boolean updateMap(int UID, int Max, int Min, int Location) {
+    public boolean updateMap(int UID, String Max, String Min, String Location) {
         tarList = new String[3];
         tarList[0] = "Max";
         tarList[1] = "Min";
         tarList[2] = "Location";
         valList = new String[3];
-        valList[0] = Max + "";
-        valList[1] = Min + "";
-        valList[2] = Location + "";
+        valList[0] = Max;
+        valList[1] = Min;
+        valList[2] = Location;
         conList = new String[1];
         conList[0] = "UID=" + UID;
         Update("ColumnMapping", 3, 1);

@@ -21,32 +21,21 @@ public class MetaDataManagerFrame extends JFrame {
 
 
     /*标签页1的组件*/
-    public static int rowCount;
-    public static int columnCount = 4;
-    public static String data[][];
-    public static String head[] = {"列1","列2","列3","列4"};
-    public static JButton glbbutton;
-    public static JButton glbbutton_1;
-    public static JButton glbbutton_2;
-    public static MyJTable glbtable;
     public static JTree tree;
+    public static JPanel panel;
     public static DefaultMutableTreeNode db; //tree1最上层结点
     public static DefaultTreeModel dt; //tree1的模式
     public static String[] tbName;
     public static String[][] columnName;
 
     /*标签页2的组件*/
-    public static int rowCount2;
-    public static int columnCount2 = 6;
-    public static String data2[][];
-    public static String head2[] = {"UID","全局列名","LCID","Max","Min","Location"};
-    public static JButton glbbutton2;
-    public static JButton glbbutton2_1;
-    public static JButton glbbutton2_2;
-    public static MyJTable glbtable2;
     public static JTree tree2;
-    public static JPanel panel;
-
+    public static JPanel panel2;
+    public static DefaultMutableTreeNode root2; //tree1最上层结点
+    public static String[] datasourceName2;
+    public static String[][] dbName2;
+    public static String[][][] tbName2;
+    public static String[][][][] columnName2;
 
     static final int FHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
     static final int FWidth = Toolkit.getDefaultToolkit().getScreenSize().width;
@@ -99,43 +88,43 @@ public class MetaDataManagerFrame extends JFrame {
     }
     public void updateTree2()
     {
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("");
+        root2 = new DefaultMutableTreeNode("");
         PKUMetaDataManagement mm = new PKUMetaDataManagement();//mm使用时需要调用Init，结束时需要调用
         mm.Init();
         mm.showLTree();
-        String[] datasourceName = mm.FetchLS(); //返回数据源数组
-        String[][] dbName = mm.FetchLB(); //返回数据库名数组
-        String[][][] tbName = mm.FetchLT();//返回表名数组
-        String[][][][] columnName = mm.FetchLC(); //返回列名数组
+        datasourceName2 = mm.FetchLS(); //返回数据源数组
+        dbName2 = mm.FetchLB(); //返回数据库名数组
+        tbName2 = mm.FetchLT();//返回表名数组
+        columnName2 = mm.FetchLC(); //返回列名数组
         mm.CloseCon();
 
-        DefaultMutableTreeNode[] level1 = new DefaultMutableTreeNode[datasourceName.length];
-        for(int i = 0; i < datasourceName.length; i++)
+        DefaultMutableTreeNode[] level1 = new DefaultMutableTreeNode[datasourceName2.length];
+        for(int i = 0; i < datasourceName2.length; i++)
         {
-            level1[i] = new DefaultMutableTreeNode(datasourceName[i]);
-            DefaultMutableTreeNode[] level2 = new DefaultMutableTreeNode[dbName[i].length];
-            for(int j = 0; j < dbName[i].length; j++)
+            level1[i] = new DefaultMutableTreeNode(datasourceName2[i]);
+            DefaultMutableTreeNode[] level2 = new DefaultMutableTreeNode[dbName2[i].length];
+            for(int j = 0; j < dbName2[i].length; j++)
             {
-                level2[j] = new DefaultMutableTreeNode(dbName[i][j]);
-                DefaultMutableTreeNode[] level3 = new DefaultMutableTreeNode[tbName[i][j].length];
-                for(int k = 0; k < tbName[i][j].length; k++)
+                level2[j] = new DefaultMutableTreeNode(dbName2[i][j]);
+                DefaultMutableTreeNode[] level3 = new DefaultMutableTreeNode[tbName2[i][j].length];
+                for(int k = 0; k < tbName2[i][j].length; k++)
                 {
-                    level3[k] = new DefaultMutableTreeNode(tbName[i][j][k]);
-                    DefaultMutableTreeNode[] level4 = new DefaultMutableTreeNode[columnName[i][j][k].length];
-                    for(int l = 0; l < columnName[i][j][k].length; l++)
+                    level3[k] = new DefaultMutableTreeNode(tbName2[i][j][k]);
+                    DefaultMutableTreeNode[] level4 = new DefaultMutableTreeNode[columnName2[i][j][k].length];
+                    for(int l = 0; l < columnName2[i][j][k].length; l++)
                     {
-                        level4[l] = new DefaultMutableTreeNode(columnName[i][j][k][l]);
+                        level4[l] = new DefaultMutableTreeNode(columnName2[i][j][k][l]);
                         level3[k].add(level4[l]);
                     }
                     level2[j].add(level3[k]);
                 }
                 level1[i].add(level2[j]);
             }
-            root.add(level1[i]);
+            root2.add(level1[i]);
 
         }
 
-        tree2 = new JTree(root);
+        tree2 = new JTree(root2);
         tree2.setRootVisible(false);
         tree2.setShowsRootHandles(true);
     }
@@ -174,7 +163,7 @@ public class MetaDataManagerFrame extends JFrame {
         tab2.setBorder(new EmptyBorder(5, 5, 5, 5));
         tab2.setLayout(new CardLayout(1, 1));
         /*右侧模板*/
-        JPanel panel2 = new JPanel();
+        panel2 = new JPanel();
         /*文件树*/
         updateTree2();
         tree2.addTreeSelectionListener(new Adapter2_MetaDataManagerFrame(tree2, panel2));
@@ -523,10 +512,13 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
     MyJTable dbtable;
     MyJTable tbtable;
     MyJTable columntable;
+    JButton btnNewButton;
+    JButton button;
+    JButton button_1;
     public static String data[][];
     public static String head0[] = {"UID","DBName","DSID"};
     public static String head[] = {"UID","TableName","DBID"};
-    public static String head2[] = {"UID","TableID","ColumnName","ColumnType"};
+    public static String head2[] = {"UID","ColumnName","ColumnType","TableID"};
     public static String head3[] = {"UID","UCID","LCID","Max","Min","Location"};
 
     Adapter2_MetaDataManagerFrame(JTree _tree, JPanel _panel)
@@ -535,13 +527,37 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
         panel = _panel;
 
     }
-    public void updateDSTable()
+    public void updateTable()
+    {
+        int level = selectedNode.getLevel();//4-列层，3-表层，2-数据库层, 1-数据源层
+        if(level == 1) {
+            fetchDSTable();
+            dstable.setModel(new DefaultTableModel(data, head0));
+        }
+        else if(level == 2) {
+            fetchDBTable();
+            dbtable.setModel(new DefaultTableModel(data, head));
+        }
+        else if(level == 3) {
+            fetchTBTable();
+            tbtable.setModel(new DefaultTableModel(data, head2));
+        }
+        else if(level == 4) {
+            fetchColumnTable();
+            columntable.setModel(new DefaultTableModel(data, head3));
+        }
+    }
+    public void fetchDSTable()
     {
         PKUMetaDataManagement mm = new PKUMetaDataManagement();
         int ID = selectedNode.getParent().getIndex(selectedNode) + 1;
         mm.Init();
         data = mm.showLDB(ID);
         mm.CloseCon();
+    }
+    public void updateDSTable()
+    {
+        fetchDSTable();
         dstable =  new MyJTable(new DefaultTableModel(data,head0));
         dstable.setRowSelectionInterval(0, 0);
         dstable.setBackground(Color.WHITE);
@@ -550,7 +566,7 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
         dstable.setEnabled(true);
         dstable.updateUI();
     }
-    public void updateDBTable()
+    public void fetchDBTable()
     {
         PKUMetaDataManagement mm = new PKUMetaDataManagement();
         int ID = selectedNode.getParent().getParent().getIndex(selectedNode.getParent()) + 1;
@@ -559,6 +575,10 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
         int DBID = Integer.valueOf(temp[selectedNode.getParent().getIndex(selectedNode)][0]);
         data = mm.showLTable(DBID);
         mm.CloseCon();
+    }
+    public void updateDBTable()
+    {
+        fetchDBTable();
         dbtable =  new MyJTable(new DefaultTableModel(data,head));
         if(dbtable.getRowCount() != 0)
             dbtable.setRowSelectionInterval(0, 0);
@@ -568,7 +588,7 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
         dbtable.setEnabled(true);
         dbtable.updateUI();
     }
-    public void updateTBTable()
+    public void fetchTBTable()
     {
         PKUMetaDataManagement mm = new PKUMetaDataManagement();
         mm.Init();
@@ -580,6 +600,10 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
         int TBID = Integer.valueOf(tmp[selectedNode.getParent().getIndex(selectedNode)][0]);
         data = mm.showLColumn(TBID);
         mm.CloseCon();
+    }
+    public void updateTBTable()
+    {
+        fetchTBTable();
         tbtable =  new MyJTable(new DefaultTableModel(data,head2));
         if(tbtable.getRowCount() != 0)
             tbtable.setRowSelectionInterval(0, 0);
@@ -589,7 +613,7 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
         tbtable.setEnabled(true);
         tbtable.updateUI();
     }
-    public void updateColumnTable()
+    public void fetchColumnTable()
     {
         PKUMetaDataManagement mm = new PKUMetaDataManagement();
         mm.Init();
@@ -604,7 +628,10 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
         int LCID = Integer.valueOf(tp[selectedNode.getParent().getIndex(selectedNode)][0]);
         data = mm.showMappingByL(LCID);
         mm.CloseCon();
-
+    }
+    public void updateColumnTable()
+    {
+        fetchColumnTable();
         columntable =  new MyJTable(new DefaultTableModel(data,head3));
         if(columntable.getRowCount() != 0)
             columntable.setRowSelectionInterval(0, 0);
@@ -625,14 +652,61 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
             /*按钮区*/
                 JPanel panel_1 = new JPanel();
                 panel_1.setLayout(null);
-                JButton btnNewButton = new JButton("添加");
+                btnNewButton = new JButton("添加");
                 btnNewButton.setBounds(6, 16, 135, 30);
+                btnNewButton.addActionListener(new Adapter_btn7_MetaDataManagerFrame(this));
                 panel_1.add(btnNewButton);
-                JButton button = new JButton("编辑");
+                button = new JButton("编辑");
                 button.setBounds(6, 58, 135, 30);
+                button.addActionListener(new Adapter_btn8_MetaDataManagerFrame(this));
                 panel_1.add(button);
-                JButton button_1 = new JButton("删除");
+                button_1 = new JButton("删除");
                 button_1.setBounds(6, 98, 135, 30);
+                button_1.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        button.setEnabled(false);
+                        button_1.setEnabled(false);
+                        btnNewButton.setEnabled(false);
+                        dstable.setEnabled(false);
+                        int index = dstable.getSelectedRow(); //获取所选结点的Index
+                        if(index == -1) {
+                            JOptionPane.showMessageDialog(null, "请选择一行", "删除失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else {
+                            fetchDSTable(); //获取所选编辑表格的UID
+                            int UID = Integer.valueOf(data[index][0]);
+                            String dbName = data[index][1];
+                            int result = JOptionPane.showConfirmDialog(null, "确定删除表 " + dbName + "？", "提示", JOptionPane.YES_NO_OPTION);
+                            if (result == 0) {
+                                PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                                pm.Init();
+                                try {
+                                    if (pm.deleteLDB(UID)) {
+                                        JOptionPane.showMessageDialog(null, "删除成功", "提示", JOptionPane.PLAIN_MESSAGE);
+                                        //刷新文件树
+                                        DefaultMutableTreeNode n = (DefaultMutableTreeNode) MetaDataManagerFrame.tree2.getLastSelectedPathComponent();
+                                        n.remove(index);
+                                        MetaDataManagerFrame.tree2.updateUI();
+                                    } else
+                                        JOptionPane.showMessageDialog(null, "删除失败", "删除失败", JOptionPane.ERROR_MESSAGE);
+                                } catch (Exception e1) {
+                                    JOptionPane.showMessageDialog(null, e1.getMessage(), "删除失败", JOptionPane.ERROR_MESSAGE);
+                                }
+                            }}
+                        button.setEnabled(true);
+                        button_1.setEnabled(true);
+                        btnNewButton.setEnabled(true);
+                        try {
+                            updateTable();
+                        } catch (Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        dstable.updateUI(); //更新表
+                        dstable.setEnabled(true);
+
+                    }
+                });
                 panel_1.add(button_1);
 
                 JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, false, scrollPane, panel_1);
@@ -649,14 +723,61 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
             /*按钮区*/
                 JPanel panel_1 = new JPanel();
                 panel_1.setLayout(null);
-                JButton btnNewButton = new JButton("添加");
+                btnNewButton = new JButton("添加");
                 btnNewButton.setBounds(6, 16, 135, 30);
+                btnNewButton.addActionListener(new Adapter_btn9_MetaDataManagerFrame(this));
                 panel_1.add(btnNewButton);
-                JButton button = new JButton("编辑");
+                button = new JButton("编辑");
                 button.setBounds(6, 58, 135, 30);
+                button.addActionListener(new Adapter_btn10_MetaDataManagerFrame(this));
                 panel_1.add(button);
-                JButton button_1 = new JButton("删除");
+                button_1 = new JButton("删除");
                 button_1.setBounds(6, 98, 135, 30);
+                button_1.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        button.setEnabled(false);
+                        button_1.setEnabled(false);
+                        btnNewButton.setEnabled(false);
+                        dbtable.setEnabled(false);
+                        int index = dbtable.getSelectedRow(); //获取所选结点的Index
+                        if(index == -1) {
+                            JOptionPane.showMessageDialog(null, "请选择一行", "删除失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else {
+                            fetchDBTable();
+                            int UID = Integer.valueOf(data[index][0]);
+                            String tableName = data[index][1];
+                            int result = JOptionPane.showConfirmDialog(null, "确定删除表 " + tableName + "？", "提示", JOptionPane.YES_NO_OPTION);
+                            if (result == 0) {
+                                PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                                pm.Init();
+                                try {
+                                    if (pm.deleteLTable(UID)) {
+                                        JOptionPane.showMessageDialog(null, "删除成功", "提示", JOptionPane.PLAIN_MESSAGE);
+                                        //刷新文件树
+                                        DefaultMutableTreeNode n = (DefaultMutableTreeNode) MetaDataManagerFrame.tree2.getLastSelectedPathComponent();
+                                        n.remove(index);
+                                        MetaDataManagerFrame.tree2.updateUI();
+                                    } else
+                                        JOptionPane.showMessageDialog(null, "删除失败", "删除失败", JOptionPane.ERROR_MESSAGE);
+                                } catch (Exception e1) {
+                                    JOptionPane.showMessageDialog(null, e1.getMessage(), "删除失败", JOptionPane.ERROR_MESSAGE);
+                                }
+                            }}
+                        button.setEnabled(true);
+                        button_1.setEnabled(true);
+                        btnNewButton.setEnabled(true);
+                        try {
+                            updateTable();
+                        } catch (Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        dbtable.updateUI(); //更新表
+                        dbtable.setEnabled(true);
+
+                    }
+                });
                 panel_1.add(button_1);
 
                 JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, false, scrollPane, panel_1);
@@ -672,14 +793,61 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
             /*按钮区*/
                 JPanel panel_1 = new JPanel();
                 panel_1.setLayout(null);
-                JButton btnNewButton = new JButton("添加");
+                btnNewButton = new JButton("添加");
                 btnNewButton.setBounds(6, 16, 135, 30);
+                btnNewButton.addActionListener(new Adapter_btn11_MetaDataManagerFrame(this));
                 panel_1.add(btnNewButton);
-                JButton button = new JButton("编辑");
+                button = new JButton("编辑");
                 button.setBounds(6, 58, 135, 30);
+                button.addActionListener(new Adapter_btn12_MetaDataManagerFrame(this));
                 panel_1.add(button);
-                JButton button_1 = new JButton("删除");
+                button_1 = new JButton("删除");
                 button_1.setBounds(6, 98, 135, 30);
+                button_1.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        button.setEnabled(false);
+                        button_1.setEnabled(false);
+                        btnNewButton.setEnabled(false);
+                        tbtable.setEnabled(false);
+                        int index = tbtable.getSelectedRow(); //获取所选结点的Index
+                        if(index == -1) {
+                            JOptionPane.showMessageDialog(null, "请选择一行", "删除失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else {
+                            fetchTBTable();
+                            int UID = Integer.valueOf(data[index][0]);
+                            String columnName = data[index][1];
+                            int result = JOptionPane.showConfirmDialog(null, "确定删除表 " + columnName + "？", "提示", JOptionPane.YES_NO_OPTION);
+                            if (result == 0) {
+                                PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                                pm.Init();
+                                try {
+                                    if (pm.deleteLColumn(UID)) {
+                                        JOptionPane.showMessageDialog(null, "删除成功", "提示", JOptionPane.PLAIN_MESSAGE);
+                                        //刷新文件树
+                                        DefaultMutableTreeNode n = (DefaultMutableTreeNode) MetaDataManagerFrame.tree2.getLastSelectedPathComponent();
+                                        n.remove(index);
+                                        MetaDataManagerFrame.tree2.updateUI();
+                                    } else
+                                        JOptionPane.showMessageDialog(null, "删除失败", "删除失败", JOptionPane.ERROR_MESSAGE);
+                                } catch (Exception e1) {
+                                    JOptionPane.showMessageDialog(null, e1.getMessage(), "删除失败", JOptionPane.ERROR_MESSAGE);
+                                }
+                            }}
+                        button.setEnabled(true);
+                        button_1.setEnabled(true);
+                        btnNewButton.setEnabled(true);
+                        try {
+                            updateTable();
+                        } catch (Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        tbtable.updateUI(); //更新表
+                        tbtable.setEnabled(true);
+
+                    }
+                });
                 panel_1.add(button_1);
 
                 JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, false, scrollPane, panel_1);
@@ -695,14 +863,56 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
             /*按钮区*/
                 JPanel panel_1 = new JPanel();
                 panel_1.setLayout(null);
-                JButton btnNewButton = new JButton("添加");
+                btnNewButton = new JButton("添加");
                 btnNewButton.setBounds(6, 16, 135, 30);
+                btnNewButton.addActionListener(new Adapter_btn13_MetaDataManagerFrame(this));
                 panel_1.add(btnNewButton);
-                JButton button = new JButton("编辑");
+                button = new JButton("编辑");
                 button.setBounds(6, 58, 135, 30);
+                button.addActionListener(new Adapter_btn14_MetaDataManagerFrame(this));
                 panel_1.add(button);
-                JButton button_1 = new JButton("删除");
+                button_1 = new JButton("删除");
                 button_1.setBounds(6, 98, 135, 30);
+                button_1.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        button.setEnabled(false);
+                        button_1.setEnabled(false);
+                        btnNewButton.setEnabled(false);
+                        columntable.setEnabled(false);
+                        int index = columntable.getSelectedRow(); //获取所选结点的Index
+                        if(index == -1) {
+                            JOptionPane.showMessageDialog(null, "请选择一行", "删除失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else {
+                            fetchColumnTable();
+                            int UID = Integer.valueOf(data[index][0]);
+                            int result = JOptionPane.showConfirmDialog(null, "确定删除？", "提示", JOptionPane.YES_NO_OPTION);
+                            if (result == 0) {
+                                PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                                pm.Init();
+                                try {
+                                    if (pm.deleteMap(UID)) {
+                                        JOptionPane.showMessageDialog(null, "删除成功", "提示", JOptionPane.PLAIN_MESSAGE);
+                                    } else
+                                        JOptionPane.showMessageDialog(null, "删除失败", "删除失败", JOptionPane.ERROR_MESSAGE);
+                                } catch (Exception e1) {
+                                    JOptionPane.showMessageDialog(null, e1.getMessage(), "删除失败", JOptionPane.ERROR_MESSAGE);
+                                }
+                            }}
+                        button.setEnabled(true);
+                        button_1.setEnabled(true);
+                        btnNewButton.setEnabled(true);
+                        try {
+                            updateTable();
+                        } catch (Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        columntable.updateUI(); //更新表
+                        columntable.setEnabled(true);
+
+                    }
+                });
                 panel_1.add(button_1);
 
                 JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, false, scrollPane, panel_1);
@@ -756,7 +966,7 @@ class Adapter_btn_MetaDataManagerFrame implements ActionListener {
         f.setResizable(false);
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.setBounds(100, 100, 329, 164);
-        f.setLocation(PermissionManagerFrame.FWidth / 3, PermissionManagerFrame.FHeight / 3);
+        f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
         f.setTitle("添加表");
 
         JPanel contentPane = new JPanel();
@@ -847,6 +1057,8 @@ class Adapter_btn2_MetaDataManagerFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(p.dbtable.getRowCount() == 0)
             JOptionPane.showMessageDialog(null, "无可编辑行", "编辑失败", JOptionPane.ERROR_MESSAGE);
+        else if(p.dbtable.getSelectedRow() == -1)
+            JOptionPane.showMessageDialog(null, "请选择一行", "编辑失败", JOptionPane.ERROR_MESSAGE);
         else{
             f = new JFrame();
             p.btnNewButton.setEnabled(false);
@@ -873,7 +1085,7 @@ class Adapter_btn2_MetaDataManagerFrame implements ActionListener {
             f.setResizable(false);
             f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             f.setBounds(100, 100, 329, 164);
-            f.setLocation(PermissionManagerFrame.FWidth / 3, PermissionManagerFrame.FHeight / 3);
+            f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
             f.setTitle("编辑表");
 
             JPanel contentPane = new JPanel();
@@ -992,7 +1204,7 @@ class Adapter_btn3_MetaDataManagerFrame implements ActionListener {
         f.setResizable(false);
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.setBounds(100, 100, 329, 164);
-        f.setLocation(PermissionManagerFrame.FWidth / 3, PermissionManagerFrame.FHeight / 3);
+        f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
         f.setTitle("添加列");
 
         JPanel contentPane = new JPanel();
@@ -1089,6 +1301,8 @@ class Adapter_btn4_MetaDataManagerFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(p.tbtable.getRowCount() == 0)
             JOptionPane.showMessageDialog(null, "无可编辑行", "编辑失败", JOptionPane.ERROR_MESSAGE);
+        else if(p.tbtable.getSelectedRow() == -1)
+            JOptionPane.showMessageDialog(null, "请选择一行", "编辑失败", JOptionPane.ERROR_MESSAGE);
         else{
             f = new JFrame();
             p.btnNewButton.setEnabled(false);
@@ -1115,7 +1329,7 @@ class Adapter_btn4_MetaDataManagerFrame implements ActionListener {
             f.setResizable(false);
             f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             f.setBounds(100, 100, 329, 164);
-            f.setLocation(PermissionManagerFrame.FWidth / 3, PermissionManagerFrame.FHeight / 3);
+            f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
             f.setTitle("编辑列");
 
             JPanel contentPane = new JPanel();
@@ -1242,7 +1456,7 @@ class Adapter_btn5_MetaDataManagerFrame implements ActionListener {
         f.setResizable(false);
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.setBounds(100, 100, 430, 300);
-        f.setLocation(PermissionManagerFrame.FWidth / 3, PermissionManagerFrame.FHeight / 3);
+        f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
         f.setTitle("添加映射");
 
         PKUMetaDataManagement pm = new PKUMetaDataManagement();
@@ -1330,9 +1544,15 @@ class Adapter_btn5_MetaDataManagerFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int lcid = LCID[comboBox.getSelectedIndex()];
-                int max = Integer.valueOf(textField.getText());
-                int min = Integer.valueOf(textField2.getText());
-                int location = Integer.valueOf(textField3.getText());
+                String max = textField.getText();
+                String min = textField2.getText();
+                String location = textField3.getText();
+                if(max.equals(""))
+                    max = null;
+                if(min.equals(""))
+                    min = null;
+                if(location.equals(""))
+                    location = null;
                 PKUMetaDataManagement pm = new PKUMetaDataManagement();
                 pm.Init();
                 try {
@@ -1371,13 +1591,13 @@ class Adapter_btn6_MetaDataManagerFrame implements ActionListener {
     Adapter_MetaDataManagerFrame p;
     JFrame f;
     JComboBox comboBox;
-    int UCID;
+    int UID;
     JTextField textField;
     JTextField textField2;
     JTextField textField3;
-    int max;
-    int min;
-    int location;
+    String max;
+    String min;
+    String location;
     Adapter_btn6_MetaDataManagerFrame(Adapter_MetaDataManagerFrame _p)
     {
         p = _p;
@@ -1385,6 +1605,8 @@ class Adapter_btn6_MetaDataManagerFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(p.columntable.getRowCount() == 0)
             JOptionPane.showMessageDialog(null, "无可编辑行", "编辑失败", JOptionPane.ERROR_MESSAGE);
+        else if(p.columntable.getSelectedRow() == -1)
+            JOptionPane.showMessageDialog(null, "请选择一行", "编辑失败", JOptionPane.ERROR_MESSAGE);
         else{
             f = new JFrame();
             p.btnNewButton.setEnabled(false);
@@ -1411,16 +1633,16 @@ class Adapter_btn6_MetaDataManagerFrame implements ActionListener {
             f.setResizable(false);
             f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             f.setBounds(100, 100, 329, 254);
-            f.setLocation(PermissionManagerFrame.FWidth / 3, PermissionManagerFrame.FHeight / 3);
+            f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
             f.setTitle("编辑映射");
 
             int index = p.columntable.getSelectedRow();
             p.fetchColumnTable();
-            UCID = Integer.valueOf(p.data[index][0]);
-            max = Integer.valueOf(p.data[index][2]);
-            min = Integer.valueOf(p.data[index][3]);
-            location = Integer.valueOf(p.data[index][4]);
-            System.out.println(index + "-" + UCID);
+            UID = Integer.valueOf(p.data[index][0]);
+            max = p.data[index][3];
+            min = p.data[index][4];
+            location = p.data[index][5];
+            System.out.println(index + "-" + UID);
 
             JPanel contentPane = new JPanel();
             contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -1437,7 +1659,7 @@ class Adapter_btn6_MetaDataManagerFrame implements ActionListener {
             JTextField textField0 = new JTextField();
             textField0.setBounds(90, 11, 160, 28);
             textField0.setColumns(10);
-            textField0.setText(UCID+"");
+            textField0.setText(UID+"");
             textField0.setEditable(false);
             panel.add(textField0);
             JLabel label1 = new JLabel("Max ：");
@@ -1485,14 +1707,1129 @@ class Adapter_btn6_MetaDataManagerFrame implements ActionListener {
             button.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int max = Integer.valueOf(textField.getText());
-                    int min = Integer.valueOf(textField2.getText());
-                    int location = Integer.valueOf(textField3.getText());
+                    String max = textField.getText();
+                    String min = textField2.getText();
+                    String location = textField3.getText();
+                    PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                    if(max.equals(""))
+                        max = null;
+                    if(min.equals(""))
+                        min = null;
+                    if(location.equals(""))
+                        location = null;
+                    pm.Init();
+                    try {
+                        if (pm.updateMap(UID, max, min, location)) {
+                            JOptionPane.showMessageDialog(null, "编辑成功", "编辑成功", JOptionPane.PLAIN_MESSAGE);
+                            //刷新表格
+                            p.btnNewButton.setEnabled(true);
+                            p.button.setEnabled(true);
+                            p.button_1.setEnabled(true);
+                            p.columntable.setEnabled(true);
+                            try {
+                                p.updateTable();
+                            }catch(Exception e1) {
+                                JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                            }
+                            p.columntable.updateUI(); //更新表
+                            p.columntable.setEnabled(true);
+                            f.dispose();
+                        } else
+                            JOptionPane.showMessageDialog(null, "编辑失败", "编辑失败", JOptionPane.ERROR_MESSAGE);
+                    } catch (Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "编辑失败", JOptionPane.ERROR_MESSAGE);
+                    }
+                    pm.CloseCon();
+                }
+
+            });
+            contentPane.add(button);
+            f.setContentPane(contentPane);
+            f.setVisible(true);
+        }
+    }
+}
+
+/*界面2，第一层，添加按钮*/
+class Adapter_btn7_MetaDataManagerFrame implements ActionListener {
+    Adapter2_MetaDataManagerFrame p;
+    JFrame f;
+    JTextField textField;
+    JTextField textField2;
+    JTextField textField3;
+    Adapter_btn7_MetaDataManagerFrame(Adapter2_MetaDataManagerFrame _p)
+    {
+        p = _p;
+    }
+    public void actionPerformed(ActionEvent e) {
+        f = new JFrame();
+        p.btnNewButton.setEnabled(false);
+        p.button.setEnabled(false);
+        p.button_1.setEnabled(false);
+        p.dstable.setEnabled(false);
+        f.addWindowListener(new WindowAdapter() { //关闭窗口事件
+            @Override
+            public void windowClosing(WindowEvent e) {
+                p.btnNewButton.setEnabled(true);
+                p.button.setEnabled(true);
+                p.button_1.setEnabled(true);
+                try {
+                    p.updateTable();
+                }catch(Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                }
+                p.dstable.updateUI(); //更新表
+                p.dstable.setEnabled(true);
+                f.dispose();
+                super.windowClosing(e);
+            }
+        });
+        f.setResizable(false);
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.setBounds(100, 100, 329, 245);
+        f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
+        f.setTitle("添加数据库");
+
+        JPanel contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPane.setLayout(null);
+
+        JPanel panel = new JPanel();
+        panel.setBounds(16, 16, 300, 145);
+        panel.setBorder(BorderFactory.createEtchedBorder());
+        panel.setLayout(null);
+
+        JLabel label = new JLabel("数据库名：");
+        label.setBounds(25, 15, 65, 26);
+        panel.add(label);
+        textField = new JTextField();
+        textField.setBounds(90, 9, 160, 38);
+        panel.add(textField);
+        textField.setColumns(10);
+        contentPane.add(panel);
+
+        JLabel label2 = new JLabel(" 用户名：");
+        label2.setBounds(25, 57, 65, 26);
+        panel.add(label2);
+        textField2 = new JTextField();
+        textField2.setBounds(90, 51, 160, 38);
+        panel.add(textField2);
+        textField2.setColumns(10);
+        contentPane.add(panel);
+
+        JLabel label3 = new JLabel("  表名：");
+        label3.setBounds(25, 92, 65, 26);
+        panel.add(label3);
+        textField3 = new JTextField();
+        textField3.setBounds(90, 96, 160, 38);
+        panel.add(textField3);
+        textField3.setColumns(10);
+        contentPane.add(panel);
+
+
+        JButton button_1 = new JButton("取消");
+        button_1.setBounds(188, 180, 117, 29);
+        button_1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                p.btnNewButton.setEnabled(true);
+                p.button.setEnabled(true);
+                p.button_1.setEnabled(true);
+                p.dstable.setEnabled(true);
+                f.dispose();
+            }
+        });
+        contentPane.add(button_1);
+
+        JButton button = new JButton("确认");
+        button.setBounds(26, 180, 117, 29);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String dbName = textField.getText();
+                String usrName = textField2.getText();
+                String psw = textField3.getText();
+                PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                pm.Init();
+                DefaultMutableTreeNode n = (DefaultMutableTreeNode)p.tree.getLastSelectedPathComponent();
+                int index = n.getParent().getIndex(n);
+                String[] temp;
+                pm.showLTree();
+                temp = pm.FetchLSID();
+                String DSID = temp[index];
+                try {
+                    if (pm.addLDB(DSID, dbName, usrName, psw)) {
+                        JOptionPane.showMessageDialog(null, "添加成功", "添加成功", JOptionPane.PLAIN_MESSAGE);
+                        //刷新表格
+                        p.btnNewButton.setEnabled(true);
+                        p.button.setEnabled(true);
+                        p.button_1.setEnabled(true);
+                        p.dstable.setEnabled(true);
+                        try {
+                            p.updateTable();
+                        }catch(Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        p.dstable.updateUI(); //更新表
+                        p.dstable.setEnabled(true);
+                        //刷新文件树
+                        DefaultMutableTreeNode tmp = new DefaultMutableTreeNode(dbName);
+                        n.add(tmp);
+                        MetaDataManagerFrame.tree2.updateUI();
+                        f.dispose();
+                    } else
+                        JOptionPane.showMessageDialog(null, "添加失败", "添加失败", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "添加失败", JOptionPane.ERROR_MESSAGE);
+                }
+                pm.CloseCon();
+            }
+
+        });
+        contentPane.add(button);
+        f.setContentPane(contentPane);
+        f.setVisible(true);
+    }
+}
+
+/*界面2，第一层，编辑按钮*/
+class Adapter_btn8_MetaDataManagerFrame implements ActionListener {
+    Adapter2_MetaDataManagerFrame p;
+    JFrame f;
+    JTextField textField;
+    int UID;
+    Adapter_btn8_MetaDataManagerFrame(Adapter2_MetaDataManagerFrame _p)
+    {
+        p = _p;
+    }
+    public void actionPerformed(ActionEvent e) {
+        if(p.dstable.getRowCount() == 0)
+            JOptionPane.showMessageDialog(null, "无可编辑行", "编辑失败", JOptionPane.ERROR_MESSAGE);
+        else if(p.dstable.getSelectedRow() == -1)
+            JOptionPane.showMessageDialog(null, "请选择一行", "编辑失败", JOptionPane.ERROR_MESSAGE);
+        else{
+            f = new JFrame();
+            p.btnNewButton.setEnabled(false);
+            p.button.setEnabled(false);
+            p.button_1.setEnabled(false);
+            p.dstable.setEnabled(false);
+            f.addWindowListener(new WindowAdapter() { //关闭窗口事件
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    p.btnNewButton.setEnabled(true);
+                    p.button.setEnabled(true);
+                    p.button_1.setEnabled(true);
+                    try {
+                        p.updateTable();
+                    }catch(Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                    }
+                    p.dstable.updateUI(); //更新表
+                    p.dstable.setEnabled(true);
+                    f.dispose();
+                    super.windowClosing(e);
+                }
+            });
+            f.setResizable(false);
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setBounds(100, 100, 329, 164);
+            f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
+            f.setTitle("编辑数据库");
+
+            JPanel contentPane = new JPanel();
+            contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+            contentPane.setLayout(null);
+
+            JPanel panel = new JPanel();
+            panel.setBounds(16, 16, 297, 58);
+            panel.setBorder(BorderFactory.createEtchedBorder());
+            panel.setLayout(null);
+
+            JLabel label = new JLabel("数据库名：");
+            label.setBounds(25, 15, 65, 26);
+            panel.add(label);
+            textField = new JTextField();
+            textField.setBounds(90, 9, 160, 38);
+            panel.add(textField);
+            textField.setColumns(10);
+            p.fetchDSTable(); //获取所选编辑表格的UID和表名
+            UID =Integer.valueOf(p.data[p.dstable.getSelectedRow()][0]);
+            textField.setText(p.data[p.dstable.getSelectedRow()][1]); //获取原本表名
+            contentPane.add(panel);
+
+            JButton button_1 = new JButton("取消");
+            button_1.setBounds(188, 90, 117, 29);
+            button_1.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    p.btnNewButton.setEnabled(true);
+                    p.button.setEnabled(true);
+                    p.button_1.setEnabled(true);
+                    p.dstable.setEnabled(true);
+                    f.dispose();
+                }
+            });
+            contentPane.add(button_1);
+
+            JButton button = new JButton("确认");
+            button.setBounds(26, 90, 117, 29);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String dbName = textField.getText();
+                    int index = p.dstable.getSelectedRow(); //获取所选结点的Index
                     PKUMetaDataManagement pm = new PKUMetaDataManagement();
 
                     pm.Init();
                     try {
-                        if (pm.updateMap(UCID, max, min, location)) {
+                        if (pm.updateLDB_Name(UID, dbName)) {
+                            JOptionPane.showMessageDialog(null, "编辑成功", "编辑成功", JOptionPane.PLAIN_MESSAGE);
+                            //刷新表格
+                            p.btnNewButton.setEnabled(true);
+                            p.button.setEnabled(true);
+                            p.button_1.setEnabled(true);
+                            p.dstable.setEnabled(true);
+                            try {
+                                p.updateTable();
+                            }catch(Exception e1) {
+                                JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                            }
+                            p.dstable.updateUI(); //更新表
+                            p.dstable.setEnabled(true);
+                            //刷新文件树
+                            DefaultMutableTreeNode pa = (DefaultMutableTreeNode)p.tree.getLastSelectedPathComponent();
+                            DefaultMutableTreeNode n = (DefaultMutableTreeNode)pa.getChildAt(index);
+                            n.setUserObject(dbName);
+                            MetaDataManagerFrame.tree2.updateUI();
+                            f.dispose();
+                        } else
+                            JOptionPane.showMessageDialog(null, "编辑失败", "编辑失败", JOptionPane.ERROR_MESSAGE);
+                    } catch (Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "编辑失败", JOptionPane.ERROR_MESSAGE);
+                    }
+                    pm.CloseCon();
+                }
+
+            });
+            contentPane.add(button);
+            f.setContentPane(contentPane);
+            f.setVisible(true);
+        }
+    }
+}
+
+/*界面2，第二层，添加按钮*/
+class Adapter_btn9_MetaDataManagerFrame implements ActionListener {
+    Adapter2_MetaDataManagerFrame p;
+    JFrame f;
+    JTextField textField;
+    Adapter_btn9_MetaDataManagerFrame(Adapter2_MetaDataManagerFrame _p)
+    {
+        p = _p;
+    }
+    public void actionPerformed(ActionEvent e) {
+        f = new JFrame();
+        p.btnNewButton.setEnabled(false);
+        p.button.setEnabled(false);
+        p.button_1.setEnabled(false);
+        p.dbtable.setEnabled(false);
+        f.addWindowListener(new WindowAdapter() { //关闭窗口事件
+            @Override
+            public void windowClosing(WindowEvent e) {
+                p.btnNewButton.setEnabled(true);
+                p.button.setEnabled(true);
+                p.button_1.setEnabled(true);
+                try {
+                    p.updateTable();
+                }catch(Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                }
+                p.dbtable.updateUI(); //更新表
+                p.dbtable.setEnabled(true);
+                f.dispose();
+                super.windowClosing(e);
+            }
+        });
+        f.setResizable(false);
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.setBounds(100, 100, 329, 164);
+        f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
+        f.setTitle("添加表");
+
+        JPanel contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPane.setLayout(null);
+
+        JPanel panel = new JPanel();
+        panel.setBounds(16, 16, 297, 58);
+        panel.setBorder(BorderFactory.createEtchedBorder());
+        panel.setLayout(null);
+
+        JLabel label = new JLabel("表名：");
+        label.setBounds(25, 15, 65, 26);
+        panel.add(label);
+        textField = new JTextField();
+        textField.setBounds(90, 9, 160, 38);
+        panel.add(textField);
+        textField.setColumns(10);
+        contentPane.add(panel);
+
+        JButton button_1 = new JButton("取消");
+        button_1.setBounds(188, 90, 117, 29);
+        button_1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                p.btnNewButton.setEnabled(true);
+                p.button.setEnabled(true);
+                p.button_1.setEnabled(true);
+                p.dbtable.setEnabled(true);
+                f.dispose();
+            }
+        });
+        contentPane.add(button_1);
+
+        JButton button = new JButton("确认");
+        button.setBounds(26, 90, 117, 29);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String tableName = textField.getText();
+                PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                pm.Init();
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) MetaDataManagerFrame.tree2.getLastSelectedPathComponent();
+                int index = selectedNode.getParent().getIndex(selectedNode); //获取表结点的索引
+                int ID = selectedNode.getParent().getParent().getIndex(selectedNode.getParent()) + 1;
+                p.data = pm.showLDB(ID);
+                String DBID = p.data[index][0];
+
+                try {
+                    if (pm.addLT(DBID, tableName)) {
+                        JOptionPane.showMessageDialog(null, "添加成功", "添加成功", JOptionPane.PLAIN_MESSAGE);
+                        //刷新表格
+                        p.btnNewButton.setEnabled(true);
+                        p.button.setEnabled(true);
+                        p.button_1.setEnabled(true);
+                        p.dbtable.setEnabled(true);
+                        try {
+                            p.updateTable();
+                        }catch(Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        p.dbtable.updateUI(); //更新表
+                        p.dbtable.setEnabled(true);
+                        //刷新文件树
+                        DefaultMutableTreeNode n = new DefaultMutableTreeNode(tableName);
+                        selectedNode.add(n);
+                        MetaDataManagerFrame.tree2.updateUI();
+                        f.dispose();
+                    } else
+                        JOptionPane.showMessageDialog(null, "添加失败", "添加失败", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "添加失败", JOptionPane.ERROR_MESSAGE);
+                }
+                pm.CloseCon();
+            }
+
+        });
+        contentPane.add(button);
+        f.setContentPane(contentPane);
+        f.setVisible(true);
+    }
+}
+
+/*界面2，第二层，编辑按钮*/
+class Adapter_btn10_MetaDataManagerFrame implements ActionListener {
+    Adapter2_MetaDataManagerFrame p;
+    JFrame f;
+    JTextField textField;
+    int UID;
+    Adapter_btn10_MetaDataManagerFrame(Adapter2_MetaDataManagerFrame _p)
+    {
+        p = _p;
+    }
+    public void actionPerformed(ActionEvent e) {
+        if(p.dbtable.getRowCount() == 0)
+            JOptionPane.showMessageDialog(null, "无可编辑行", "编辑失败", JOptionPane.ERROR_MESSAGE);
+        else if(p.dbtable.getSelectedRow() == -1)
+            JOptionPane.showMessageDialog(null, "请选择一行", "编辑失败", JOptionPane.ERROR_MESSAGE);
+        else{
+            f = new JFrame();
+            p.btnNewButton.setEnabled(false);
+            p.button.setEnabled(false);
+            p.button_1.setEnabled(false);
+            p.dbtable.setEnabled(false);
+            f.addWindowListener(new WindowAdapter() { //关闭窗口事件
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    p.btnNewButton.setEnabled(true);
+                    p.button.setEnabled(true);
+                    p.button_1.setEnabled(true);
+                    try {
+                        p.updateTable();
+                    }catch(Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                    }
+                    p.dbtable.updateUI(); //更新表
+                    p.dbtable.setEnabled(true);
+                    f.dispose();
+                    super.windowClosing(e);
+                }
+            });
+            f.setResizable(false);
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setBounds(100, 100, 329, 164);
+            f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
+            f.setTitle("编辑表");
+
+            JPanel contentPane = new JPanel();
+            contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+            contentPane.setLayout(null);
+
+            JPanel panel = new JPanel();
+            panel.setBounds(16, 16, 297, 58);
+            panel.setBorder(BorderFactory.createEtchedBorder());
+            panel.setLayout(null);
+
+            JLabel label = new JLabel("表名：");
+            label.setBounds(25, 15, 65, 26);
+            panel.add(label);
+            textField = new JTextField();
+            textField.setBounds(90, 9, 160, 38);
+            panel.add(textField);
+            textField.setColumns(10);
+            p.fetchDBTable(); //获取所选编辑表格的表名
+            UID = Integer.valueOf(p.data[p.dbtable.getSelectedRow()][0]);
+            textField.setText(p.data[p.dbtable.getSelectedRow()][1]); //获取原本表名
+            contentPane.add(panel);
+
+            JButton button_1 = new JButton("取消");
+            button_1.setBounds(188, 90, 117, 29);
+            button_1.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    p.btnNewButton.setEnabled(true);
+                    p.button.setEnabled(true);
+                    p.button_1.setEnabled(true);
+                    p.dbtable.setEnabled(true);
+                    f.dispose();
+                }
+            });
+            contentPane.add(button_1);
+
+            JButton button = new JButton("确认");
+            button.setBounds(26, 90, 117, 29);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String tableName = textField.getText();
+                    int index = p.dbtable.getSelectedRow(); //获取所选结点的Index
+                    PKUMetaDataManagement pm = new PKUMetaDataManagement();
+
+                    pm.Init();
+                    try {
+                        if (pm.updateLTable_Name(UID, tableName)) {
+                            JOptionPane.showMessageDialog(null, "编辑成功", "编辑成功", JOptionPane.PLAIN_MESSAGE);
+                            //刷新表格
+                            p.btnNewButton.setEnabled(true);
+                            p.button.setEnabled(true);
+                            p.button_1.setEnabled(true);
+                            p.dbtable.setEnabled(true);
+                            try {
+                                p.updateTable();
+                            }catch(Exception e1) {
+                                JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                            }
+                            p.dbtable.updateUI(); //更新表
+                            p.dbtable.setEnabled(true);
+                            //刷新文件树
+                            DefaultMutableTreeNode p = (DefaultMutableTreeNode)MetaDataManagerFrame.tree2.getLastSelectedPathComponent();
+                            DefaultMutableTreeNode n = (DefaultMutableTreeNode)p.getChildAt(index);
+                            n.setUserObject(tableName);
+                            MetaDataManagerFrame.tree2.updateUI();
+                            f.dispose();
+                        } else
+                            JOptionPane.showMessageDialog(null, "编辑失败", "编辑失败", JOptionPane.ERROR_MESSAGE);
+                    } catch (Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "编辑失败", JOptionPane.ERROR_MESSAGE);
+                    }
+                    pm.CloseCon();
+                }
+
+            });
+            contentPane.add(button);
+            f.setContentPane(contentPane);
+            f.setVisible(true);
+        }
+    }
+}
+
+/*界面2，第三层，添加按钮*/
+class Adapter_btn11_MetaDataManagerFrame implements ActionListener {
+    Adapter2_MetaDataManagerFrame p;
+    JFrame f;
+    JTextField textField;
+    JTextField textField2;
+
+    Adapter_btn11_MetaDataManagerFrame(Adapter2_MetaDataManagerFrame _p)
+    {
+        p = _p;
+    }
+    public void actionPerformed(ActionEvent e) {
+        f = new JFrame();
+        p.btnNewButton.setEnabled(false);
+        p.button.setEnabled(false);
+        p.button_1.setEnabled(false);
+        p.tbtable.setEnabled(false);
+        f.addWindowListener(new WindowAdapter() { //关闭窗口事件
+            @Override
+            public void windowClosing(WindowEvent e) {
+                p.btnNewButton.setEnabled(true);
+                p.button.setEnabled(true);
+                p.button_1.setEnabled(true);
+                try {
+                    p.updateTable();
+                }catch(Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                }
+                p.tbtable.updateUI(); //更新表
+                p.tbtable.setEnabled(true);
+                f.dispose();
+                super.windowClosing(e);
+            }
+        });
+        f.setResizable(false);
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.setBounds(100, 100, 329, 204);
+        f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
+        f.setTitle("添加列");
+
+        JPanel contentPane = new JPanel();
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPane.setLayout(null);
+
+        JPanel panel = new JPanel();
+        panel.setBounds(16, 16, 297, 98);
+        panel.setBorder(BorderFactory.createEtchedBorder());
+        panel.setLayout(null);
+
+        JLabel label = new JLabel("列名：");
+        label.setBounds(25, 15, 65, 26);
+        panel.add(label);
+        textField = new JTextField();
+        textField.setBounds(90, 9, 160, 38);
+        panel.add(textField);
+        textField.setColumns(10);
+
+        JLabel label2 = new JLabel("列类型：");
+        label2.setBounds(25, 55, 65, 26);
+        panel.add(label2);
+        textField2 = new JTextField();
+        textField2.setBounds(90, 49, 160, 38);
+        panel.add(textField2);
+        textField2.setColumns(10);
+        contentPane.add(panel);
+
+        JButton button_1 = new JButton("取消");
+        button_1.setBounds(188, 130, 117, 29);
+        button_1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                p.btnNewButton.setEnabled(true);
+                p.button.setEnabled(true);
+                p.button_1.setEnabled(true);
+                p.tbtable.setEnabled(true);
+                f.dispose();
+            }
+        });
+        contentPane.add(button_1);
+
+        JButton button = new JButton("确认");
+        button.setBounds(26, 130, 117, 29);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String columnName = textField.getText();
+                String columnType = textField2.getText();
+
+                PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) MetaDataManagerFrame.tree2.getLastSelectedPathComponent();
+                int index = selectedNode.getParent().getIndex(selectedNode); //获取表结点的索引
+                int ID = selectedNode.getParent().getParent().getParent().getIndex(selectedNode.getParent().getParent()) + 1;
+                pm.Init();
+                String[][] temp = pm.showLDB(ID);
+                int DBID = Integer.valueOf(temp[selectedNode.getParent().getParent().getIndex(selectedNode.getParent())][0]);
+                p.data = pm.showLTable(DBID);
+                String TID = p.data[index][0];
+
+                try {
+                    if (pm.addLC(TID, columnName, columnType)) {
+                        JOptionPane.showMessageDialog(null, "添加成功", "添加成功", JOptionPane.PLAIN_MESSAGE);
+                        //刷新表格
+                        p.btnNewButton.setEnabled(true);
+                        p.button.setEnabled(true);
+                        p.button_1.setEnabled(true);
+                        p.tbtable.setEnabled(true);
+                        try {
+                            p.updateTable();
+                        }catch(Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        p.tbtable.updateUI(); //更新表
+                        p.tbtable.setEnabled(true);
+                        //刷新文件树
+                        DefaultMutableTreeNode n = new DefaultMutableTreeNode(columnName);
+                        selectedNode.add(n);
+                        MetaDataManagerFrame.tree2.updateUI();
+                        f.dispose();
+                    } else
+                        JOptionPane.showMessageDialog(null, "添加失败", "添加失败", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "添加失败", JOptionPane.ERROR_MESSAGE);
+                }
+                pm.CloseCon();
+            }
+
+        });
+        contentPane.add(button);
+        f.setContentPane(contentPane);
+        f.setVisible(true);
+    }
+}
+
+/*界面2，第三层，编辑按钮*/
+class Adapter_btn12_MetaDataManagerFrame implements ActionListener {
+    Adapter2_MetaDataManagerFrame p;
+    JFrame f;
+    JTextField textField;
+    int UID;
+    Adapter_btn12_MetaDataManagerFrame(Adapter2_MetaDataManagerFrame _p)
+    {
+        p = _p;
+    }
+    public void actionPerformed(ActionEvent e) {
+        if(p.tbtable.getRowCount() == 0)
+            JOptionPane.showMessageDialog(null, "无可编辑行", "编辑失败", JOptionPane.ERROR_MESSAGE);
+        else if(p.tbtable.getSelectedRow() == -1)
+            JOptionPane.showMessageDialog(null, "请选择一行", "编辑失败", JOptionPane.ERROR_MESSAGE);
+        else{
+            f = new JFrame();
+            p.btnNewButton.setEnabled(false);
+            p.button.setEnabled(false);
+            p.button_1.setEnabled(false);
+            p.tbtable.setEnabled(false);
+            f.addWindowListener(new WindowAdapter() { //关闭窗口事件
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    p.btnNewButton.setEnabled(true);
+                    p.button.setEnabled(true);
+                    p.button_1.setEnabled(true);
+                    try {
+                        p.updateTable();
+                    }catch(Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                    }
+                    p.tbtable.updateUI(); //更新表
+                    p.tbtable.setEnabled(true);
+                    f.dispose();
+                    super.windowClosing(e);
+                }
+            });
+            f.setResizable(false);
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setBounds(100, 100, 329, 164);
+            f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
+            f.setTitle("编辑表");
+
+            JPanel contentPane = new JPanel();
+            contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+            contentPane.setLayout(null);
+
+            JPanel panel = new JPanel();
+            panel.setBounds(16, 16, 297, 58);
+            panel.setBorder(BorderFactory.createEtchedBorder());
+            panel.setLayout(null);
+
+            JLabel label = new JLabel("列名：");
+            label.setBounds(25, 15, 65, 26);
+            panel.add(label);
+            textField = new JTextField();
+            textField.setBounds(90, 9, 160, 38);
+            panel.add(textField);
+            textField.setColumns(10);
+            p.fetchTBTable(); //获取所选编辑表格的表名
+            UID = Integer.valueOf(p.data[p.tbtable.getSelectedRow()][0]);
+            textField.setText(p.data[p.tbtable.getSelectedRow()][1]); //获取原本表名
+            contentPane.add(panel);
+
+            JButton button_1 = new JButton("取消");
+            button_1.setBounds(188, 90, 117, 29);
+            button_1.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    p.btnNewButton.setEnabled(true);
+                    p.button.setEnabled(true);
+                    p.button_1.setEnabled(true);
+                    p.tbtable.setEnabled(true);
+                    f.dispose();
+                }
+            });
+            contentPane.add(button_1);
+
+            JButton button = new JButton("确认");
+            button.setBounds(26, 90, 117, 29);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String columnName = textField.getText();
+                    int index = p.tbtable.getSelectedRow(); //获取所选结点的Index
+                    PKUMetaDataManagement pm = new PKUMetaDataManagement();
+
+                    pm.Init();
+                    try {
+                        if (pm.updateLColumn_Name(UID, columnName)) {
+                            JOptionPane.showMessageDialog(null, "编辑成功", "编辑成功", JOptionPane.PLAIN_MESSAGE);
+                            //刷新表格
+                            p.btnNewButton.setEnabled(true);
+                            p.button.setEnabled(true);
+                            p.button_1.setEnabled(true);
+                            p.tbtable.setEnabled(true);
+                            try {
+                                p.updateTable();
+                            }catch(Exception e1) {
+                                JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                            }
+                            p.tbtable.updateUI(); //更新表
+                            p.tbtable.setEnabled(true);
+                            //刷新文件树
+                            DefaultMutableTreeNode p = (DefaultMutableTreeNode)MetaDataManagerFrame.tree2.getLastSelectedPathComponent();
+                            DefaultMutableTreeNode n = (DefaultMutableTreeNode)p.getChildAt(index);
+                            n.setUserObject(columnName);
+                            MetaDataManagerFrame.tree2.updateUI();
+                            f.dispose();
+                        } else
+                            JOptionPane.showMessageDialog(null, "编辑失败", "编辑失败", JOptionPane.ERROR_MESSAGE);
+                    } catch (Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "编辑失败", JOptionPane.ERROR_MESSAGE);
+                    }
+                    pm.CloseCon();
+                }
+
+            });
+            contentPane.add(button);
+            f.setContentPane(contentPane);
+            f.setVisible(true);
+        }
+    }
+}
+
+/*界面2，第四层，添加按钮*/
+class Adapter_btn13_MetaDataManagerFrame implements ActionListener {
+    Adapter2_MetaDataManagerFrame p;
+    JFrame f;
+    JComboBox comboBox;
+    int LCID;
+    JTextField textField;
+    JTextField textField2;
+    JTextField textField3;
+    int[] UCID;
+
+
+    Adapter_btn13_MetaDataManagerFrame(Adapter2_MetaDataManagerFrame _p)
+    {
+        p = _p;
+    }
+    public void actionPerformed(ActionEvent e) {
+        if(p.columntable.getRowCount() >= 1)
+            JOptionPane.showMessageDialog(null, "本地列只允许同时存在一个映射关系", "添加失败", JOptionPane.ERROR_MESSAGE);
+        else{
+            f = new JFrame();
+            p.btnNewButton.setEnabled(false);
+            p.button.setEnabled(false);
+            p.button_1.setEnabled(false);
+            p.columntable.setEnabled(false);
+            f.addWindowListener(new WindowAdapter() { //关闭窗口事件
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    p.btnNewButton.setEnabled(true);
+                    p.button.setEnabled(true);
+                    p.button_1.setEnabled(true);
+                    try {
+                        p.updateTable();
+                    }catch(Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                    }
+                    p.columntable.updateUI(); //更新表
+                    p.columntable.setEnabled(true);
+                    f.dispose();
+                    super.windowClosing(e);
+                }
+            });
+            f.setResizable(false);
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setBounds(100, 100, 430, 300);
+            f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
+            f.setTitle("添加映射");
+
+            PKUMetaDataManagement pm = new PKUMetaDataManagement();
+            DefaultMutableTreeNode pa = (DefaultMutableTreeNode)MetaDataManagerFrame.tree2.getLastSelectedPathComponent();
+            int index = pa.getParent().getIndex(pa); //获取当前选择列结点的索引值
+            pm.Init();
+
+            String[][] temp = pm.showUTable(); //获取列数组，不能直接使用fetchcolumntable，是因为当前结点是列结点而不是表姐点
+            int TID = Integer.valueOf(temp[p.selectedNode.getParent().getParent().getIndex(p.selectedNode.getParent())][0]);
+            p.data = pm.showUColumn(TID);
+
+            //不能直接通过选定行来找UCID，因为表可能为空
+            LCID = Integer.valueOf(p.data[index][0]);
+            //System.out.println(index + "-" + LCID);
+
+            pm.Init();
+            pm.showNoMapUC(LCID);
+            String[] TName = pm.FetchNoMapUTName();
+            String[] CName = pm.FetchNoMapUCName();
+            UCID = pm.FetchNoMapUCID();
+            pm.CloseCon();
+
+            JPanel contentPane = new JPanel();
+            contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+            contentPane.setLayout(null);
+
+            JPanel panel = new JPanel();
+            panel.setBounds(16, 16, 400, 185);
+            panel.setBorder(BorderFactory.createEtchedBorder());
+            panel.setLayout(null);
+
+            JLabel label = new JLabel("本地映射：");
+            label.setBounds(25, 13, 65, 26);
+            panel.add(label);
+            comboBox = new JComboBox();
+            for(int i = 0; i < TName.length; i++)
+            {
+                comboBox.addItem(TName[i] + "." + CName[i]);
+            }
+            comboBox.setBounds(90, 7, 280, 30);
+            panel.add(comboBox);
+
+            JLabel label1 = new JLabel("Max ：");
+            label1.setBounds(25, 53, 65, 26);
+            panel.add(label1);
+            textField = new JTextField();
+            textField.setBounds(90, 47,280, 30);
+            textField.setColumns(10);
+            panel.add(textField);
+            JLabel label2 = new JLabel("Min ：");
+            label2.setBounds(25, 93, 65, 26);
+            panel.add(label2);
+            textField2 = new JTextField();
+            textField2.setBounds(90, 87, 280, 30);
+            textField2.setColumns(10);
+            panel.add(textField2);
+            JLabel label3 = new JLabel("Location ：");
+            label3.setBounds(25, 133, 65, 26);
+            panel.add(label3);
+            textField3 = new JTextField();
+            textField3.setBounds(90, 127, 280, 30);
+            textField3.setColumns(10);
+            panel.add(textField3);
+            contentPane.add(panel);
+
+            JButton button_1 = new JButton("取消");
+            button_1.setBounds(228, 220, 117, 29);
+            button_1.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    p.btnNewButton.setEnabled(true);
+                    p.button.setEnabled(true);
+                    p.button_1.setEnabled(true);
+                    p.columntable.setEnabled(true);
+                    f.dispose();
+                }
+            });
+            contentPane.add(button_1);
+
+            JButton button = new JButton("确认");
+            button.setBounds(26, 220, 117, 29);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int ucid = UCID[comboBox.getSelectedIndex()];
+                    String max = textField.getText();
+                    String min = textField2.getText();
+                    String location = textField3.getText();
+                    if(max.equals(""))
+                        max = null;
+                    if(min.equals(""))
+                        min = null;
+                    if(location.equals(""))
+                        location = null;
+                    PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                    pm.Init();
+                    try {
+                        if (pm.addMap(ucid, LCID, max, min, location)) {
+                            JOptionPane.showMessageDialog(null, "添加成功", "添加成功", JOptionPane.PLAIN_MESSAGE);
+                            //刷新表格
+                            p.btnNewButton.setEnabled(true);
+                            p.button.setEnabled(true);
+                            p.button_1.setEnabled(true);
+                            p.columntable.setEnabled(true);
+                            try {
+                                p.updateTable();
+                            }catch(Exception e1) {
+                                JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                            }
+                            p.columntable.updateUI(); //更新表
+                            p.columntable.setEnabled(true);
+                            f.dispose();
+                        } else
+                            JOptionPane.showMessageDialog(null, "添加失败", "添加失败", JOptionPane.ERROR_MESSAGE);
+                    } catch (Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "添加失败", JOptionPane.ERROR_MESSAGE);
+                    }
+                    pm.CloseCon();
+                }
+
+            });
+            contentPane.add(button);
+            f.setContentPane(contentPane);
+            f.setVisible(true);
+        }
+    }
+}
+
+/*界面2，第四层，编辑按钮*/
+class Adapter_btn14_MetaDataManagerFrame implements ActionListener {
+    Adapter2_MetaDataManagerFrame p;
+    JFrame f;
+    JComboBox comboBox;
+    int UID;
+    JTextField textField;
+    JTextField textField2;
+    JTextField textField3;
+    String max;
+    String min;
+    String location;
+    Adapter_btn14_MetaDataManagerFrame(Adapter2_MetaDataManagerFrame _p)
+    {
+        p = _p;
+    }
+    public void actionPerformed(ActionEvent e) {
+        if(p.columntable.getRowCount() == 0)
+            JOptionPane.showMessageDialog(null, "无可编辑行", "编辑失败", JOptionPane.ERROR_MESSAGE);
+        else if(p.columntable.getSelectedRow() == -1)
+            JOptionPane.showMessageDialog(null, "请选择一行", "编辑失败", JOptionPane.ERROR_MESSAGE);
+        else{
+            f = new JFrame();
+            p.btnNewButton.setEnabled(false);
+            p.button.setEnabled(false);
+            p.button_1.setEnabled(false);
+            p.columntable.setEnabled(false);
+            f.addWindowListener(new WindowAdapter() { //关闭窗口事件
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    p.btnNewButton.setEnabled(true);
+                    p.button.setEnabled(true);
+                    p.button_1.setEnabled(true);
+                    try {
+                        p.updateTable();
+                    }catch(Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                    }
+                    p.columntable.updateUI(); //更新表
+                    p.columntable.setEnabled(true);
+                    f.dispose();
+                    super.windowClosing(e);
+                }
+            });
+            f.setResizable(false);
+            f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            f.setBounds(100, 100, 329, 254);
+            f.setLocation(MetaDataManagerFrame.FWidth / 3, MetaDataManagerFrame.FHeight / 3);
+            f.setTitle("编辑映射");
+
+            int index = p.columntable.getSelectedRow();
+            p.fetchColumnTable();
+            UID = Integer.valueOf(p.data[index][0]);
+            max = p.data[index][3];
+            min = p.data[index][4];
+            location =p.data[index][5];
+            //System.out.println(index + "-" + LCID);
+
+            JPanel contentPane = new JPanel();
+            contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+            contentPane.setLayout(null);
+
+            JPanel panel = new JPanel();
+            panel.setBounds(16, 16, 297, 148);
+            panel.setBorder(BorderFactory.createEtchedBorder());
+            panel.setLayout(null);
+
+            JLabel label = new JLabel("UCID：");
+            label.setBounds(25, 15, 65, 26);
+            panel.add(label);
+            JTextField textField0 = new JTextField();
+            textField0.setBounds(90, 11, 160, 28);
+            textField0.setColumns(10);
+            textField0.setText(UID+"");
+            textField0.setEditable(false);
+            panel.add(textField0);
+            JLabel label1 = new JLabel("Max ：");
+            label1.setBounds(25, 45, 65, 26);
+            panel.add(label1);
+            textField = new JTextField();
+            textField.setBounds(90, 42, 160, 28);
+            textField.setColumns(10);
+            textField.setText(max+"");
+            panel.add(textField);
+            JLabel label2 = new JLabel("Min ：");
+            label2.setBounds(25, 75, 65, 26);
+            panel.add(label2);
+            textField2 = new JTextField();
+            textField2.setBounds(90, 73, 160, 28);
+            textField2.setColumns(10);
+            textField2.setText(min+"");
+            panel.add(textField2);
+            JLabel label3 = new JLabel("Location ：");
+            label3.setBounds(25, 105, 65, 26);
+            panel.add(label3);
+            textField3 = new JTextField();
+            textField3.setBounds(90, 104, 160, 28);
+            textField3.setColumns(10);
+            textField3.setText(location+"");
+            panel.add(textField3);
+            contentPane.add(panel);
+
+            JButton button_1 = new JButton("取消");
+            button_1.setBounds(188, 180, 117, 29);
+            button_1.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    p.btnNewButton.setEnabled(true);
+                    p.button.setEnabled(true);
+                    p.button_1.setEnabled(true);
+                    p.columntable.setEnabled(true);
+                    f.dispose();
+                }
+            });
+            contentPane.add(button_1);
+
+            JButton button = new JButton("确认");
+            button.setBounds(26, 180, 117, 29);
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String max = textField.getText();
+                    String min = textField2.getText();
+                    String location = textField3.getText();
+                    PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                    if(max.equals(""))
+                        max = null;
+                    if(min.equals(""))
+                        min = null;
+                    if(location.equals(""))
+                        location = null;
+                    pm.Init();
+                    try {
+                        if (pm.updateMap(UID, min, max, location)) {
                             JOptionPane.showMessageDialog(null, "编辑成功", "编辑成功", JOptionPane.PLAIN_MESSAGE);
                             //刷新表格
                             p.btnNewButton.setEnabled(true);
