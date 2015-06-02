@@ -98,6 +98,7 @@ public class PKUMetaDataManagement {
     /*Tree Can Fetch*/
     static String UT[];
     static String UC[][];
+    static String LSID[];
     static String LS[];
     static String LB[][];
     static String LT[][][];
@@ -1175,7 +1176,6 @@ public class PKUMetaDataManagement {
     }
     public void showLTree() {
         int LSNum = 0;
-        int LSID[];
         int LBNum = 0;
         int LBID[][];
         int LTNum = 0;
@@ -1199,12 +1199,12 @@ public class PKUMetaDataManagement {
             LB = new String[LSNum][];
             LT = new String[LSNum][][];
             LC = new String[LSNum][][][];
-            LSID = new int[LSNum];
+            LSID = new String[LSNum];
             LBID = new int[LSNum][];
             LTID = new int[LSNum][][];
             int i = 0;
             while (rs.next()){
-                LSID[i] = Integer.parseInt(new String((rs.getString(1).trim())));
+                LSID[i] = new String((rs.getString(1).trim()));
                 LS[i] = new String((rs.getString(2).trim()));
                 i++;
             }
