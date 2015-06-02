@@ -226,7 +226,7 @@ public class PKUMetaDataManagement {
                 sql += tarList[i] + "=" + valList[i] + ",";
             }
         }
-        sql += tarList[tarNum - 1] + "=" + valList[tarNum - 1] + ",";
+        sql += tarList[tarNum - 1] + "=" + valList[tarNum - 1];
         if (conNum > 0) {
             sql += " WHERE ";
             if (conNum > 1) {
@@ -468,7 +468,7 @@ public class PKUMetaDataManagement {
         }
         return UID;
     }
-    public int addUTable(String TableName, int DBID) {
+    public int addUTable(String TableName, int DBID) throws Exception{
         tarList = new String[1];
         tableList = new String[1];
         conList = new String[2];
@@ -490,6 +490,7 @@ public class PKUMetaDataManagement {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+            throw e;
         }
         return UID;
     }
@@ -1350,7 +1351,7 @@ public class PKUMetaDataManagement {
             tableList = new String[1];
             tableList[0] = "LColumn";
             conList = new String[1];
-            conList[0] = "Where UID not in (Select LCID From columnmapping Where UCID=" + UCID + ")";
+            conList[0] = "UID not in (Select LCID From columnmapping Where UCID=" + UCID + ")";
             Select(1, 1, 1);
             while (rs.next()) {
                 num++;
@@ -1419,7 +1420,7 @@ public class PKUMetaDataManagement {
         }
     }
 
-    public boolean addUT(String TableName, String DBID) {
+    public boolean addUT(String TableName, String DBID) throws Exception {
         addUTable(TableName, Integer.parseInt(DBID));
         return true;
     }
@@ -1558,6 +1559,8 @@ public class PKUMetaDataManagement {
     public String[][] FetchLB() { return LB;}
     public String[][][] FetchLT() { return LT;}
     public String[][][][] FetchLC() { return LC;}
+    public int[] FetchNoMapUCID() { return NoMapUCID;}
+    public int[] FetchNoMapLCID() { return NoMapLCID;}
     public String[] FetchNoMapUCName() { return NoMapUCName;}
     public String[] FetchNoMapUTName() { return NoMapUTName;}
     public String[] FetchNoMapLCName() { return NoMapLCName;}
