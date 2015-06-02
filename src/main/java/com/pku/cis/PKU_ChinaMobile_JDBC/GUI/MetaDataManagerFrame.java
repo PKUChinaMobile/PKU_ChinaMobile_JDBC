@@ -323,6 +323,10 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
                         btnNewButton.setEnabled(false);
                         dbtable.setEnabled(false);
                         int index = dbtable.getSelectedRow(); //获取所选结点的Index
+                        if(index == -1) {
+                            JOptionPane.showMessageDialog(null, "请选择一行", "删除失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else {
                         fetchDBTable(); //获取所选编辑表格的UID
                         int UID = Integer.valueOf(data[index][0]);
                         String tableName = data[index][1];
@@ -342,7 +346,7 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
                             } catch (Exception e1) {
                                 JOptionPane.showMessageDialog(null, e1.getMessage(), "删除失败", JOptionPane.ERROR_MESSAGE);
                             }
-                        }
+                        }}
                         button.setEnabled(true);
                         button_1.setEnabled(true);
                         btnNewButton.setEnabled(true);
@@ -389,6 +393,10 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
                         btnNewButton.setEnabled(false);
                         tbtable.setEnabled(false);
                         int index = tbtable.getSelectedRow(); //获取所选结点的Index
+                        if(index == -1) {
+                            JOptionPane.showMessageDialog(null, "请选择一行", "删除失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else {
                         fetchTBTable(); //获取所选编辑列的TID
                         int TID = Integer.valueOf(data[index][0]);
                         String tableName = data[index][1];
@@ -408,7 +416,7 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
                             } catch (Exception e1) {
                                 JOptionPane.showMessageDialog(null, e1.getMessage(), "删除失败", JOptionPane.ERROR_MESSAGE);
                             }
-                        }
+                        }}
                         button.setEnabled(true);
                         button_1.setEnabled(true);
                         btnNewButton.setEnabled(true);
@@ -456,6 +464,10 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
                         btnNewButton.setEnabled(false);
                         columntable.setEnabled(false);
                         int index = columntable.getSelectedRow(); //获取所选结点的Index
+                        if(index == -1) {
+                            JOptionPane.showMessageDialog(null, "请选择一行", "删除失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else {
                         fetchColumnTable(); //获取所选编辑列的TID
                         int UCID = Integer.valueOf(data[index][0]);
                         int result = JOptionPane.showConfirmDialog(null, "确定删除？", "提示", JOptionPane.YES_NO_OPTION);
@@ -470,7 +482,7 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
                             } catch (Exception e1) {
                                 JOptionPane.showMessageDialog(null, e1.getMessage(), "删除失败", JOptionPane.ERROR_MESSAGE);
                             }
-                        }
+                        }}
                         button.setEnabled(true);
                         button_1.setEnabled(true);
                         btnNewButton.setEnabled(true);
@@ -1199,6 +1211,7 @@ class Adapter_btn5_MetaDataManagerFrame implements ActionListener {
     JTextField textField3;
     int[] LCID;
 
+
     Adapter_btn5_MetaDataManagerFrame(Adapter_MetaDataManagerFrame _p)
     {
         p = _p;
@@ -1228,16 +1241,23 @@ class Adapter_btn5_MetaDataManagerFrame implements ActionListener {
         });
         f.setResizable(false);
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        f.setBounds(100, 100, 329, 254);
+        f.setBounds(100, 100, 430, 300);
         f.setLocation(PermissionManagerFrame.FWidth / 3, PermissionManagerFrame.FHeight / 3);
         f.setTitle("添加映射");
 
         PKUMetaDataManagement pm = new PKUMetaDataManagement();
         DefaultMutableTreeNode pa = (DefaultMutableTreeNode)MetaDataManagerFrame.tree.getLastSelectedPathComponent();
-        int index = p.columntable.getSelectedRow();
-        p.fetchColumnTable();
+        int index = pa.getParent().getIndex(pa); //获取当前选择列结点的索引值
+        pm.Init();
+
+        String[][] temp = pm.showUTable(); //获取列数组，不能直接使用fetchcolumntable，是因为当前结点是列结点而不是表姐点
+        int TID = Integer.valueOf(temp[p.selectedNode.getParent().getParent().getIndex(p.selectedNode.getParent())][0]);
+        p.data = pm.showUColumn(TID);
+
+        //不能直接通过选定行来找UCID，因为表可能为空
         UCID = Integer.valueOf(p.data[index][0]);
         System.out.println(index + "-" + UCID);
+
         pm.Init();
         pm.showNoMapLC(UCID);
         String[] SName = pm.FetchNoMapLSName();
@@ -1252,46 +1272,46 @@ class Adapter_btn5_MetaDataManagerFrame implements ActionListener {
         contentPane.setLayout(null);
 
         JPanel panel = new JPanel();
-        panel.setBounds(16, 16, 297, 148);
+        panel.setBounds(16, 16, 400, 185);
         panel.setBorder(BorderFactory.createEtchedBorder());
         panel.setLayout(null);
 
         JLabel label = new JLabel("本地映射：");
-        label.setBounds(25, 15, 65, 26);
+        label.setBounds(25, 13, 65, 26);
         panel.add(label);
         comboBox = new JComboBox();
         for(int i = 0; i < SName.length; i++)
         {
             comboBox.addItem(SName[i] + "." + BName[i] + "." + TName[i] + "." + CName[i]);
         }
-        comboBox.setBounds(90, 9, 160, 38);
+        comboBox.setBounds(90, 7, 280, 30);
         panel.add(comboBox);
 
         JLabel label1 = new JLabel("Max ：");
-        label1.setBounds(25, 45, 65, 26);
+        label1.setBounds(25, 53, 65, 26);
         panel.add(label1);
         textField = new JTextField();
-        textField.setBounds(90, 39, 160, 38);
+        textField.setBounds(90, 47,280, 30);
         textField.setColumns(10);
         panel.add(textField);
         JLabel label2 = new JLabel("Min ：");
-        label2.setBounds(25, 75, 65, 26);
+        label2.setBounds(25, 93, 65, 26);
         panel.add(label2);
         textField2 = new JTextField();
-        textField2.setBounds(90, 69, 160, 38);
+        textField2.setBounds(90, 87, 280, 30);
         textField2.setColumns(10);
         panel.add(textField2);
         JLabel label3 = new JLabel("Location ：");
-        label3.setBounds(25, 105, 65, 26);
+        label3.setBounds(25, 133, 65, 26);
         panel.add(label3);
         textField3 = new JTextField();
-        textField3.setBounds(90, 99, 160, 38);
+        textField3.setBounds(90, 127, 280, 30);
         textField3.setColumns(10);
         panel.add(textField3);
         contentPane.add(panel);
 
         JButton button_1 = new JButton("取消");
-        button_1.setBounds(188, 180, 117, 29);
+        button_1.setBounds(228, 220, 117, 29);
         button_1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1305,7 +1325,7 @@ class Adapter_btn5_MetaDataManagerFrame implements ActionListener {
         contentPane.add(button_1);
 
         JButton button = new JButton("确认");
-        button.setBounds(26, 180, 117, 29);
+        button.setBounds(26, 220, 117, 29);
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -1394,20 +1414,13 @@ class Adapter_btn6_MetaDataManagerFrame implements ActionListener {
             f.setLocation(PermissionManagerFrame.FWidth / 3, PermissionManagerFrame.FHeight / 3);
             f.setTitle("编辑映射");
 
-            PKUMetaDataManagement pm = new PKUMetaDataManagement();
-            DefaultMutableTreeNode pa = (DefaultMutableTreeNode)MetaDataManagerFrame.tree.getLastSelectedPathComponent();
-            int index = pa.getParent().getIndex(pa);
-            pm.Init();
-            String[][] temp = pm.showUTable();
-            int UID = Integer.valueOf(temp[p.selectedNode.getParent().getParent().getIndex(p.selectedNode.getParent())][0]);
-            p.data = pm.showUColumn(UID);
+            int index = p.columntable.getSelectedRow();
+            p.fetchColumnTable();
             UCID = Integer.valueOf(p.data[index][0]);
             max = Integer.valueOf(p.data[index][2]);
             min = Integer.valueOf(p.data[index][3]);
             location = Integer.valueOf(p.data[index][4]);
             System.out.println(index + "-" + UCID);
-
-            pm.CloseCon();
 
             JPanel contentPane = new JPanel();
             contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -1422,7 +1435,7 @@ class Adapter_btn6_MetaDataManagerFrame implements ActionListener {
             label.setBounds(25, 15, 65, 26);
             panel.add(label);
             JTextField textField0 = new JTextField();
-            textField0.setBounds(90, 39, 160, 38);
+            textField0.setBounds(90, 11, 160, 28);
             textField0.setColumns(10);
             textField0.setText(UCID+"");
             textField0.setEditable(false);
@@ -1431,7 +1444,7 @@ class Adapter_btn6_MetaDataManagerFrame implements ActionListener {
             label1.setBounds(25, 45, 65, 26);
             panel.add(label1);
             textField = new JTextField();
-            textField.setBounds(90, 39, 160, 38);
+            textField.setBounds(90, 42, 160, 28);
             textField.setColumns(10);
             textField.setText(max+"");
             panel.add(textField);
@@ -1439,7 +1452,7 @@ class Adapter_btn6_MetaDataManagerFrame implements ActionListener {
             label2.setBounds(25, 75, 65, 26);
             panel.add(label2);
             textField2 = new JTextField();
-            textField2.setBounds(90, 69, 160, 38);
+            textField2.setBounds(90, 73, 160, 28);
             textField2.setColumns(10);
             textField2.setText(min+"");
             panel.add(textField2);
@@ -1447,7 +1460,7 @@ class Adapter_btn6_MetaDataManagerFrame implements ActionListener {
             label3.setBounds(25, 105, 65, 26);
             panel.add(label3);
             textField3 = new JTextField();
-            textField3.setBounds(90, 99, 160, 38);
+            textField3.setBounds(90, 104, 160, 28);
             textField3.setColumns(10);
             textField3.setText(location+"");
             panel.add(textField3);

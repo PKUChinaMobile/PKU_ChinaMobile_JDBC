@@ -1365,7 +1365,7 @@ public class PKUMetaDataManagement {
             NoMapLBName = new String[num];
             NoMapLSName = new String[num];
             while (rs.next()) {
-                NoMapUCID[i] = Integer.parseInt(new String((rs.getString(1).trim())));
+                NoMapLCID[i] = Integer.parseInt(new String((rs.getString(1).trim())));
                 i++;
             }
 
@@ -1373,13 +1373,13 @@ public class PKUMetaDataManagement {
             int databaseID = -1;
             int dataSourceID = -1;
             int typeID = -1;
-            for (i = 0; i < LColumnNum; i++) {
+            for (i = 0; i < num; i++) {
                 tarList = new String[2];
                 tarList[0] = "TableID";
                 tarList[1] = "ColumnName";
                 tableList[0] = "LColumn";
                 conList = new String[1];
-                conList[0] = "UID=" + NoMapUCID[i];
+                conList[0] = "UID=" + NoMapLCID[i];
                 Select(2, 1, 1);
                 while(rs.next()) {
                     tableID = Integer.parseInt(new String((rs.getString(1).trim())));
@@ -1398,7 +1398,7 @@ public class PKUMetaDataManagement {
 
                 tarList[0] = "DSID";
                 tarList[1] = "DBName";
-                tableList[0] = "LDateBase";
+                tableList[0] = "LDataBase";
                 conList[0] = "UID=" + databaseID;
                 Select(2, 1, 1);
                 while(rs.next()) {
@@ -1408,11 +1408,11 @@ public class PKUMetaDataManagement {
 
                 tarList = new String[1];
                 tarList[0] = "Name";
-                tableList[0] = "LDateSource";
+                tableList[0] = "LDataSource";
                 conList[0] = "UID=" + dataSourceID;
                 Select(1, 1, 1);
                 while(rs.next()) {
-                    NoMapLSName[i] = new String((rs.getString(2).trim()));
+                    NoMapLSName[i] = new String((rs.getString(1).trim()));
                 }
             }
         } catch (SQLException e) {
