@@ -1,4 +1,5 @@
 package com.pku.cis.PKU_ChinaMobile_JDBC.GUI;
+import com.pku.cis.PKU_ChinaMobile_JDBC.Client.PKUMetaDataManagement;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Server.PermissionManager;
 
 import java.awt.*;
@@ -40,26 +41,10 @@ public class DataSourceManagerFrame extends JFrame {
 
     public static void fetchData()
     {
-        rowCount = 3;
-        data = new String[rowCount][];
-        data[0] = new String[columnCount];
-        data[0][0] = "1";
-        data[0][1] = "Mytest";
-        data[0][2] = "Oracle";
-        data[0][3] = "162.105.71.128";
-        data[0][4] = "1521";
-        data[1] = new String[columnCount];
-        data[1][0] = "2";
-        data[1][1] = "vmtest";
-        data[1][2] = "teradata";
-        data[1][3] = "162.105.71.140";
-        data[1][4] = "1600";
-        data[2] = new String[columnCount];
-        data[2][0] = "3";
-        data[2][1] = "test";
-        data[2][2] = "hive";
-        data[2][3] = "162.105.71.247";
-        data[2][4] = "10000";
+        PKUMetaDataManagement pm = new PKUMetaDataManagement();
+        pm.Init();
+        data = pm.showDataSource();
+        pm.CloseCon();
 
     }
     public static MyJTable updateTable()
@@ -118,18 +103,22 @@ public class DataSourceManagerFrame extends JFrame {
                 glbbutton_1.setEnabled(false);
                 glbbutton_2.setEnabled(false);
                 glbtable.setEnabled(false);
-                String userName = data[glbtable.getSelectedRowCount()][0];
-                int result = JOptionPane.showConfirmDialog(null, "确定删除该数据源？", "提示", JOptionPane.YES_NO_OPTION);
+                String userName = data[glbtable.getSelectedRow()][1];
+                int UID = Integer.valueOf(data[glbtable.getSelectedRow()][0]);
+                int result = JOptionPane.showConfirmDialog(null, "确定删除"+userName+"？", "提示", JOptionPane.YES_NO_OPTION);
                 if(result == 0)
                 {
+                    PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                    pm.Init();
                     try {
-                        if(true)
-                            JOptionPane.showMessageDialog(null,"删除成功","提示", JOptionPane.PLAIN_MESSAGE);/*
+                        if(pm.deleteDS(UID))
+                            JOptionPane.showMessageDialog(null,"删除成功","提示", JOptionPane.PLAIN_MESSAGE);
                         else
-                            JOptionPane.showMessageDialog(null,"删除失败","删除失败", JOptionPane.ERROR_MESSAGE);*/
+                            JOptionPane.showMessageDialog(null,"删除失败","删除失败", JOptionPane.ERROR_MESSAGE);
                     } catch (Exception e1) {
                         JOptionPane.showMessageDialog(null,e1.getMessage(),"删除失败", JOptionPane.ERROR_MESSAGE);
                     }
+                    pm.CloseCon();
                 }
                 glbbutton.setEnabled(true);
                 glbbutton_1.setEnabled(true);
@@ -249,10 +238,30 @@ class Adapter_DataSourceManagerFrame implements ActionListener
                 String name = textField_1.getText();
                 String ip = textField_2.getText();
                 String port = textField_3.getText();
-
-                if(true) {
-                    JOptionPane.showMessageDialog(null, "", "提示", JOptionPane.ERROR_MESSAGE);
+                PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                pm.Init();
+                try {
+                    if (pm.addLDS(type, ip, name, port)) {
+                        JOptionPane.showMessageDialog(null, "添加成功", "添加成功", JOptionPane.PLAIN_MESSAGE);
+                        //刷新表格
+                        DataSourceManagerFrame.glbbutton.setEnabled(true);
+                        DataSourceManagerFrame.glbbutton_1.setEnabled(true);
+                        DataSourceManagerFrame.glbbutton_2.setEnabled(true);
+                        try {
+                            DataSourceManagerFrame.fetchData();
+                        }catch(Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        DataSourceManagerFrame.glbtable.setModel(new DefaultTableModel(DataSourceManagerFrame.data, DataSourceManagerFrame.head));
+                        DataSourceManagerFrame.glbtable.updateUI(); //更新表
+                        DataSourceManagerFrame.glbtable.setEnabled(true);
+                        f.dispose();
+                    } else
+                        JOptionPane.showMessageDialog(null, "添加失败", "添加失败", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "添加失败", JOptionPane.ERROR_MESSAGE);
                 }
+                pm.CloseCon();
             }
         });
         contentPane.add(button);
@@ -261,10 +270,11 @@ class Adapter_DataSourceManagerFrame implements ActionListener
 }
 class Adapter2_DataSourceManagerFrame implements ActionListener
 {
-    String type = "teradata";
-    String name = "test";
-    String ip = "162.105.71.140";
-    String port = "1600";
+    String type;
+    String name;
+    String ip;
+    String port;
+    String UID;
     JFrame f;
     JTextField textField;
     JTextField textField_1;
@@ -291,8 +301,9 @@ class Adapter2_DataSourceManagerFrame implements ActionListener
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.setBounds(100, 100, 329, 234);
         f.setLocation(DataSourceManagerFrame.FWidth / 3, DataSourceManagerFrame.FHeight / 3);
-        f.setTitle("添加数据源");
+        f.setTitle("编辑数据源");
 
+        int index = DataSourceManagerFrame.glbtable.getSelectedRow();
         JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         contentPane.setLayout(null);
@@ -301,6 +312,7 @@ class Adapter2_DataSourceManagerFrame implements ActionListener
         label.setBounds(22, 28, 90, 16);
         contentPane.add(label);
         textField = new JTextField();
+        name = DataSourceManagerFrame.data[index][1];
         textField.setText(name);
         textField.setBounds(100, 22, 194, 28);
         contentPane.add(textField);
@@ -311,6 +323,7 @@ class Adapter2_DataSourceManagerFrame implements ActionListener
         textField_1 = new JTextField();
         textField.setColumns(10);
         textField_1.setBounds(100, 53, 194, 28);
+        type = DataSourceManagerFrame.data[index][2];
         textField_1.setText(type);
         contentPane.add(textField_1);
         JLabel label_2 = new JLabel("IP：");
@@ -319,6 +332,7 @@ class Adapter2_DataSourceManagerFrame implements ActionListener
         textField_2 = new JTextField();
         textField_2.setColumns(10);
         textField_2.setBounds(100, 84, 194, 28);
+        ip = DataSourceManagerFrame.data[index][3];
         textField_2.setText(ip);
         contentPane.add(textField_2);
         JLabel label_3 = new JLabel("port：");
@@ -327,8 +341,10 @@ class Adapter2_DataSourceManagerFrame implements ActionListener
         textField_3 = new JTextField();
         textField_3.setColumns(10);
         textField_3.setBounds(100, 115, 194, 28);
+        port = DataSourceManagerFrame.data[index][4];
         textField_3.setText(port);
         contentPane.add(textField_3);
+        UID = DataSourceManagerFrame.data[index][0];
 
         JPanel panel = new JPanel();
         panel.setBounds(16, 16, 297, 138);
@@ -365,10 +381,30 @@ class Adapter2_DataSourceManagerFrame implements ActionListener
                 String name = textField_1.getText();
                 String ip = textField_2.getText();
                 String port = textField_3.getText();
-
-                if(true) {
-                    JOptionPane.showMessageDialog(null, "", "提示", JOptionPane.ERROR_MESSAGE);
+                PKUMetaDataManagement pm = new PKUMetaDataManagement();
+                pm.Init();
+                try {
+                    if (pm.updateDS(UID, type, ip, name, port)) {
+                        JOptionPane.showMessageDialog(null, "编辑成功", "编辑成功", JOptionPane.PLAIN_MESSAGE);
+                        //刷新表格
+                        DataSourceManagerFrame.glbbutton.setEnabled(true);
+                        DataSourceManagerFrame.glbbutton_1.setEnabled(true);
+                        DataSourceManagerFrame.glbbutton_2.setEnabled(true);
+                        try {
+                            DataSourceManagerFrame.fetchData();
+                        }catch(Exception e1) {
+                            JOptionPane.showMessageDialog(null, e1.getMessage(), "获取数据失败", JOptionPane.ERROR_MESSAGE);
+                        }
+                        DataSourceManagerFrame.glbtable.setModel(new DefaultTableModel(DataSourceManagerFrame.data, DataSourceManagerFrame.head));
+                        DataSourceManagerFrame.glbtable.updateUI(); //更新表
+                        DataSourceManagerFrame.glbtable.setEnabled(true);
+                        f.dispose();
+                    } else
+                        JOptionPane.showMessageDialog(null, "编辑失败", "编辑失败", JOptionPane.ERROR_MESSAGE);
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "编辑失败", JOptionPane.ERROR_MESSAGE);
                 }
+                pm.CloseCon();
 
             }
         });

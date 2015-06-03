@@ -804,7 +804,7 @@ public class PKUMetaDataManagement {
             while (rs.next()){
                 showDS[i] = new String[5];
                 for (int j = 1; j <= 5; j++ ) {
-                    showDS[i][j - 1] = new String((rs.getString(1).trim()));
+                    showDS[i][j - 1] = new String((rs.getString(j).trim()));
                 }
                 i++;
             }
