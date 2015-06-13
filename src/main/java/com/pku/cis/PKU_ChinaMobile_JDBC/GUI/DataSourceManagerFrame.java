@@ -63,7 +63,7 @@ public class DataSourceManagerFrame extends JFrame {
      */
     public DataSourceManagerFrame() {
 
-        setTitle("透明网管系统——数据源管理");
+        setTitle("透明网关系统——数据源管理");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 550, 300);
         glbtable = updateTable();

@@ -79,7 +79,7 @@ public class PermissionManagerFrame extends JFrame {
             JOptionPane.showMessageDialog(null, e.getMessage(), "连接失败", JOptionPane.ERROR_MESSAGE);
             dispose();
         }
-        setTitle("透明网管系统——权限管理");
+        setTitle("透明网关系统——权限管理");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 484, 300);
         try{

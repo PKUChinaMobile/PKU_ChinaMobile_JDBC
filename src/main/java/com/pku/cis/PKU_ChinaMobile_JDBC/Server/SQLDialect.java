@@ -2,10 +2,10 @@ package com.pku.cis.PKU_ChinaMobile_JDBC.Server;
 
 import com.alibaba.druid.sql.ast.SQLObject;
 import com.alibaba.druid.sql.ast.SQLStatement;
-import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.HiveOutputVisitor;
-import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.MySqlOutputVisitor;
-import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.OracleOutputVisitor;
-import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.TeradataOutputVisitor;
+//import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.HiveOutputVisitor;
+//import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.MySqlOutputVisitor;
+//import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.OracleOutputVisitor;
+//import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.TeradataOutputVisitor;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Server.Dialect.Teradata.ToTeradataOutputVisitor;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Server.Dialect.Oracle.ToOracleOutputVisitor;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Server.Dialect.Hive.ToHiveOutputVisitor;
@@ -36,7 +36,7 @@ public class SQLDialect {
 	
 	public static String toMySqlString(SQLObject sqlObject){
 		StringBuilder out = new StringBuilder();
-		sqlObject.accept(new MySqlOutputVisitor(out, false));
+		//sqlObject.accept(new MySqlOutputVisitor(out, false));
 		//((SQLStatement)sqlObject).accept(new ToMySqlOutputVisitor(out, false));
 		
 		String sql = out.toString().replace("\n", " ").replace(";", "");

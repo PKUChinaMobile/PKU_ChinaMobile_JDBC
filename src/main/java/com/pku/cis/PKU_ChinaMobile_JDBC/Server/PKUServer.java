@@ -11,7 +11,7 @@ import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 
-import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.MethodNameMapping;
+//import com.pku.cis.PKU_ChinaMobile_JDBC.DatabaseVisitor.MethodNameMapping;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PKUClientSocketFactory;
 import com.pku.cis.PKU_ChinaMobile_JDBC.Interface.PKUServerSocketFactory;
 
@@ -50,7 +50,7 @@ public class PKUServer {
 		String rmiRef2 = "rmi://localhost:1099/RemotePermissionManager";
 		PermissionManager thePM;
 
-		MethodNameMapping.getSingleton();
+		//MethodNameMapping.getSingleton();
 		
 		try {
 			//Build the driver server object. 
