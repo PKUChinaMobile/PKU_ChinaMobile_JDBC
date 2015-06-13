@@ -48,8 +48,8 @@ class User
 		password = new String[dbNum];
 
 		//URLS[0] = "jdbc:mysql://162.105.71.128:3306/test";
-		URLS[0] = "jdbc:oracle:thin:@162.105.71.128:1521:mytest";
-		URLS[1] = "jdbc:teradata://162.105.71.140/vmtest";
+		URLS[0] = "jdbc:oracle:thin:@162.105.71.87:1521:mytest";
+		URLS[1] = "jdbc:teradata://162.105.71.73/vmtest";
 		URLS[2] = "jdbc:hive2://162.105.71.247:10000/test";
 
 		//dbName[0] = "mysql";

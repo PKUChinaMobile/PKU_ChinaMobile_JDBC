@@ -234,8 +234,8 @@ class Adapter_DataSourceManagerFrame implements ActionListener
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String type = textField.getText();
-                String name = textField_1.getText();
+                String type = textField_1.getText();
+                String name = textField.getText();
                 String ip = textField_2.getText();
                 String port = textField_3.getText();
                 PKUMetaDataManagement pm = new PKUMetaDataManagement();
@@ -377,8 +377,8 @@ class Adapter2_DataSourceManagerFrame implements ActionListener
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String type = textField.getText();
-                String name = textField_1.getText();
+                String type = textField_1.getText();
+                String name = textField.getText();
                 String ip = textField_2.getText();
                 String port = textField_3.getText();
                 PKUMetaDataManagement pm = new PKUMetaDataManagement();

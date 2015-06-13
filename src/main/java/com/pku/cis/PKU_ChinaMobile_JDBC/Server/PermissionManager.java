@@ -22,7 +22,7 @@ public class PermissionManager extends UnicastRemoteObject
     private static String userName ="root";
     private static String userPasswd ="06948859";//"root";
     private static String dbName ="pku_chinamobile_jdbc_metadata";
-    private static String url ="jdbc:mysql://162.105.71.128:3306/";//"jdbc:mysql://162.105.71.247:3306/";
+    private static String url ="jdbc:mysql://162.105.71.87:3306/";//"jdbc:mysql://162.105.71.247:3306/";
 
     PermissionManager() throws Exception{}
     private static Connection getConnection() throws  Exception

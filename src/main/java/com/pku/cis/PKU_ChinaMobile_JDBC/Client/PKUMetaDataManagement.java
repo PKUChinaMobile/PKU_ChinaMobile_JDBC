@@ -25,7 +25,7 @@ public class PKUMetaDataManagement {
     static String userName ="root";
     static String userPasswd ="06948859";
     static String urlPrefix = "jdbc:mysql:";
-    static String IP = "162.105.71.128:3306/pku_chinamobile_jdbc_metadata";
+    static String IP = "162.105.71.87:3306/pku_chinamobile_jdbc_metadata";
     //static PKUDriver d = new PKUDriver();
     static Connection con;
 
@@ -41,7 +41,7 @@ public class PKUMetaDataManagement {
     static int UColumnNum[] = {10, 9, 4, 11, 7, 6};
 
     static String LDSType[] = {"oracle", "teradata", "hive2"};
-    static String LDSIP[] = {"162.105.71.128", "162.105.71.170", "162.105.71.247"};
+    static String LDSIP[] = {"162.105.71.87", "162.105.71.73", "162.105.71.247"};
     static String LDSPort[] = {"1521", "NULL", "10000"};
     static String LDSName[] = {"Oracle_1", "Teradata_1", "Hive_1"};
     static String LDBName[][] = {{"mytest"}, {"vmtest"}, {"test"}};
@@ -151,7 +151,7 @@ public class PKUMetaDataManagement {
         String userName ="root";//root
         String userPasswd ="06948859";//06948859
         String dbName ="pku_chinamobile_jdbc_metadata";
-        String url ="jdbc:mysql://162.105.71.128:3306/";
+        String url ="jdbc:mysql://162.105.71.87:3306/";
 
         try{
             Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -841,10 +841,10 @@ public class PKUMetaDataManagement {
             tarList[3] = "Port";
             valList[0] = TypeID + "";
             valList[1] = IP;
-            valList[2] = Name;
+            valList[2] = "\"" + Name + "\"";
             valList[3] = Port;
             conList[0] = "UID=" + UID;
-            Update("LDataSourceType", 4, 1);
+            Update("LDataSource", 4, 1);
         } catch (SQLException e) {
             e.printStackTrace();
         }

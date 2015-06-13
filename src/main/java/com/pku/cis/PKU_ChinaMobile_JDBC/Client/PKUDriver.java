@@ -122,10 +122,6 @@ public class PKUDriver implements java.sql.Driver
 				localConInstance = new PKUConnection(remoteConInstance);
 				
 			}
-			catch(RemoteException ex)
-			{	
-				throw(new SQLException(ex.getMessage()));
-			}
 			catch(Exception ex)
 			{
 				throw(new SQLException(ex.getMessage()));

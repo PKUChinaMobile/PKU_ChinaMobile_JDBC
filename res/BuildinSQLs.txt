@@ -10,3 +10,4 @@ SELECT callRecords.biSessID, callRecords.intYear, callRecords.intMonth, callReco
 SELECT callRecords.biSessID, callRecords.intYear, callRecords.intMonth, callRecords.intDay, callRecords.dualTime, callRecords.vcCallingIMSI, callRecords.vcCalledIMSI FROM callRecords WHERE vcCallingIMSI not in (SELECT IMSI FROM USERS)
 (SELECT callRecords.intYear, callRecords.intLocation, callRecords.vcCallingIMSI FROM callRecords) INTERSECT (SELECT smsRecords.intYear, smsRecords.intLocation, smsRecords. vcTextingIMSI FROM smsRecords)
 WITH  smsInBJ AS (SELECT smsRecords.biSessID, smsRecords.intYear, smsRecords.intLocation, smsRecords. vcTextingIMSI, smsRecords. vcTextedIMSI FROM smsRecords WHERE smsRecords.intLocation=10 ) SELECT * from smsInBJ
+SELECT callRecords.intYear, callRecords.intLocation, callRecords.vcCallingIMSI FROM callRecords UNION ALL SELECT smsRecords.intYear, smsRecords.intLocation, smsRecords. vcTextingIMSI FROM smsRecords;
