@@ -840,9 +840,9 @@ public class PKUMetaDataManagement {
             tarList[2] = "Name";
             tarList[3] = "Port";
             valList[0] = TypeID + "";
-            valList[1] = IP;
-            valList[2] = "\"" + Name + "\"";
-            valList[3] = Port;
+            valList[1] = "'"+IP+"'";
+            valList[2] = "'" + Name +"'";
+            valList[3] = "'"+Port+"'";
             conList[0] = "UID=" + UID;
             Update("LDataSource", 4, 1);
         } catch (SQLException e) {

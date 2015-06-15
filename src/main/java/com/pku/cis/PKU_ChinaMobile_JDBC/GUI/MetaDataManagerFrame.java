@@ -134,7 +134,7 @@ public class MetaDataManagerFrame extends JFrame {
     public MetaDataManagerFrame() {
 
         setTitle("透明网关系统——元数据管理");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 700, 400);
         getContentPane().setLayout(new GridLayout(1,1));
 
@@ -319,7 +319,7 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
                         fetchDBTable(); //获取所选编辑表格的UID
                         int UID = Integer.valueOf(data[index][0]);
                         String tableName = data[index][1];
-                        int result = JOptionPane.showConfirmDialog(null, "确定删除表 " + tableName + "？", "提示", JOptionPane.YES_NO_OPTION);
+                        int result = JOptionPane.showConfirmDialog(null, "确定删除 " + tableName + "？", "提示", JOptionPane.YES_NO_OPTION);
                         if (result == 0) {
                             PKUMetaDataManagement pm = new PKUMetaDataManagement();
                             pm.Init();
@@ -389,7 +389,7 @@ class Adapter_MetaDataManagerFrame implements TreeSelectionListener
                         fetchTBTable(); //获取所选编辑列的TID
                         int TID = Integer.valueOf(data[index][0]);
                         String tableName = data[index][1];
-                        int result = JOptionPane.showConfirmDialog(null, "确定删除表 " + tableName + "？", "提示", JOptionPane.YES_NO_OPTION);
+                        int result = JOptionPane.showConfirmDialog(null, "确定删除 " + tableName + "？", "提示", JOptionPane.YES_NO_OPTION);
                         if (result == 0) {
                             PKUMetaDataManagement pm = new PKUMetaDataManagement();
                             pm.Init();
@@ -677,7 +677,7 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
                             fetchDSTable(); //获取所选编辑表格的UID
                             int UID = Integer.valueOf(data[index][0]);
                             String dbName = data[index][1];
-                            int result = JOptionPane.showConfirmDialog(null, "确定删除表 " + dbName + "？", "提示", JOptionPane.YES_NO_OPTION);
+                            int result = JOptionPane.showConfirmDialog(null, "确定删除 " + dbName + "？", "提示", JOptionPane.YES_NO_OPTION);
                             if (result == 0) {
                                 PKUMetaDataManagement pm = new PKUMetaDataManagement();
                                 pm.Init();
@@ -748,7 +748,7 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
                             fetchDBTable();
                             int UID = Integer.valueOf(data[index][0]);
                             String tableName = data[index][1];
-                            int result = JOptionPane.showConfirmDialog(null, "确定删除表 " + tableName + "？", "提示", JOptionPane.YES_NO_OPTION);
+                            int result = JOptionPane.showConfirmDialog(null, "确定删除 " + tableName + "？", "提示", JOptionPane.YES_NO_OPTION);
                             if (result == 0) {
                                 PKUMetaDataManagement pm = new PKUMetaDataManagement();
                                 pm.Init();
@@ -818,7 +818,7 @@ class Adapter2_MetaDataManagerFrame implements TreeSelectionListener
                             fetchTBTable();
                             int UID = Integer.valueOf(data[index][0]);
                             String columnName = data[index][1];
-                            int result = JOptionPane.showConfirmDialog(null, "确定删除表 " + columnName + "？", "提示", JOptionPane.YES_NO_OPTION);
+                            int result = JOptionPane.showConfirmDialog(null, "确定删除 " + columnName + "？", "提示", JOptionPane.YES_NO_OPTION);
                             if (result == 0) {
                                 PKUMetaDataManagement pm = new PKUMetaDataManagement();
                                 pm.Init();
